@@ -20,11 +20,11 @@ function BottomTab() {
                 headerShown: false
             }}>
             <Tab.Screen
-                name='Home'
+                name='Tin tức'
                 component={Home}
                 options={{
                     tabBarIcon: ({ focused }) =>
-                        <Entypo name="home" size={24} color={focused ? COLORS.primary : COLORS.secondary} />
+                        <Entypo name="news" size={24} color={focused ? COLORS.primary : COLORS.secondary} />
                 }}
             />
             <Tab.Screen
@@ -32,7 +32,7 @@ function BottomTab() {
                 component={Domestic}
                 options={{
                     tabBarIcon: ({ focused }) =>
-                        <AntDesign name="user" size={24} color={focused ? COLORS.primary : COLORS.secondary} />
+                        <AntDesign name="home" size={24} color={focused ? COLORS.primary : COLORS.secondary} />
                 }}
             />
             <Tab.Screen
@@ -40,11 +40,11 @@ function BottomTab() {
                 component={World}
                 options={{
                     tabBarIcon: ({ focused }) =>
-                        <Ionicons name="notifications-outline" size={24} color={focused ? COLORS.primary : COLORS.secondary} />
+                        <Ionicons name="earth" size={24} color={focused ? COLORS.primary : COLORS.secondary} />
                 }}
             />
             <Tab.Screen
-                name='Danh mục'
+                name='Tiện ích'
                 component={Category}
                 options={{
                     tabBarIcon: ({ focused }) =>

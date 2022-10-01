@@ -6,7 +6,7 @@ export const COLORS = {
     secondary: "#747D8C",   // gray
 
     // colors
-    red:'red',
+    red:'#f7071f',
     green:'#0ceb0c',
     black: "#1E1F20",
     black2:'#222222',

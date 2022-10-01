@@ -1,6 +1,8 @@
 import React from 'react'
-import { FlatList, Image, ScrollView, StyleSheet, Text, View } from 'react-native'
+import { FlatList, Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import Panigation from '../../component/Panigation'
 import { COLORS } from '../../contains'
+import { usePage } from '../../hook/usePage'
 
 const list = [
   {
@@ -44,26 +46,33 @@ const list = [
     time: '1 giờ'
   },
 ]
-function Home() {
+function Home({ navigation}) {
+  const {setDataBlog} = usePage()
   return (
-    <ScrollView style={styles.container}>
-      <FlatList
-        data={list}
-        renderItem={({ item, index }) =>
-          <View style={styles.blogItem} key={index}>
-            <View style={styles.blogImage}>
-              <Image source={{ uri: `${item.image}`}} style={{width:'100%', height:80}} resizeMethod='resize' />
+    <>
+      <ScrollView style={styles.container}>
+        <FlatList
+          data={list}
+          renderItem={({ item, index }) =>
+            <View style={styles.blogItem} key={index}>
+              <TouchableOpacity style={styles.blogImage} onPress={() => {
+                navigation.navigate('Detail')
+                setDataBlog(item)
+              }}>
+                <Image source={{ uri: `${item.image}` }} style={{ width: '100%', height: 80 }} resizeMethod='resize' />
+              </TouchableOpacity>
+              <View style={styles.blogContent}>
+                <Text style={styles.title} numberOfLines={3}>{item.title}</Text>
+                <Text style={styles.time}>{item.time}</Text>
+              </View>
             </View>
-            <View style={styles.blogContent}>
-              <Text style={styles.title} numberOfLines={3}>{item.title}</Text>
-              <Text style={styles.time}>{item.time}</Text>
-            </View>
-          </View>
-        }
-        keyExtractor={(item, index) => index.toString()}
-        listKey="listCategory"
-      />
-    </ScrollView>
+          }
+          keyExtractor={(item, index) => index.toString()}
+          listKey="listCategory"
+        />
+        <Panigation />
+      </ScrollView>
+    </>
   )
 }
 
@@ -72,17 +81,17 @@ export default Home
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding:16
+    padding: 16
   },
   blogItem: {
     flexDirection: 'row',
     justifyContent: 'flex-start',
     alignItems: 'flex-start',
-    marginBottom:16,
-    paddingBottom:16,
-    borderBottomWidth:0.5,
-    borderBottomColor:COLORS.gray,
-    borderBottomStyle:'solid'
+    marginBottom: 16,
+    paddingBottom: 16,
+    borderBottomWidth: 0.5,
+    borderBottomColor: COLORS.gray,
+    borderBottomStyle: 'solid'
   },
   blogImage: {
     width: '30%',
@@ -93,11 +102,11 @@ const styles = StyleSheet.create({
     paddingLeft: 8
   },
   title: {
-    fontSize:16,
-    lineHeight:24,
-    flex:1
+    fontSize: 16,
+    lineHeight: 24,
+    flex: 1
   },
   time: {
-    color:COLORS.gray2,
+    color: COLORS.gray2,
   }
 });

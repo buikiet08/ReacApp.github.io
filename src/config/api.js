@@ -1,6 +1,6 @@
 import axios from "axios";
 const api = axios.create({
-    baseURL: ''
+    baseURL: 'https://jsonplaceholder.typicode.com'
 })
 
 api.interceptors.response.use((res) => {

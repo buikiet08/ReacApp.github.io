@@ -1,77 +1,87 @@
-import React from 'react'
-import { FlatList, Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import Panigation from '../../component/Panigation'
+import { AntDesign } from '@expo/vector-icons';
+import axios from 'axios';
+import React, { useEffect, useRef, useState } from 'react'
+import { ActivityIndicator, FlatList, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { ScrollView } from 'react-native-virtualized-view';
+import BackToTop from '../../component/BackToTop'
 import { COLORS } from '../../contains'
 import { usePage } from '../../hook/usePage'
 
-const list = [
-  {
-    image: 'https://images.unsplash.com/photo-1664516918198-e7ddd1bade3c?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxlZGl0b3JpYWwtZmVlZHw0NXx8fGVufDB8fHx8&auto=format&fit=crop&w=500&q=60',
-    title: 'Tặng trọn bộ thiết bị bán hàng trị giá 3.830.000đ khi mua phần mềm ECNG.',
-    time: '1 giờ'
-  },
-  {
-    image: 'https://images.unsplash.com/photo-1664516918198-e7ddd1bade3c?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxlZGl0b3JpYWwtZmVlZHw0NXx8fGVufDB8fHx8&auto=format&fit=crop&w=500&q=60',
-    title: 'Tặng trọn bộ thiết bị bán hàng trị giá 3.830.000đ khi mua phần mềm ECNG.',
-    time: '1 giờ'
-  },
-  {
-    image: 'https://images.unsplash.com/photo-1664516918198-e7ddd1bade3c?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxlZGl0b3JpYWwtZmVlZHw0NXx8fGVufDB8fHx8&auto=format&fit=crop&w=500&q=60',
-    title: 'Tặng trọn bộ thiết bị bán hàng trị giá 3.830.000đ khi mua phần mềm ECNG.',
-    time: '1 giờ'
-  },
-  {
-    image: 'https://images.unsplash.com/photo-1664516918198-e7ddd1bade3c?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxlZGl0b3JpYWwtZmVlZHw0NXx8fGVufDB8fHx8&auto=format&fit=crop&w=500&q=60',
-    title: 'Tặng trọn bộ thiết bị bán hàng trị giá 3.830.000đ khi mua phần mềm ECNG.',
-    time: '1 giờ'
-  },
-  {
-    image: 'https://images.unsplash.com/photo-1664516918198-e7ddd1bade3c?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxlZGl0b3JpYWwtZmVlZHw0NXx8fGVufDB8fHx8&auto=format&fit=crop&w=500&q=60',
-    title: 'Tặng trọn bộ thiết bị bán hàng trị giá 3.830.000đ khi mua phần mềm ECNG.',
-    time: '1 giờ'
-  },
-  {
-    image: 'https://images.unsplash.com/photo-1664516918198-e7ddd1bade3c?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxlZGl0b3JpYWwtZmVlZHw0NXx8fGVufDB8fHx8&auto=format&fit=crop&w=500&q=60',
-    title: 'Tặng trọn bộ thiết bị bán hàng trị giá 3.830.000đ khi mua phần mềm ECNG.',
-    time: '1 giờ'
-  },
-  {
-    image: 'https://images.unsplash.com/photo-1664516918198-e7ddd1bade3c?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxlZGl0b3JpYWwtZmVlZHw0NXx8fGVufDB8fHx8&auto=format&fit=crop&w=500&q=60',
-    title: 'Tặng trọn bộ thiết bị bán hàng trị giá 3.830.000đ khi mua phần mềm ECNG.',
-    time: '1 giờ'
-  },
-  {
-    image: 'https://images.unsplash.com/photo-1664516918198-e7ddd1bade3c?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxlZGl0b3JpYWwtZmVlZHw0NXx8fGVufDB8fHx8&auto=format&fit=crop&w=500&q=60',
-    title: 'Tặng trọn bộ thiết bị bán hàng trị giá 3.830.000đ khi mua phần mềm ECNG.',
-    time: '1 giờ'
-  },
-]
-function Home({ navigation}) {
-  const {setDataBlog} = usePage()
+function Home({ navigation }) {
+  const { setDataBlog } = usePage()
+  let listRef = useRef()
+  const [position, setPosition] = useState()
+
+  const [test, setTest] = useState([])
+  const [loading,setLoading] = useState()
+  const [pageCurrent,setPageCurrent] = useState(1)
+  let body = JSON.stringify({
+    "mod": "get_news_home",
+    "page": pageCurrent,
+  });
+
+  useEffect(() => {
+    setLoading(true);
+    axios({
+      method: 'post',
+      url: 'https://hungtan.demobcb.work/api/',
+      data: body
+    })
+      .then((res) => {
+        setTest(res?.data.data)
+        setLoading(false)
+        console.error('page' , pageCurrent)
+
+      })
+      
+  }, [pageCurrent])
+
+  // loading
+  const renderFooter = () => {
+    return (loading ?
+      <ActivityIndicator size='large' /> : null
+    )
+  }
+  // loadmore
+  const handleLoadMore = () => {
+    setPageCurrent(pageCurrent + 1)
+    setLoading(true)
+  }
+  // const scrollTop = () => {
+  //   setPosition((e) => e = 0)
+  //   console.error(position)
+  // }
   return (
     <>
-      <ScrollView style={styles.container}>
+      <ScrollView style={styles.container} ref={listRef} onScroll={(event) => setPosition(event.nativeEvent.contentOffset.y)} >
         <FlatList
-          data={list}
+          data={test}
           renderItem={({ item, index }) =>
-            <View style={styles.blogItem} key={index}>
+            <View style={styles.blogItem} key={item.id}>
               <TouchableOpacity style={styles.blogImage} onPress={() => {
                 navigation.navigate('Detail')
                 setDataBlog(item)
               }}>
-                <Image source={{ uri: `${item.image}` }} style={{ width: '100%', height: 80 }} resizeMethod='resize' />
+                <Image source={{ uri: `${item.homeimgfile ? item.homeimgfile : 'https://artsmidnorthcoast.com/wp-content/uploads/2014/05/no-image-available-icon-6.png'}`}} style={{ width: '100%', height: 80 }} resizeMethod='resize' />
               </TouchableOpacity>
               <View style={styles.blogContent}>
                 <Text style={styles.title} numberOfLines={3}>{item.title}</Text>
-                <Text style={styles.time}>{item.time}</Text>
+                <Text style={styles.time}>{item.publtime}</Text>
               </View>
             </View>
           }
-          keyExtractor={(item, index) => index.toString()}
-          listKey="listCategory"
+          keyExtractor={(item, index) => item.id}
+          listKey="listnewsss"
+          ListFooterComponent={renderFooter}
+          onEndReached={handleLoadMore}
+          onEndReachedThreshold={0}
         />
-        <Panigation />
+
+        {/* <Panigation /> */}
       </ScrollView>
+      {/* <TouchableOpacity style={styles.scrollTopButton} onPress={scrollTop}>
+        <AntDesign name="upcircle" size={44} color={COLORS.primary} />
+      </TouchableOpacity> */}
     </>
   )
 }
@@ -108,5 +118,10 @@ const styles = StyleSheet.create({
   },
   time: {
     color: COLORS.gray2,
-  }
+  },
+  scrollTopButton: {
+    position: 'absolute',
+    bottom: 60,
+    right: 10
+  },
 });

@@ -1,6 +1,7 @@
 import { Feather } from '@expo/vector-icons'
 import React from 'react'
-import { FlatList, Image, ScrollView, StyleSheet, Text, View } from 'react-native'
+import { FlatList, Image, StyleSheet, Text, View } from 'react-native'
+import { ScrollView } from 'react-native-virtualized-view';
 import { COLORS } from '../../contains'
 
 const list = [
@@ -68,7 +69,7 @@ function World() {
             </View>
           }
           keyExtractor={(item, index) => index.toString()}
-          listKey="listCategory"
+          listKey="listCategorysss"
         />
       </View>
       <View style={styles.boxBlog}>

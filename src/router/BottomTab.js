@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
-import { Image, ImageBackground, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { FlatList, Image, ImageBackground, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { Tooltip } from '@rneui/themed';
 import { Avatar } from '@rneui/base';
 import { Ionicons, Entypo, AntDesign } from '@expo/vector-icons';
@@ -14,10 +14,12 @@ import { usePage } from '../hook/usePage';
 import CategoryList from '../screens/category/categoryList';
 import useQuery from '../hook/useQuery';
 import postService from '../servicer/postService';
+import axios from 'axios';
 
 const Tab = createBottomTabNavigator()
 
 function BottomTab({ navigation }) {
+    const { setDataBlog } = usePage()
     const [open, setOpen] = useState(false);
     let newDate = new Date();
     let date = newDate.getDate();
@@ -25,29 +27,113 @@ function BottomTab({ navigation }) {
     let year = newDate.getFullYear();
 
     const { isOpen, setIsOpen } = usePage()
-    const [isSearch, setIsSearch] = useState(false)
-    const [search, setSearch] = useState("");
+    const [isSearch, setIsSearch] = useState(true)
+    const [search, setSearch] = useState('');
+    const [result, setResult] = useState(false)
     const [pageSearch, setPageSearch] = useState(false)
-    // const [data, loading] = useQuery(postService.getPost())
-    const updateSearch = (search) => {
-        setSearch(search);
-    };
+    let { data } = useQuery(async () => await postService.getPost(), [])
+    console.error(data)
+    // lấy danh sách bài viết
+    const [test, setTest] = useState([])
+    let body = JSON.stringify({
+        "mod": "get_news_home",
+        "page": 1,
+    });
 
+    useEffect(() => {
+        axios({
+            method: 'post',
+            url: 'https://hungtan.demobcb.work/api/',
+            data: body
+        })
+            .then((res) => {
+                console.log('hasil axios', res)
+                setTest(res)
+            })
+    }, [])
+
+    // search
+    const [searchKey, setSearchKey] = useState([])
+    let value = JSON.stringify({
+        "mod": "search",
+        "keyword": search,
+        "page": 1
+    });
+
+    useEffect(() => {
+        axios({
+            method: 'post',
+            url: 'https://hungtan.demobcb.work/api/',
+            data: value
+        })
+            .then((res) => {
+                setSearchKey(res?.data?.data)
+            })
+    }, [])
+
+    const onChange = (text) => {
+        setSearch(text)
+    }
+    const handleChange = () => {
+        setResult(true)
+
+    }
+    const handleSubmit = (search) => {
+        // console.error(search)
+        // setSearch(search)
+        // onChange(search)
+    }
 
     const SearchPage = () => {
         return (
             <View style={{
                 flex: 1,
-                padding: 16
+                paddingVertical: 20
             }}>
-                <Text>hhhh</Text>
-                <Text>hhhh</Text>
-                <Text>hhhh</Text>
-                <Text>hhhh</Text>
-                <Text>hhhh</Text>
-                <Text>hhhh</Text>
-                <Text>hhhh</Text>
+                {result && search !== '' &&
+                    <FlatList
+                        data={searchKey}
+                        renderItem={({ item, index }) =>
+                            item.title.toLocaleUpperCase().indexOf(search?.toLocaleUpperCase()) > -1 ?
+                                <View style={styles.blogItem} key={item.id}>
+                                    <TouchableOpacity style={styles.blogImage} onPress={() => {
+                                        navigation.navigate('Detail')
+                                        setDataBlog(item)
+                                    }}>
+                                        <Image source={{ uri: `${item.homeimgfile ? item.homeimgfile : 'https://artsmidnorthcoast.com/wp-content/uploads/2014/05/no-image-available-icon-6.png'}` }} style={{ width: '100%', height: 80 }} resizeMethod='resize' />
+                                    </TouchableOpacity>
+                                    <View style={styles.blogContent}>
+                                        <Text style={styles.title} numberOfLines={3}>{item.title}</Text>
+                                        <Text style={styles.time}>{item.publtime}</Text>
+                                    </View>
+                                </View> : null
+                        }
+                        keyExtractor={(item, index) => item.id}
+                        listKey="search"
+                    />
+                    // <FlatList
+                    //     data={test.data.data}
+                    //     contentContainerStyle={{ paddingHorizontal: 16 }}
+                    //     renderItem={({ item, index }) =>
+                    //         item.title.toLocaleUpperCase().indexOf(search?.toLocaleUpperCase()) > -1 ?
+                    //             <View style={styles.blogItem} key={index}>
+                    //                 <TouchableOpacity style={styles.blogImage} onPress={() => {
+                    //                     navigation.navigate('Detail')
+                    //                     setDataBlog(item)
+                    //                 }}>
+                    //                     <Image source={{ uri: `${item.homeimgfile ? item.homeimgfile : 'https://artsmidnorthcoast.com/wp-content/uploads/2014/05/no-image-available-icon-6.png'}` }} style={{ width: '100%', height: 80 }} resizeMethod='resize' />
+                    //                 </TouchableOpacity>
+                    //                 <View style={styles.blogContent}>
+                    //                     <Text style={styles.title} numberOfLines={3}>{item.title}</Text>
+                    //                     <Text style={styles.time}>{item.publtime}</Text>
+                    //                 </View>
+                    //             </View> : false
 
+                    //     }
+                    //     keyExtractor={(item, index) => index.toString()}
+                    //     listKey="listCategory"
+                    // />
+                }
             </View>
         )
     }
@@ -119,10 +205,13 @@ function BottomTab({ navigation }) {
                                         inputStyle={{ borderColor: COLORS.white }}
                                         showCancel={true}
                                         placeholder="Tìm kiếm..."
-                                        onChangeText={updateSearch}
                                         value={search}
+                                        onChange={handleChange}
                                         onFocus={() => setPageSearch(true)}
+                                        onChangeText={text => onChange(text)}
+                                        onSubmitEditing={handleSubmit}
                                     />
+
                                 </View>
                                 <TouchableOpacity activeOpacity={0.6} style={{ marginLeft: 8 }} onPress={() => {
                                     setIsSearch(true)
@@ -145,7 +234,7 @@ function BottomTab({ navigation }) {
                 }}>
                 <Tab.Screen
                     name='Tin tức'
-                    component={pageSearch ? SearchPage : Home }
+                    component={pageSearch ? SearchPage : Home}
                     options={{
                         tabBarIcon: ({ focused }) =>
                             <Entypo name="news" size={24} color={focused ? COLORS.primary : COLORS.secondary} />
@@ -153,7 +242,7 @@ function BottomTab({ navigation }) {
                 />
                 <Tab.Screen
                     name='Trong nước'
-                    component={Domestic}
+                    component={pageSearch ? SearchPage : Domestic}
                     options={{
                         tabBarIcon: ({ focused }) =>
                             <AntDesign name="home" size={24} color={focused ? COLORS.primary : COLORS.secondary} />
@@ -161,7 +250,7 @@ function BottomTab({ navigation }) {
                 />
                 <Tab.Screen
                     name='Thế giới'
-                    component={World}
+                    component={pageSearch ? SearchPage : World}
                     options={{
                         tabBarIcon: ({ focused }) =>
                             <Ionicons name="earth" size={24} color={focused ? COLORS.primary : COLORS.secondary} />
@@ -237,6 +326,32 @@ const styles = StyleSheet.create({
         fontSize: 16,
         fontWeight: 'bold',
         padding: 8
-    }
+    },
+    blogItem: {
+        flexDirection: 'row',
+        justifyContent: 'flex-start',
+        alignItems: 'flex-start',
+        marginBottom: 16,
+        paddingBottom: 16,
+        borderBottomWidth: 0.5,
+        borderBottomColor: COLORS.gray,
+        borderBottomStyle: 'solid'
+    },
+    blogImage: {
+        width: '30%',
+        borderRadius: 4,
+        overflow: 'hidden',
+    },
+    blogContent: {
+        paddingLeft: 8
+    },
+    title: {
+        fontSize: 16,
+        lineHeight: 24,
+        flex: 1
+    },
+    time: {
+        color: COLORS.gray2,
+    },
 });
 export default BottomTab

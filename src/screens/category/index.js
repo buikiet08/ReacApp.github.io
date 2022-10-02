@@ -1,14 +1,34 @@
-import React, { useState } from 'react'
-import { FlatList, ImageBackground, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { Icon, ListItem } from '@rneui/themed'
+import axios from 'axios';
+import React, { useEffect, useState } from 'react'
+import { FlatList, ImageBackground, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { ScrollView } from 'react-native-virtualized-view';
 import { COLORS } from '../../contains'
 import { usePage } from '../../hook/usePage'
 
-const data = [{ title: 'Tin tức' }, { title: 'Tin tức' }, { title: 'Tin tức' }, { title: 'Tin tức' }, { title: 'Tin tức' }, { title: 'Tin tức' }, { title: 'Tin tức' }, { title: 'Tin tức' }]
+const list = [{ title: 'Danh mục' }, { title: 'Danh mục' }, { title: 'Danh mục' }, { title: 'Danh mục' }, { title: 'Danh mục' }]
+const data = [{ title: 'Tin tức' }, { title: 'Tin tức' }, { title: 'Tin tức' }, { title: 'Tin tức' }]
 function Category() {
-  const { setIsOpen,setDataBlog } = usePage()
+  const { setIsOpen, setDataBlog } = usePage()
+  const [expanded, setExpanded] = useState(false)
+  const [category, setCategory] = useState([])
+  let body = JSON.stringify({
+    "mod": "get_category"
+  });
+
+  useEffect(() => {
+    axios({
+      method: 'post',
+      url: 'https://hungtan.demobcb.work/api/',
+      data: body
+    })
+      .then((res) => {
+        setCategory(res?.data?.data)
+      })
+  }, [])
   return (
     <ScrollView style={styles.container}>
-      <FlatList
+      {/* <FlatList
         data={data}
         numColumns={2}
         contentContainerStyle={{ width: '100%' }}
@@ -30,7 +50,38 @@ function Category() {
         }
         keyExtractor={(item, index) => index.toString()}
         listKey="listCategory"
-      />
+      /> */}
+      {category.map((item, index) =>
+        <ListItem.Accordion
+          style={{ marginBottom: 10 }}
+          content={
+            <>
+              {/* <Icon name="place" size={30} /> */}
+              <ListItem.Content>
+                <ListItem.Title>{item.title}</ListItem.Title>
+              </ListItem.Content>
+            </>
+          }
+          // isExpanded={}
+          onPress={() => {
+            setIsOpen(true)
+            setDataBlog(item)
+          }}
+        >
+          {/* <View style={{ marginBottom: 10 }}>
+            {data.map((l, i) => (
+              <ListItem key={i} onPress={''} bottomDivider>
+                <Avatar title={l.name[0]} source={{ uri: l.avatar_url }} />
+                <ListItem.Content>
+                  <ListItem.Title>{i + 1}</ListItem.Title>
+                  <ListItem.Subtitle>{l.title}</ListItem.Subtitle>
+                </ListItem.Content>
+                <ListItem.Chevron />
+              </ListItem>
+            ))}
+          </View> */}
+        </ListItem.Accordion>
+      )}
     </ScrollView>
   )
 }

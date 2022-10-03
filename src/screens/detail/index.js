@@ -1,7 +1,9 @@
 import { AntDesign } from '@expo/vector-icons'
 import axios from 'axios'
 import React, { useEffect, useState } from 'react'
-import { Image, ScrollView, StyleSheet, Text, TouchableOpacity, View, SafeAreaView, useWindowDimensions, FlatList } from 'react-native'
+import { Image, StyleSheet, Text, TouchableOpacity, View, SafeAreaView, useWindowDimensions, FlatList } from 'react-native'
+import { ScrollView } from 'react-native-virtualized-view';
+
 import { COLORS } from '../../contains'
 import { usePage } from '../../hook/usePage'
 import RenderHtml from 'react-native-render-html';
@@ -10,7 +12,7 @@ function Detail({ navigation }) {
     const { width } = useWindowDimensions();
     const { dataBlog, setDataBlog } = usePage()
     const [data, setData] = useState([])
-    const [cate,setCate] = useState([])
+    const [cate, setCate] = useState([])
     let body = JSON.stringify({
         "mod": "detail_news",
         "id": dataBlog.id
@@ -27,7 +29,6 @@ function Detail({ navigation }) {
                 setCate(res?.data)
             })
     }, [])
-    console.error(cate.news_category)
     const source = {
         html: `${data.bodyhtml}`
     };
@@ -51,19 +52,19 @@ function Detail({ navigation }) {
                 />
                 <Text style={{ marginVertical: 20, fontWeight: 'bold', fontSize: 16 }}>Tin liên quan</Text>
                 <FlatList
-                    data={cate.news_category}
+                    data={cate.related_news}
                     renderItem={({ item, index }) =>
                         <View style={styles.blogItem} key={item.id}>
-                            <TouchableOpacity style={styles.blogImage} onPress={() => {
+                            <View style={styles.blogImage}>
+                                <Image source={{ uri: `${item.homeimgfile ? item.homeimgfile : 'https://artsmidnorthcoast.com/wp-content/uploads/2014/05/no-image-available-icon-6.png'}` }} style={{ width: '100%', height: 90 }} resizeMethod='resize' />
+                            </View>
+                            <TouchableOpacity style={styles.blogContent} onPress={() => {
                                 navigation.navigate('Detail')
                                 setDataBlog(item)
                             }}>
-                                <Image source={{ uri: `${item.homeimgfile ? item.homeimgfile : 'https://artsmidnorthcoast.com/wp-content/uploads/2014/05/no-image-available-icon-6.png'}` }} style={{ width: '100%', height: 80 }} resizeMethod='resize' />
-                            </TouchableOpacity>
-                            <View style={styles.blogContent}>
                                 <Text style={styles.title} numberOfLines={3}>{item.title}</Text>
                                 <Text style={styles.time}>{item.publtime}</Text>
-                            </View>
+                            </TouchableOpacity>
                         </View>
                     }
                     keyExtractor={(item, index) => item.id}
@@ -100,10 +101,15 @@ const styles = StyleSheet.create({
         overflow: 'hidden',
     },
     blogContent: {
-        paddingLeft: 8
+        paddingLeft: 8,
+        width: '70%',
+        flexDirection: 'column',
+        justifyContent: 'space-between',
+        alignItems: 'flex-start',
+        height: 90
     },
     title: {
-        fontSize: 16,
+        fontSize: 17,
         lineHeight: 24,
         flex: 1
     },

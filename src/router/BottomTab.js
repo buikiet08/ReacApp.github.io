@@ -31,8 +31,8 @@ function BottomTab({ navigation }) {
     const [search, setSearch] = useState('');
     const [result, setResult] = useState(false)
     const [pageSearch, setPageSearch] = useState(false)
-    let { data } = useQuery(async () => await postService.getPost(), [])
-    console.error(data)
+    // let { data } = useQuery(async () => await postService.getPost(), [])
+    // console.error(data)
     // lấy danh sách bài viết
     const [test, setTest] = useState([])
     let body = JSON.stringify({
@@ -88,7 +88,8 @@ function BottomTab({ navigation }) {
         return (
             <View style={{
                 flex: 1,
-                paddingVertical: 20
+                paddingVertical: 20,
+                paddingHorizontal: 16
             }}>
                 {result && search !== '' &&
                     <FlatList
@@ -96,16 +97,16 @@ function BottomTab({ navigation }) {
                         renderItem={({ item, index }) =>
                             item.title.toLocaleUpperCase().indexOf(search?.toLocaleUpperCase()) > -1 ?
                                 <View style={styles.blogItem} key={item.id}>
-                                    <TouchableOpacity style={styles.blogImage} onPress={() => {
+                                    <View style={styles.blogImage}>
+                                        <Image source={{ uri: `${item.homeimgfile ? item.homeimgfile : 'https://artsmidnorthcoast.com/wp-content/uploads/2014/05/no-image-available-icon-6.png'}` }} style={{ width: '100%', height: 90 }} resizeMethod='resize' />
+                                    </View>
+                                    <TouchableOpacity style={styles.blogContent} onPress={() => {
                                         navigation.navigate('Detail')
                                         setDataBlog(item)
                                     }}>
-                                        <Image source={{ uri: `${item.homeimgfile ? item.homeimgfile : 'https://artsmidnorthcoast.com/wp-content/uploads/2014/05/no-image-available-icon-6.png'}` }} style={{ width: '100%', height: 80 }} resizeMethod='resize' />
-                                    </TouchableOpacity>
-                                    <View style={styles.blogContent}>
                                         <Text style={styles.title} numberOfLines={3}>{item.title}</Text>
                                         <Text style={styles.time}>{item.publtime}</Text>
-                                    </View>
+                                    </TouchableOpacity>
                                 </View> : null
                         }
                         keyExtractor={(item, index) => item.id}
@@ -343,10 +344,15 @@ const styles = StyleSheet.create({
         overflow: 'hidden',
     },
     blogContent: {
-        paddingLeft: 8
+        paddingLeft: 8,
+        width: '70%',
+        flexDirection: 'column',
+        justifyContent: 'space-between',
+        alignItems: 'flex-start',
+        height: 90
     },
     title: {
-        fontSize: 16,
+        fontSize: 17,
         lineHeight: 24,
         flex: 1
     },

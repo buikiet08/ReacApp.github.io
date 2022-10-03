@@ -28,35 +28,15 @@ function Category() {
   }, [])
   return (
     <ScrollView style={styles.container}>
-      {/* <FlatList
-        data={data}
-        numColumns={2}
-        contentContainerStyle={{ width: '100%' }}
-        renderItem={({ item, index }) =>
-          <TouchableOpacity key={index}
-            style={styles.cateItem}
-            activeOpacity={0.7}
-            onPress={() => {
-              setIsOpen(true)
-              setDataBlog(item)
-            }
-            }>
-            <ImageBackground source={{ uri: 'https://images.unsplash.com/photo-1664575600796-ffa828c5cb6e?ixlib=rb-1.2.1&ixid=MnwxMjA3fDF8MHxlZGl0b3JpYWwtZmVlZHw0Nnx8fGVufDB8fHx8&auto=format&fit=crop&w=500&q=60' }}
-              style={styles.background}>
-              <Text style={{ textTransform: 'uppercase', color: COLORS.white, fontWeight: 'bold', zIndex: 10 }}>{item.title}</Text>
-              <View style={{ position: 'absolute', top: 0, left: 0, backgroundColor: '#000', opacity: 0.6, width: '100%', height: '100%' }}></View>
-            </ImageBackground>
-          </TouchableOpacity>
-        }
-        keyExtractor={(item, index) => index.toString()}
-        listKey="listCategory"
-      /> */}
       {category.map((item, index) =>
         <ListItem.Accordion
+          key={index}
           style={{ marginBottom: 10 }}
+          icon={false}
+          containerStyle={{padding:16}}
           content={
             <>
-              {/* <Icon name="place" size={30} /> */}
+              <Icon name="align-left" type='feather' size={24} color={COLORS.gray} style={{marginRight:8}} />
               <ListItem.Content>
                 <ListItem.Title>{item.title}</ListItem.Title>
               </ListItem.Content>

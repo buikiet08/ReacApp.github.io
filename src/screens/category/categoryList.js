@@ -33,23 +33,23 @@ function CategoryList({ navigation }) {
                 <TouchableOpacity onPress={() => setIsOpen(false)}>
                     <AntDesign name="arrowleft" size={24} color={COLORS.black4} />
                 </TouchableOpacity>
-                <Text style={{ marginLeft: 20,fontSize: 18, fontWeight: 'bold' }}>{dataBlog.title}</Text>
+                <Text style={{ marginLeft: 20, fontSize: 18, fontWeight: 'bold' }}>{dataBlog.title}</Text>
             </View>
             <ScrollView style={styles.container}>
                 <FlatList
                     data={listNews}
                     renderItem={({ item, index }) =>
                         <View style={styles.blogItem} key={item.id}>
-                            <TouchableOpacity style={styles.blogImage} onPress={() => {
+                            <View style={styles.blogImage}>
+                                <Image source={{ uri: `${item.homeimgfile ? item.homeimgfile : 'https://artsmidnorthcoast.com/wp-content/uploads/2014/05/no-image-available-icon-6.png'}` }} style={{ width: '100%', height: 90 }} resizeMethod='resize' />
+                            </View>
+                            <TouchableOpacity style={styles.blogContent} onPress={() => {
                                 navigation.navigate('Detail')
                                 setDataBlog(item)
                             }}>
-                                <Image source={{ uri: `${item.homeimgfile ? item.homeimgfile : 'https://artsmidnorthcoast.com/wp-content/uploads/2014/05/no-image-available-icon-6.png'}` }} style={{ width: '100%', height: 80 }} resizeMethod='resize' />
-                            </TouchableOpacity>
-                            <View style={styles.blogContent}>
                                 <Text style={styles.title} numberOfLines={3}>{item.title}</Text>
                                 <Text style={styles.time}>{item.publtime}</Text>
-                            </View>
+                            </TouchableOpacity>
                         </View>
                     }
                     keyExtractor={(item, index) => item.id}
@@ -69,7 +69,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'flex-start',
         alignItems: 'center',
-        padding:16
+        padding: 16
     },
     blogItem: {
         flexDirection: 'row',
@@ -87,10 +87,15 @@ const styles = StyleSheet.create({
         overflow: 'hidden',
     },
     blogContent: {
-        paddingLeft: 8
+        paddingLeft: 8,
+        width: '70%',
+        flexDirection: 'column',
+        justifyContent: 'space-between',
+        alignItems: 'flex-start',
+        height: 90
     },
     title: {
-        fontSize: 16,
+        fontSize: 17,
         lineHeight: 24,
         flex: 1
     },

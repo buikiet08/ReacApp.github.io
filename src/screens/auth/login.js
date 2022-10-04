@@ -1,5 +1,5 @@
-import React from 'react'
-import { StyleSheet, View, TextInput } from 'react-native'
+import React, { useState } from 'react'
+import { StyleSheet, View, TextInput, AsyncStorage } from 'react-native'
 import { useForm, Controller } from "react-hook-form";
 import { LinearGradient } from 'expo-linear-gradient';
 import { Text, Button } from "@rneui/themed";
@@ -14,13 +14,65 @@ function Login({ navigation }) {
             password: ''
         }
     });
-    const onSubmit = data => console.log(data);
+    const [loading, setLoading] = useState(false)
+    const [errorMessage, setErrorMessage] = useState('')
+
+    const onSubmit = async (data) => {
+        try {
+            setLoading(true)
+            let axios = require('axios')
+            let body = JSON.stringify({
+                "mod": "api_login_user",
+                "username": data.username,
+                "password": data.password,
+            });
+            const config = {
+                method: 'post',
+                url: 'https://hungtan.demobcb.work/users/register/',
+                data: body
+            }
+            await axios(config)
+                .then(function (response) {
+                    console.log(response.data, 'vào')
+                    if (response.data) {
+                        AsyncStorage.setItem('token', JSON.stringify(response.data))
+                        // AsyncStorage.setItem('accessToken', true)
+                        setTimeout(
+                            function() {
+                                navigation.replace("BottomTab", { replace: true })
+                            }, 1000
+                        );
+                        // if (user.data) {
+                        //     AsyncStorage.setItem('user', JSON.stringify(user.data))
+                        //     // setUser(user.data)
+                        //     AsyncStorage.setItem('accessToken', true)
+                        // }
+                    }
+                    setErrorMessage(response?.data)
+                })
+                .catch(function (error) {
+                    setLoading(false)
+                    setErrorMessage(error.data.message)
+                });
+        }
+        catch (error) {
+            console.error(error.message)
+            setErrorMessage(error.message)
+        }
+        finally {
+            setLoading(false)
+        }
+        console.log(data)
+    }
     return (
         <LinearGradient
             colors={['#097ead', '#097ead', '#0891ae']}
             style={styles.container}>
             <View style={styles.formContainer}>
                 <Text h3 style={styles.title}>Đăng nhập</Text>
+                {errorMessage && <View style={{ padding: 8, borderRadius: 4, marginBottom: 10, backgroundColor: COLORS.white }}>
+                    <Text style={errorMessage.status === 0 ? { color: COLORS.red} :{color: COLORS.primary}}>{errorMessage.message}</Text>
+                </View>}
                 <View>
                     <View style={styles.formInput}>
                         <Controller
@@ -126,7 +178,7 @@ const styles = StyleSheet.create({
         marginBottom: 16,
         fontWeight: 'bold',
     },
-    formInput:{
+    formInput: {
         marginBottom: 20,
     },
     input: {
@@ -154,7 +206,7 @@ const styles = StyleSheet.create({
     error: {
         fontSize: 12,
         color: COLORS.red,
-        marginTop:8
+        marginTop: 8
     }
 })
 

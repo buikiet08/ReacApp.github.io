@@ -12,8 +12,6 @@ import Category from '../screens/category';
 import { COLORS, images } from '../contains';
 import { usePage } from '../hook/usePage';
 import CategoryList from '../screens/category/categoryList';
-import useQuery from '../hook/useQuery';
-import postService from '../servicer/postService';
 import axios from 'axios';
 
 const Tab = createBottomTabNavigator()
@@ -31,59 +29,58 @@ function BottomTab({ navigation }) {
     const [search, setSearch] = useState('');
     const [result, setResult] = useState(false)
     const [pageSearch, setPageSearch] = useState(false)
-    // let { data } = useQuery(async () => await postService.getPost(), [])
-    // console.error(data)
+    const [loading, setLoading] = useState(false)
+    const [page, setPage] = useState(1)
     // lấy danh sách bài viết
-    const [test, setTest] = useState([])
-    let body = JSON.stringify({
-        "mod": "get_news_home",
-        "page": 1,
-    });
+    const [data, setData] = useState([])
+
+
 
     useEffect(() => {
-        axios({
-            method: 'post',
-            url: 'https://hungtan.demobcb.work/api/',
-            data: body
-        })
-            .then((res) => {
-                console.log('hasil axios', res)
-                setTest(res)
-            })
+        getData(search)
     }, [])
-
-    // search
-    const [searchKey, setSearchKey] = useState([])
-    let value = JSON.stringify({
-        "mod": "search",
-        "keyword": search,
-        "page": 1
-    });
-
-    useEffect(() => {
-        axios({
+    const getData = async () => {
+        const axios = require('axios')
+        let value = JSON.stringify({
+            "mod": "search",
+            "keyword": search,
+            "page": page
+        });
+        const config = {
             method: 'post',
             url: 'https://hungtan.demobcb.work/api/',
             data: value
-        })
-            .then((res) => {
-                setSearchKey(res?.data?.data)
+        }
+        await axios(config)
+            .then(function (response) {
+                setLoading(false)
+                if (data.length > 0) {
+                    setData(response?.data?.data)
+                } else {
+                    setData([...data, ...response?.data?.data])
+                    setPage(...page, ...page + 1)
+                }
             })
-    }, [])
+            .catch(function (error) {
+                setLoading(false)
+                console.error(error)
+            });
+    }
 
     const onChange = (text) => {
         setSearch(text)
+        console.log(text)
     }
-    const handleChange = () => {
+    const handleChange = (text) => {
         setResult(true)
-
     }
     const handleSubmit = (search) => {
-        // console.error(search)
-        // setSearch(search)
-        // onChange(search)
+        setResult(true)
+        setSearch(search)
+        getData(search)
+        console.log(search)
     }
-
+    console.log(data.length)
     const SearchPage = () => {
         return (
             <View style={{
@@ -91,49 +88,27 @@ function BottomTab({ navigation }) {
                 paddingVertical: 20,
                 paddingHorizontal: 16
             }}>
+                {search !== '' && <Text style={{ marginBottom: 10, }}>Kết quả tìm kiếm có ({data ? data.length : 0}) tin tức</Text>}
                 {result && search !== '' &&
                     <FlatList
-                        data={searchKey}
+                        data={data}
                         renderItem={({ item, index }) =>
-                            item.title.toLocaleUpperCase().indexOf(search?.toLocaleUpperCase()) > -1 ?
-                                <View style={styles.blogItem} key={item.id}>
-                                    <View style={styles.blogImage}>
-                                        <Image source={{ uri: `${item.homeimgfile ? item.homeimgfile : 'https://artsmidnorthcoast.com/wp-content/uploads/2014/05/no-image-available-icon-6.png'}` }} style={{ width: '100%', height: 90 }} resizeMethod='resize' />
-                                    </View>
-                                    <TouchableOpacity style={styles.blogContent} onPress={() => {
-                                        navigation.navigate('Detail')
-                                        setDataBlog(item)
-                                    }}>
-                                        <Text style={styles.title} numberOfLines={3}>{item.title}</Text>
-                                        <Text style={styles.time}>{item.publtime}</Text>
-                                    </TouchableOpacity>
-                                </View> : null
+                            <View style={styles.blogItem} key={item.id}>
+                                <View style={styles.blogImage}>
+                                    <Image source={{ uri: `${item.homeimgfile ? item.homeimgfile : 'https://artsmidnorthcoast.com/wp-content/uploads/2014/05/no-image-available-icon-6.png'}` }} style={{ width: '100%', height: 90 }} resizeMethod='resize' />
+                                </View>
+                                <TouchableOpacity style={styles.blogContent} onPress={() => {
+                                    navigation.navigate('Detail')
+                                    setDataBlog(item)
+                                }}>
+                                    <Text style={styles.title} numberOfLines={3}>{item.title}</Text>
+                                    <Text style={styles.time}>{item.publtime}</Text>
+                                </TouchableOpacity>
+                            </View>
                         }
                         keyExtractor={(item, index) => item.id}
                         listKey="search"
                     />
-                    // <FlatList
-                    //     data={test.data.data}
-                    //     contentContainerStyle={{ paddingHorizontal: 16 }}
-                    //     renderItem={({ item, index }) =>
-                    //         item.title.toLocaleUpperCase().indexOf(search?.toLocaleUpperCase()) > -1 ?
-                    //             <View style={styles.blogItem} key={index}>
-                    //                 <TouchableOpacity style={styles.blogImage} onPress={() => {
-                    //                     navigation.navigate('Detail')
-                    //                     setDataBlog(item)
-                    //                 }}>
-                    //                     <Image source={{ uri: `${item.homeimgfile ? item.homeimgfile : 'https://artsmidnorthcoast.com/wp-content/uploads/2014/05/no-image-available-icon-6.png'}` }} style={{ width: '100%', height: 80 }} resizeMethod='resize' />
-                    //                 </TouchableOpacity>
-                    //                 <View style={styles.blogContent}>
-                    //                     <Text style={styles.title} numberOfLines={3}>{item.title}</Text>
-                    //                     <Text style={styles.time}>{item.publtime}</Text>
-                    //                 </View>
-                    //             </View> : false
-
-                    //     }
-                    //     keyExtractor={(item, index) => index.toString()}
-                    //     listKey="listCategory"
-                    // />
                 }
             </View>
         )
@@ -155,43 +130,45 @@ function BottomTab({ navigation }) {
                                         <AntDesign name="search1" size={24} color={COLORS.white} />
                                     </TouchableOpacity>
                                     <View>
-                                        <Tooltip
+                                        {open && <Tooltip
                                             visible={open}
-                                            onOpen={() => {
-                                                setOpen(true)
+                                            onClose={() => setOpen(!open)}
+                                            containerStyle={{
+                                                backgroundColor: 'rgba(255,255,255,0)',
+                                                padding: 0,
+                                                marginTop: 80,
+                                                marginLeft: 20
                                             }}
-                                            onClose={() => {
-                                                setOpen(false)
-                                            }}
-                                            closeOnlyOnBackdropPress={true}
-                                            animationType='fade'
-                                            backgroundColor={COLORS.white}
-                                            width={140}
-                                            height='auto'
+                                            overlayColor='rgba(0,0,0,0.2)'
                                             popover={
-                                                <View style={styles.modadAuth}>
-                                                    <TouchableOpacity activeOpacity={0.8} onPress={() => navigation.replace('Login')}><Text style={styles.btnLogin}>Đăng nhập</Text></TouchableOpacity>
-                                                    <TouchableOpacity activeOpacity={0.8} onPress={() => navigation.replace('Register')}><Text style={styles.btnRegister}>Đăng ký</Text></TouchableOpacity>
+                                                <View visible={open} style={styles.modadAuth}>
+                                                    <TouchableOpacity activeOpacity={0.8} onPress={() => {
+                                                        setOpen(false)
+                                                        navigation.replace('Login')
+                                                    }}><Text style={styles.btnLogin}>Đăng nhập</Text></TouchableOpacity>
+                                                    <TouchableOpacity activeOpacity={0.8} onPress={() => {
+                                                        setOpen(false)
+                                                        navigation.replace('Register')
+                                                    }}><Text style={styles.btnRegister}>Đăng ký</Text></TouchableOpacity>
                                                 </View>
                                             }
                                             withPointer={false}
-                                        >
-                                            <TouchableOpacity onPress={() => setOpen(true)}>
-                                                <Avatar
-                                                    size={40}
-                                                    rounded
-                                                    icon={{ name: 'user', type: 'font-awesome' }}
-                                                    containerStyle={{ backgroundColor: '#6733b9' }}
-                                                />
-                                            </TouchableOpacity>
-                                        </Tooltip>
+                                        />}
+                                        <TouchableOpacity onPress={() => setOpen(!open)}>
+                                            <Avatar
+                                                size={40}
+                                                rounded
+                                                title='K'
+                                                icon={{ name: 'user', type: 'font-awesome' }}
+                                                containerStyle={{ backgroundColor: COLORS.primary, borderColor: COLORS.white, borderWidth: 0.5, borderStyle: 'solid' }}
+                                            />
+                                        </TouchableOpacity>
                                     </View>
                                 </View>
                             </>
                         )
                         :
                         (
-
                             <>
                                 <View style={{ flex: 1 }}>
                                     <SearchBar
@@ -223,8 +200,6 @@ function BottomTab({ navigation }) {
                             </>
                         )
                     }
-
-
                 </ImageBackground>
             </View>
             <Tab.Navigator
@@ -318,15 +293,24 @@ const styles = StyleSheet.create({
     btnLogin: {
         fontSize: 16,
         fontWeight: 'bold',
-        padding: 8,
-        borderBottomWidth: 0.5,
-        borderBottomColor: COLORS.gray,
-        borderBottomStyle: 'solid'
+        paddingVertical: 16,
+        paddingHorizontal: 32,
+        backgroundColor: COLORS.primary,
+        borderRadius: 20,
+        overflow: 'hidden',
+        color: COLORS.white,
+        marginBottom: 20
     },
     btnRegister: {
         fontSize: 16,
         fontWeight: 'bold',
-        padding: 8
+        paddingVertical: 16,
+        paddingHorizontal: 32,
+        backgroundColor: COLORS.primary,
+        borderRadius: 20,
+        overflow: 'hidden',
+        color: COLORS.white,
+
     },
     blogItem: {
         flexDirection: 'row',

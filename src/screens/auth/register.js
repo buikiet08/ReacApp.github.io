@@ -1,5 +1,5 @@
-import React from 'react'
-import { StyleSheet, View, TextInput } from 'react-native'
+import React, { useState } from 'react'
+import { StyleSheet, View, TextInput, AsyncStorage } from 'react-native'
 import { useForm, Controller } from "react-hook-form";
 import { LinearGradient } from 'expo-linear-gradient';
 import { Text, Button } from "@rneui/themed";
@@ -8,20 +8,66 @@ import { TouchableOpacity } from 'react-native-gesture-handler';
 import { AntDesign } from '@expo/vector-icons';
 
 function Register({ navigation }) {
-    const { control, handleSubmit, formState: { errors } } = useForm({
+    const { watch, control, handleSubmit, formState: { errors } } = useForm({
         defaultValues: {
-            full_name:'',
+            full_name: '',
             username: '',
-            password: ''
+            password: '',
+            re_password: ''
         }
     });
-    const onSubmit = data => console.log(data);
+
+    const [loading, setLoading] = useState(false)
+    const [errorMessage, setErrorMessage] = useState('')
+    
+    const onSubmit = async (data) => {
+        try {
+            let axios = require('axios')
+
+            let body = JSON.stringify({
+                "mod": "api_register_user",
+                "full_name": data.full_name,
+                "username": data.username,
+                "password": data.password,
+                "re_password": data.re_password,
+            });
+            const config = {
+                method: 'post',
+                url: 'https://hungtan.demobcb.work/users/register/',
+                data: body
+            }
+            await axios(config)
+                .then(function (response) {
+                    setLoading(true)
+                    console.log(response.data, 'vào')
+                    if (response.data) {
+                        AsyncStorage.setItem('token', JSON.stringify(response.data))
+                    }
+                    setErrorMessage(response.data)
+                })
+                .catch(function (error) {
+                    setLoading(false)
+                    setErrorMessage(error.data.message)
+                });
+        }
+        catch (error) {
+            console.error(error.message)
+            setErrorMessage(error.message)
+        }
+        finally {
+            setLoading(false)
+        }
+        console.log(data)
+    }
     return (
         <LinearGradient
             colors={['#097ead', '#097ead', '#0891ae']}
             style={styles.container}>
             <View style={styles.formContainer}>
                 <Text h3 style={styles.title}>Đăng ký</Text>
+                {errorMessage && <View style={{padding:8, borderRadius:4,marginBottom:10,backgroundColor:COLORS.white}}>
+                    <Text style={{color: errorMessage.status === 0 ? COLORS.red : COLORS.primary}}>{errorMessage.message}</Text>    
+                </View>}
                 <View>
                     <View style={styles.formInput}>
                         <Controller
@@ -109,7 +155,39 @@ function Register({ navigation }) {
                             </Text>
                         }
                     </View>
-                    
+
+                    <View style={styles.formInput}>
+                        <Controller
+                            control={control}
+                            rules={{
+                                required: true,
+                                validate: (val) => {
+                                    if (watch('password') != val) {
+                                        return "Your passwords do no match";
+                                    }
+                                },
+                            }}
+                            render={({ field: { onChange, onBlur, value } }) => (
+                                <TextInput
+                                    style={styles.input}
+                                    onBlur={onBlur}
+                                    onChangeText={onChange}
+                                    value={value}
+                                    type='password'
+                                    placeholder='Nhập lại mật khẩu'
+                                    placeholderTextColor={"#fff"}
+                                />
+                            )}
+                            name="re_password"
+                        />
+                        {Object.keys(errors).length !== 0 &&
+                            <Text style={styles.error}>
+                                {errors.re_password?.type === 'required' && 'Vui lòng nhập mật khẩu'}
+                                {errors.re_password?.type === 'validate' && 'Mật khẩu nhập lại không đúng'}
+                            </Text>
+                        }
+                    </View>
+
                     <Button
                         title="Đăng ký"
                         loading={false}
@@ -152,7 +230,7 @@ const styles = StyleSheet.create({
         marginBottom: 16,
         fontWeight: 'bold',
     },
-    formInput:{
+    formInput: {
         marginBottom: 20,
     },
     input: {
@@ -180,7 +258,7 @@ const styles = StyleSheet.create({
     error: {
         fontSize: 12,
         color: COLORS.red,
-        marginTop:8
+        marginTop: 8
     }
 })
 

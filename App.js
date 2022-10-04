@@ -13,7 +13,6 @@ export default function App() {
             <StatusBar barStyle={'light-content'} />
             <Router />
           </View>
-          
         </PageProvider>
       }
     </NavigationContainer>

@@ -10,25 +10,36 @@ import RenderHtml from 'react-native-render-html';
 
 function Detail({ navigation }) {
     const { width } = useWindowDimensions();
-    const { dataBlog, setDataBlog } = usePage()
+    const { dataBlog, setDataBlog,dataNews,setDataNews,relate,setRelate } = usePage()
     const [data, setData] = useState([])
     const [cate, setCate] = useState([])
-    let body = JSON.stringify({
-        "mod": "detail_news",
-        "id": dataBlog.id
-    });
-
+    const [loading, setLoading] = useState(false)
+    
     useEffect(() => {
-        axios({
-            method: 'post',
-            url: 'https://hungtan.demobcb.work/api/',
-            data: body
-        })
-            .then((res) => {
-                setData(res?.data?.data)
-                setCate(res?.data)
-            })
-    }, [])
+        getData()
+      }, [])
+      const getData = async () => {
+        let axios = require('axios')
+        let body = JSON.stringify({
+            "mod": "detail_news",
+            "id": dataBlog.id || dataNews.id 
+        });
+        const config = {
+          method: 'post',
+          url: 'https://hungtan.demobcb.work/api/',
+          data: body
+        }
+        await axios(config)
+          .then(function (response) {
+            setLoading(false)
+            setData(response?.data.data)
+            setCate(response?.data)
+          })
+          .catch(function (error) {
+            setLoading(false)
+            console.error(error)
+          });
+      }
     const source = {
         html: `${data.bodyhtml}`
     };
@@ -60,7 +71,7 @@ function Detail({ navigation }) {
                             </View>
                             <TouchableOpacity style={styles.blogContent} onPress={() => {
                                 navigation.navigate('Detail')
-                                setDataBlog(item)
+                                setRelate(item)
                             }}>
                                 <Text style={styles.title} numberOfLines={3}>{item.title}</Text>
                                 <Text style={styles.time}>{item.publtime}</Text>

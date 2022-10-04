@@ -1,7 +1,7 @@
 import { Icon, ListItem } from '@rneui/themed'
 import axios from 'axios';
 import React, { useEffect, useState } from 'react'
-import { FlatList, ImageBackground, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { ActivityIndicator, FlatList, ImageBackground, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import { ScrollView } from 'react-native-virtualized-view';
 import { COLORS } from '../../contains'
 import { usePage } from '../../hook/usePage'
@@ -12,43 +12,55 @@ function Category() {
   const { setIsOpen, setDataBlog } = usePage()
   const [expanded, setExpanded] = useState(false)
   const [category, setCategory] = useState([])
-  let body = JSON.stringify({
-    "mod": "get_category"
-  });
+  const [loading, setLoading] = useState(false)
 
   useEffect(() => {
-    axios({
+    getData()
+  }, [])
+  const getData = async () => {
+    setLoading(false)
+    let axios = require('axios')
+    let body = JSON.stringify({
+      "mod": "get_category"
+    });
+    const config = {
       method: 'post',
       url: 'https://hungtan.demobcb.work/api/',
       data: body
-    })
-      .then((res) => {
-        setCategory(res?.data?.data)
+    }
+    await axios(config)
+      .then(function (response) {
+        setCategory(response?.data.data)
       })
-  }, [])
+      .catch(function (error) {
+        setLoading(false)
+        console.error(error)
+      });
+  }
   return (
     <ScrollView style={styles.container}>
-      {category.map((item, index) =>
-        <ListItem.Accordion
-          key={index}
-          style={{ marginBottom: 10 }}
-          icon={false}
-          containerStyle={{padding:16}}
-          content={
-            <>
-              <Icon name="align-left" type='feather' size={24} color={COLORS.gray} style={{marginRight:8}} />
-              <ListItem.Content>
-                <ListItem.Title>{item.title}</ListItem.Title>
-              </ListItem.Content>
-            </>
-          }
-          // isExpanded={}
-          onPress={() => {
-            setIsOpen(true)
-            setDataBlog(item)
-          }}
-        >
-          {/* <View style={{ marginBottom: 10 }}>
+      {loading ? <ActivityIndicator size='large' animating={true} /> :
+        category.map((item, index) =>
+          <ListItem.Accordion
+            key={index}
+            style={{ marginBottom: 10 }}
+            icon={false}
+            containerStyle={{ padding: 16 }}
+            content={
+              <>
+                <Icon name="align-left" type='feather' size={24} color={COLORS.gray} style={{ marginRight: 8 }} />
+                <ListItem.Content>
+                  <ListItem.Title>{item.title}</ListItem.Title>
+                </ListItem.Content>
+              </>
+            }
+            // isExpanded={}
+            onPress={() => {
+              setIsOpen(true)
+              setDataBlog(item)
+            }}
+          >
+            {/* <View style={{ marginBottom: 10 }}>
             {data.map((l, i) => (
               <ListItem key={i} onPress={''} bottomDivider>
                 <Avatar title={l.name[0]} source={{ uri: l.avatar_url }} />
@@ -60,8 +72,9 @@ function Category() {
               </ListItem>
             ))}
           </View> */}
-        </ListItem.Accordion>
-      )}
+          </ListItem.Accordion>
+        )
+      }
     </ScrollView>
   )
 }

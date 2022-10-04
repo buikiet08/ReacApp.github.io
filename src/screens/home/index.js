@@ -8,14 +8,10 @@ import { COLORS } from '../../contains'
 import { usePage } from '../../hook/usePage'
 
 function Home({ navigation }) {
-  const width = Dimensions.get('window').width
-  const appViewRef = useRef()
   LogBox.ignoreLogs(['Warning: ...']); // Ignore log notification by message
   LogBox.ignoreAllLogs();//Ignore all log notifications
   const { setDataBlog } = usePage(null)
   const [position, setPosition] = useState()
-  const [refreshing, setRefreshing] = useState(false);
-  const [onWebviewScroll, setOnWebviewScroll] = useState(true);
 
   const [test, setTest] = useState([])
   const [loading, setLoading] = useState()
@@ -41,13 +37,6 @@ function Home({ navigation }) {
       .then(function (response) {
         setLoading(false)
         setTest(response?.data.data)
-        // if (test.length > 0) {
-        //   setTest([...test, ...response?.data?.data])
-        // } else if (test === []) {
-        //   setTest([])
-        // } else {
-        //   setTest(response?.data.data)
-        // }
       })
       .catch(function (error) {
         setLoading(false)
@@ -84,14 +73,6 @@ function Home({ navigation }) {
       <ActivityIndicator size='large' animating={true} /> : <Text style={{ color: COLORS.gray, textAlign: 'center', width: '100%', marginBottom: 30 }}>Không tìm thấy dữ kiệu</Text>
     )
   }
-  // refreshing
-  const onRefresh = useCallback(() => {
-    setRefreshing(true)
-    appViewRef.current?.reload()
-    getData()
-    setRefreshing(false)
-    setLoading(false)
-  }, []);
   // const scrollTop = () => {
   //   setPosition((e) => e = 0)
   //   console.error(position)
@@ -99,24 +80,8 @@ function Home({ navigation }) {
   // onScroll={(event) => setPosition(event.nativeEvent.contentOffset.y)}
   return (
     <>
-      <ScrollView style={styles.container}
-      // refreshControl={
-      //   <RefreshControl
-      //     refreshing={refreshing}
-      //     onRefresh={onRefresh}
-      //     enabled={Platform.OS === "ios" ? true : onWebviewScroll} />
-      // }
-
-      >
+      <ScrollView style={styles.container}>
         <FlatList
-          // ref={appViewRef}
-          // onScroll={(event) => {
-          //   if (event.nativeEvent.contentOffset.y == 0) {
-          //     setOnWebviewScroll(true);
-          //   } else {
-          //     setOnWebviewScroll(false);
-          //   }
-          // }}
           data={test}
           renderItem={({ item, index }) =>
             <View style={styles.blogItem} key={item.id}>
@@ -138,7 +103,6 @@ function Home({ navigation }) {
           onEndReached={onLoadMore}
           onEndReachedThreshold={0}
         />
-
         {/* <Panigation /> */}
       </ScrollView>
       {/* <TouchableOpacity style={styles.scrollTopButton} onPress={scrollTop}>

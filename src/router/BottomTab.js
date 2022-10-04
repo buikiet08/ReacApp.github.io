@@ -38,12 +38,12 @@ function BottomTab({ navigation }) {
 
     useEffect(() => {
         getData(search)
-    }, [])
+    }, [page])
     const getData = async () => {
         const axios = require('axios')
         let value = JSON.stringify({
             "mod": "search",
-            "keyword": search,
+            "keyword": search.toLocaleUpperCase().trim(),
             "page": page
         });
         const config = {
@@ -54,33 +54,55 @@ function BottomTab({ navigation }) {
         await axios(config)
             .then(function (response) {
                 setLoading(false)
-                if (data.length > 0) {
-                    setData(response?.data?.data)
-                } else {
-                    setData([...data, ...response?.data?.data])
-                    setPage(...page, ...page + 1)
-                }
+                setData(response?.data?.data)
             })
             .catch(function (error) {
                 setLoading(false)
                 console.error(error)
             });
     }
-
-    const onChange = (text) => {
-        setSearch(text)
-        console.log(text)
+    const onLoadMore = async () => {
+        let axios = require('axios')
+        let value = JSON.stringify({
+            "mod": "search",
+            "keyword": search,
+            "page": page + 1
+        });
+        const config = {
+            method: 'post',
+            url: 'https://hungtan.demobcb.work/api/',
+            data: value
+        }
+        await axios(config)
+            .then(function (response) {
+                setLoading(false)
+                if(response.data.data.length > 0) {
+                    setData([...data, ...response?.data?.data])
+                    setPage(page + 1)
+                  }
+            })
+            .catch(function (error) {
+                setLoading(false)
+                console.error(error)
+            });
     }
-    const handleChange = (text) => {
-        setResult(true)
+    // loading
+    const renderFooter = () => {
+        return (loading ?
+            <ActivityIndicator size='large' animating={true} /> : <Text style={{ color: COLORS.gray, textAlign: 'center', width: '100%', marginBottom: 30 }}>Không tìm thấy dữ kiệu</Text>
+        )
     }
     const handleSubmit = (search) => {
         setResult(true)
         setSearch(search)
         getData(search)
-        console.log(search)
+        onLoadMore(search)
     }
-    console.log(data.length)
+    // --------------------------
+    const onChange = (text) => {
+        setSearch(text)
+    }
+    
     const SearchPage = () => {
         return (
             <View style={{
@@ -88,7 +110,7 @@ function BottomTab({ navigation }) {
                 paddingVertical: 20,
                 paddingHorizontal: 16
             }}>
-                {search !== '' && <Text style={{ marginBottom: 10, }}>Kết quả tìm kiếm có ({data ? data.length : 0}) tin tức</Text>}
+                {result && search !== '' && <Text style={{ marginBottom: 10, }}>Kết quả tìm kiếm có ({data ? data.length : 0}) tin tức</Text>}
                 {result && search !== '' &&
                     <FlatList
                         data={data}
@@ -108,6 +130,9 @@ function BottomTab({ navigation }) {
                         }
                         keyExtractor={(item, index) => item.id}
                         listKey="search"
+                        ListFooterComponent={renderFooter}
+                        onEndReached={onLoadMore}
+                        onEndReachedThreshold={0}
                     />
                 }
             </View>
@@ -184,7 +209,6 @@ function BottomTab({ navigation }) {
                                         showCancel={true}
                                         placeholder="Tìm kiếm..."
                                         value={search}
-                                        onChange={handleChange}
                                         onFocus={() => setPageSearch(true)}
                                         onChangeText={text => onChange(text)}
                                         onSubmitEditing={handleSubmit}
@@ -194,6 +218,9 @@ function BottomTab({ navigation }) {
                                 <TouchableOpacity activeOpacity={0.6} style={{ marginLeft: 8 }} onPress={() => {
                                     setIsSearch(true)
                                     setPageSearch(false)
+                                    setResult(false)
+                                    setData([])
+                                    setPage(1)
                                 }}>
                                     <AntDesign name="close" size={24} color={COLORS.white} />
                                 </TouchableOpacity>

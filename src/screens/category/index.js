@@ -54,25 +54,11 @@ function Category() {
                 </ListItem.Content>
               </>
             }
-            // isExpanded={}
             onPress={() => {
               setIsOpen(true)
               setCateNews(item)
             }}
-          >
-            {/* <View style={{ marginBottom: 10 }}>
-            {data.map((l, i) => (
-              <ListItem key={i} onPress={''} bottomDivider>
-                <Avatar title={l.name[0]} source={{ uri: l.avatar_url }} />
-                <ListItem.Content>
-                  <ListItem.Title>{i + 1}</ListItem.Title>
-                  <ListItem.Subtitle>{l.title}</ListItem.Subtitle>
-                </ListItem.Content>
-                <ListItem.Chevron />
-              </ListItem>
-            ))}
-          </View> */}
-          </ListItem.Accordion>
+          />
         )
       }
     </ScrollView>

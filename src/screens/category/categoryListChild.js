@@ -1,16 +1,14 @@
 import React, { useEffect, useState } from 'react'
 import { ActivityIndicator, FlatList, Image, StyleSheet, TouchableOpacity, View } from 'react-native'
-import { ScrollView } from 'react-native-virtualized-view';
 
-import { Text, Button, Tab } from "@rneui/themed";
+import { Text } from "@rneui/themed";
 import { COLORS } from '../../contains'
 import { usePage } from '../../hook/usePage'
 import { AntDesign } from '@expo/vector-icons';
-import axios from 'axios';
 import { LinearGradient } from 'expo-linear-gradient';
 
-function CategoryList({ navigation }) {
-    const { setIsOpen, setCateNews, cateNews, setCateNewsChild, setDataBlog } = usePage()
+function CategoryListChild({ navigation }) {
+    const { setIsOpen,setIsOpenCateChild, setCateNews, cateNews, cateNewsChild, setCateNewsChild, setDataBlog } = usePage()
     const [listNews, setListNews] = useState([])
     const [page, setPage] = useState(1)
     const [loading, setLoading] = useState(false)
@@ -73,48 +71,15 @@ function CategoryList({ navigation }) {
     return (
         <>
             <View style={styles.header}>
-                <TouchableOpacity onPress={() => setIsOpen(false)}>
+                <TouchableOpacity onPress={() => {
+                    setIsOpenCateChild(false)
+                    setIsOpen(true)
+                }
+                }>
                     <AntDesign name="arrowleft" size={24} color={COLORS.black4} />
                 </TouchableOpacity>
-                <Text style={{ marginLeft: 20, fontSize: 18, fontWeight: 'bold' }}>{cateNews.title}</Text>
+                <Text style={{ marginLeft: 20, fontSize: 18, fontWeight: 'bold' }}>{cateNewsChild.title}</Text>
             </View>
-            <Tab
-                value={index}
-                onChange={(e) => setIndex(e)}
-                indicatorStyle={{
-                    backgroundColor: 'white',
-                    height: 3,
-                }}
-                variant="primary"
-            >
-                <Tab.Item
-                    title="Recent"
-                    titleStyle={{ fontSize: 12 }}
-                    icon={{ name: 'timer', type: 'ionicon', color: 'white' }}
-                />
-                <Tab.Item
-                    title="favorite"
-                    titleStyle={{ fontSize: 12 }}
-                    icon={{ name: 'heart', type: 'ionicon', color: 'white' }}
-                />
-                <Tab.Item
-                    title="cart"
-                    titleStyle={{ fontSize: 12 }}
-                    icon={{ name: 'cart', type: 'ionicon', color: 'white' }}
-                />
-            </Tab>
-
-            <TabView value={index} onChange={setIndex} animationType="spring">
-                <TabView.Item style={{ backgroundColor: 'red', width: '100%' }}>
-                    <Text h1>Recent</Text>
-                </TabView.Item>
-                <TabView.Item style={{ backgroundColor: 'blue', width: '100%' }}>
-                    <Text h1>Favorite</Text>
-                </TabView.Item>
-                <TabView.Item style={{ backgroundColor: 'green', width: '100%' }}>
-                    <Text h1>Cart</Text>
-                </TabView.Item>
-            </TabView>
             {loading ? <ActivityIndicator size='large' animating={true} /> :
                 <>
                     <FlatList
@@ -208,4 +173,4 @@ const styles = StyleSheet.create({
         color: COLORS.gray2,
     },
 })
-export default CategoryList
+export default CategoryListChild

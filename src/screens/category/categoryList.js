@@ -10,7 +10,7 @@ import axios from 'axios';
 import { LinearGradient } from 'expo-linear-gradient';
 
 function CategoryList({ navigation }) {
-    const { setIsOpen, setCateNews, cateNews, setCateNewsChild, setDataBlog } = usePage()
+    const { setIsOpen,isOpenCateChild,setIsOpenCateChild, setCateNews, cateNews, setCateNewsChild, setDataBlog } = usePage()
     const [listNews, setListNews] = useState([])
     const [page, setPage] = useState(1)
     const [loading, setLoading] = useState(false)
@@ -70,105 +70,17 @@ function CategoryList({ navigation }) {
             <ActivityIndicator size='large' animating={true} /> : <Text style={{ color: COLORS.gray, textAlign: 'center', width: '100%' }}>Không tìm thấy dữ liệu</Text>
         )
     }
-    const [index, setIndex] = React.useState(0);
+    const [title,setTitle] = useState(cateNews.title)
+    const [color,setColor] = useState('#097ead')
     return (
         <>
             <View style={styles.header}>
                 <TouchableOpacity onPress={() => setIsOpen(false)}>
                     <AntDesign name="arrowleft" size={24} color={COLORS.black4} />
                 </TouchableOpacity>
-                <Text style={{ marginLeft: 20, fontSize: 18, fontWeight: 'bold' }}>{cateNews.title}</Text>
+                <Text style={{ marginLeft: 20, fontSize: 18, fontWeight: 'bold' }}>{title}</Text>
             </View>
-            <Tab
-                value={index}
-                onChange={(e) => setIndex(e)}
-                indicatorStyle={{
-                    backgroundColor: 'white',
-                    height: 3,
-                }}
-                variant='default'
-                style={{ width: '100%' }}
-            >
-                <Tab.Item
-                    title="Tất cả"
-                    titleStyle={{ fontSize: 12 }}
-                />
-                <Tab.Item
-                    title="Recent"
-                    titleStyle={{ fontSize: 12 }}
-                />
-                <Tab.Item
-                    title="favorite"
-                    titleStyle={{ fontSize: 12 }}
-                />
-                <Tab.Item
-                    title="cart"
-                    titleStyle={{ fontSize: 12 }}
-                />
-                {/* {listNews?.category_child.forEach((item, index) =>
-                    {
-                        return <Tab.Item
-                        key={item.id}
-                        title={item.title}
-                        titleStyle={{ fontSize: 12 }}
-                    />
-                    }
-                )} */}
-                <FlatList
-                    data={listNews?.category_child}
-                    horizontal={true}
-                    showsVerticalScrollIndicator={false}
-                    showsHorizontalScrollIndicator={false}
-                    // contentContainerStyle={{ width: 300 }}
-                    renderItem={({ item, index }) =>
-                        <Tab.Item
-                            key={item.id}
-                            title={item.title}
-                            titleStyle={{ fontSize: 12 }}
-                        />
-                    }
-                    keyExtractor={(item, index) => index.toString()}
-                    listKey="listNewsCategoryChild"
-                />
-            </Tab>
-            <TabView value={index} onChange={setIndex} animationType="spring">
-                <TabView.Item style={{ backgroundColor: COLORS.white, width: '100%', flex: 1 }}>
-                    <FlatList
-                        contentContainerStyle={{ padding: 16 }}
-                        data={listNews.data}
-                        renderItem={({ item, index }) =>
-                            <View style={styles.blogItem} key={item.id}>
-                                <View style={styles.blogImage}>
-                                    <Image source={{ uri: `${item.homeimgfile ? item.homeimgfile : 'https://artsmidnorthcoast.com/wp-content/uploads/2014/05/no-image-available-icon-6.png'}` }} style={{ width: '100%', height: 90 }} resizeMethod='resize' />
-                                </View>
-                                <TouchableOpacity style={styles.blogContent} onPress={() => {
-                                    navigation.navigate('Detail')
-                                    setDataBlog(item)
-                                    setCateNewsChild(item)
-                                }}>
-                                    <Text style={styles.title} numberOfLines={3}>{item.title}</Text>
-                                    <Text style={styles.time}>{item.publtime}</Text>
-                                </TouchableOpacity>
-                            </View>
-                        }
-                        keyExtractor={(item, index) => item.id}
-                        listKey="listNewsCategory"
-                        ListFooterComponent={renderFooter}
-                        onEndReached={onLoadMore}
-                        onEndReachedThreshold={0}
-                    />
-                </TabView.Item>
-                <TabView.Item style={{ backgroundColor: 'red', width: '100%', flex: 1 }}>
-                    <Text h1>Recent</Text>
-                </TabView.Item>
-                <TabView.Item style={{ backgroundColor: 'blue', width: '100%', flex: 1 }}>
-                    <Text h1>Favorite</Text>
-                </TabView.Item>
-                <TabView.Item style={{ backgroundColor: 'green', width: '100%', flex: 1 }}>
-                    <Text h1>Cart</Text>
-                </TabView.Item>
-            </TabView>
-            {/* {loading ? <ActivityIndicator size='large' animating={true} /> :
+            {loading ? <ActivityIndicator size='large' animating={true} /> :
                 <>
                     <FlatList
                         data={listNews.category_child}
@@ -177,7 +89,14 @@ function CategoryList({ navigation }) {
                         showsHorizontalScrollIndicator={false}
                         contentContainerStyle={{ padding: 16, paddingTop: 0 }}
                         renderItem={({ item, index }) =>
-                            <TouchableOpacity key={item.id} style={{ minWidth: 200 }}>
+                            <TouchableOpacity activeOpacity={0.8} key={item.id} style={{ minWidth: 200 }} onPress={() => {
+                                setListNews([])
+                                getData()
+                                setListNews(listNews)
+                                setTitle(item.title)
+                                // setColor(index ? setColor('#000') : setColor('#097ead'))
+                            }
+                            }>
                                 <LinearGradient
                                     colors={['#097ead', '#097ead', '#0891ae']}
                                     style={{ borderRadius: 4, marginRight: 16, height: 50, padding: 16, paddingVertical: 0, flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
@@ -199,7 +118,6 @@ function CategoryList({ navigation }) {
                                 <TouchableOpacity style={styles.blogContent} onPress={() => {
                                     navigation.navigate('Detail')
                                     setDataBlog(item)
-                                    setCateNewsChild(item)
                                 }}>
                                     <Text style={styles.title} numberOfLines={3}>{item.title}</Text>
                                     <Text style={styles.time}>{item.publtime}</Text>
@@ -213,7 +131,7 @@ function CategoryList({ navigation }) {
                         onEndReachedThreshold={0}
                     />
                 </>
-            } */}
+            }
         </>
     )
 }

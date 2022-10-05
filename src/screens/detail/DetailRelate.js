@@ -1,15 +1,16 @@
-import { AntDesign, Entypo, Feather } from '@expo/vector-icons'
-import React, { useEffect, useRef, useState } from 'react'
-import { Image, StyleSheet, Text, TouchableOpacity, View, SafeAreaView, useWindowDimensions, FlatList, RefreshControl, Share, ScrollView } from 'react-native'
-// import { ScrollView } from 'react-native-virtualized-view';
+import { AntDesign } from '@expo/vector-icons'
+import axios from 'axios'
+import React, { useEffect, useState } from 'react'
+import { Image, StyleSheet, Text, TouchableOpacity, View, SafeAreaView, useWindowDimensions, FlatList, NativeModules, RefreshControl } from 'react-native'
+import { ScrollView } from 'react-native-virtualized-view';
+import RNRestart from 'react-native-restart';
 import { COLORS } from '../../contains'
 import { usePage } from '../../hook/usePage'
 import RenderHtml from 'react-native-render-html';
 
-function Detail({ navigation }) {
-    const scrollRef = useRef();
+function DetailRelate({ navigation }) {
     const { width } = useWindowDimensions();
-    const { dataBlog, setDataBlog } = usePage()
+    const { dataBlog, setDataBlog,} = usePage()
     const [data, setData] = useState([])
     const [cate, setCate] = useState([])
     const [loading, setLoading] = useState(false)
@@ -42,39 +43,10 @@ function Detail({ navigation }) {
     const onRefreshMore = () => {
         setData([])
         getData()
-    }
+      }
     const source = {
         html: `${data.bodyhtml}`
     };
-    // share
-    const onShare = async () => {
-        try {
-            const result = await Share.share({
-                title: 'Tin tức',
-                message: `Chia sẻ , Link :${data.link}`,
-                url: data.link
-            });
-            if (result.action === Share.sharedAction) {
-                if (result.activityType) {
-                    // shared with activity type of result.activityType
-                } else {
-                    // shared
-                }
-            } else if (result.action === Share.dismissedAction) {
-                // dismissed
-            }
-        } catch (error) {
-            alert(error.message);
-        }
-    };
-    // scroll Top
-    const scrollTop = () => {
-        scrollRef.current?.scrollTo({
-            x: 0, // Required
-            y: 0, // Required
-            animated: true
-        })
-    }
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
             <View style={styles.header}>
@@ -84,17 +56,14 @@ function Detail({ navigation }) {
                 <Text style={{ fontWeight: 'bold', fontSize: 12 }}>Bài viết</Text>
                 <View style={{ width: 24 }}></View>
             </View>
-            <ScrollView ref={scrollRef} style={{ flex: 1, padding: 16 }}>
+            <ScrollView style={{ flex: 1, padding: 16 }}>
                 <Text style={{ fontSize: 20, fontWeight: 'bold', lineHeight: 28, marginBottom: 8 }}>{data.title}</Text>
                 <Text style={{ marginBottom: 8 }}>{data.publtime}</Text>
-                <Text style={{ marginBottom: 20, fontSize:16, lineHeight:20 }}>{data.hometext}</Text>
+                {/* <Image source={{ uri: `${dataBlog.image}` }} style={{ width: '100%', height: 160 }} resizeMethod='resize' /> */}
+                <Text style={{ marginBottom: 20 }}>{data.hometext}</Text>
                 <RenderHtml
                     contentWidth={width}
                     source={source}
-                    baseStyle={{fontSize:16, lineHeight:20}}
-                    tagsStyles={{fontSize:16, lineHeight:20}}
-                    classesStyles={{fontSize:16, lineHeight:20}}
-                    idsStyles={{fontSize:16, lineHeight:20}}
                 />
                 <Text style={{ marginVertical: 20, fontWeight: 'bold', fontSize: 16 }}>Tin liên quan</Text>
                 <FlatList
@@ -110,7 +79,7 @@ function Detail({ navigation }) {
                                     onRefresh={onRefreshMore}
                                 />
                                 setDataBlog(item)
-                                navigation.navigate('DetailRelate')
+                                navigation.navigate('Detail')
                             }}>
                                 <Text style={styles.title} numberOfLines={3}>{item.title}</Text>
                                 <Text style={styles.time}>{item.publtime}</Text>
@@ -121,22 +90,6 @@ function Detail({ navigation }) {
                     listKey="new_category"
                 />
             </ScrollView>
-            <View style={styles.containerBottomTab}>
-                <TouchableOpacity style={[styles.buttonBottomTab, {width:32}]} onPress={() => navigation.navigate('BottomTab')}>
-                    <Entypo name="news" size={24} color={COLORS.primary} />
-                    <Text style={{ color: COLORS.gray3, fontSize: 10, marginTop: 4 }}>Home</Text>
-                </TouchableOpacity>
-                <View style={{flexDirection:'row',alignItems:'center'}}>
-                    <TouchableOpacity style={styles.buttonBottomTabShare} onPress={onShare}>
-                        <Text style={{ color: COLORS.gray3, fontSize: 12, marginRight: 8 }}>Chia sẻ</Text>
-                        <Feather name="share-2" size={24} color={COLORS.primary} />
-                    </TouchableOpacity>
-                    <TouchableOpacity style={styles.scrollTopButton} onPress={scrollTop}>
-                        <AntDesign name="upcircle" size={24} color={COLORS.primary} />
-                    </TouchableOpacity>
-                </View>
-            </View>
-
         </SafeAreaView>
     )
 }
@@ -182,30 +135,5 @@ const styles = StyleSheet.create({
     time: {
         color: COLORS.gray2,
     },
-    containerBottomTab: {
-        paddingHorizontal: 24,
-        paddingVertical: 4,
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        backgroundColor: COLORS.white,
-        borderTopColor: COLORS.gray,
-        borderTopWidth: 0.3,
-
-    },
-    buttonBottomTab: {
-        flexDirection: 'column',
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    buttonBottomTabShare: {
-        flexDirection: 'row',
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    scrollTopButton:{
-        width:30,
-        marginLeft:16
-    }
 })
-export default Detail
+export default DetailRelate

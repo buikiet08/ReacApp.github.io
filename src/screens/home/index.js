@@ -1,23 +1,18 @@
 import { AntDesign } from '@expo/vector-icons';
 import axios from 'axios';
 import React, { useCallback, useEffect, useRef, useState } from 'react'
-import { LogBox, ActivityIndicator, FlatList, Image, StyleSheet, Text, TouchableOpacity, View, RefreshControl, Dimensions } from 'react-native'
-import { ScrollView } from 'react-native-virtualized-view';
-import BackToTop from '../../component/BackToTop'
+import { LogBox, ActivityIndicator, FlatList, Image, StyleSheet, Text, TouchableOpacity, View, RefreshControl } from 'react-native'
 import { COLORS } from '../../contains'
 import { usePage } from '../../hook/usePage'
 
 function Home({ navigation }) {
+  let listNews = useRef()
   LogBox.ignoreLogs(['Warning: ...']); // Ignore log notification by message
   LogBox.ignoreAllLogs();//Ignore all log notifications
   const { setDataBlog } = usePage(null)
-  const [position, setPosition] = useState()
-
   const [test, setTest] = useState([])
-  const [loading, setLoading] = useState()
+  const [loading, setLoading] = useState(false)
   const [pageCurrent, setPageCurrent] = useState(1)
-  // 
-
   // fetch API
   useEffect(() => {
     getData()
@@ -57,10 +52,8 @@ function Home({ navigation }) {
     await axios(config)
       .then(function (response) {
         setLoading(false)
-        if(response.data.data.length > 0) {
-          setTest([...test, ...response?.data?.data])
-          setPageCurrent(pageCurrent + 1)
-        }
+        setTest([...test, ...response.data?.data])
+        setPageCurrent(...pageCurrent, pageCurrent + 1)
       })
       .catch(function (error) {
         setLoading(false)
@@ -70,17 +63,21 @@ function Home({ navigation }) {
   // loading
   const renderFooter = () => {
     return (loading ?
-      <ActivityIndicator size='large' animating={true} /> : <Text style={{ color: COLORS.gray, textAlign: 'center', width: '100%', marginBottom: 30 }}>Không tìm thấy dữ kiệu</Text>
+      <ActivityIndicator size='large' animating={true} /> : <Text style={{ color: COLORS.gray, textAlign: 'center', width: '100%' }}>Không tìm thấy dữ liệu</Text>
     )
   }
-  // const scrollTop = () => {
-  //   setPosition((e) => e = 0)
-  //   console.error(position)
-  // }
+
+  const scrollTop = () => {
+    listNews.scrollToOffset({ offset: 0, animated: true })
+  }
+  const onRefreshMore = () => {
+    setTest([])
+    getData()
+  }
   // onScroll={(event) => setPosition(event.nativeEvent.contentOffset.y)}
   return (
     <>
-      <ScrollView style={styles.container}>
+      {loading ? <ActivityIndicator size='small' animating={true} /> :
         <FlatList
           data={test}
           renderItem={({ item, index }) =>
@@ -97,17 +94,24 @@ function Home({ navigation }) {
               </TouchableOpacity>
             </View>
           }
-          keyExtractor={(item, index) => `${item.key}${index}`}
+          contentContainerStyle={{ padding: 16 }}
+          keyExtractor={(item, index) => index.toString()}
           listKey={`list${Math.random()}`}
           ListFooterComponent={renderFooter}
           onEndReached={onLoadMore}
-          onEndReachedThreshold={0}
+          onEndReachedThreshold={0.5}
+          ref={(ref) => listNews = ref}
+          refreshControl={
+            <RefreshControl
+              refreshing={loading}
+              onRefresh={onRefreshMore}
+            />
+          }
         />
-        {/* <Panigation /> */}
-      </ScrollView>
-      {/* <TouchableOpacity style={styles.scrollTopButton} onPress={scrollTop}>
-        <AntDesign name="upcircle" size={44} color={COLORS.primary} />
-      </TouchableOpacity> */}
+      }
+      <TouchableOpacity style={styles.scrollTopButton} onPress={scrollTop}>
+        <AntDesign name="upcircle" size={36} color={COLORS.primary} />
+      </TouchableOpacity>
     </>
   )
 }
@@ -125,7 +129,7 @@ const styles = StyleSheet.create({
     alignItems: 'flex-start',
     marginBottom: 16,
     paddingBottom: 16,
-    borderBottomWidth: 0.5,
+    borderBottomWidth: 0.3,
     borderBottomColor: COLORS.gray,
     borderBottomStyle: 'solid'
   },
@@ -152,7 +156,7 @@ const styles = StyleSheet.create({
   },
   scrollTopButton: {
     position: 'absolute',
-    bottom: 60,
+    bottom: 20,
     right: 10
   },
 });

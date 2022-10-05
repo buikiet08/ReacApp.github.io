@@ -43,7 +43,7 @@ function BottomTab({ navigation }) {
         const axios = require('axios')
         let value = JSON.stringify({
             "mod": "search",
-            "keyword": search.toLocaleUpperCase().trim(),
+            "keyword": search,
             "page": page
         });
         const config = {
@@ -54,7 +54,7 @@ function BottomTab({ navigation }) {
         await axios(config)
             .then(function (response) {
                 setLoading(false)
-                setData(response?.data?.data)
+                setData(response.data?.data)
             })
             .catch(function (error) {
                 setLoading(false)
@@ -76,10 +76,8 @@ function BottomTab({ navigation }) {
         await axios(config)
             .then(function (response) {
                 setLoading(false)
-                if(response.data.data.length > 0) {
-                    setData([...data, ...response?.data?.data])
-                    setPage(page + 1)
-                  }
+                setData([...data, ...response.data?.data])
+                setPage(...page, page + 1)
             })
             .catch(function (error) {
                 setLoading(false)
@@ -89,7 +87,7 @@ function BottomTab({ navigation }) {
     // loading
     const renderFooter = () => {
         return (loading ?
-            <ActivityIndicator size='large' animating={true} /> : <Text style={{ color: COLORS.gray, textAlign: 'center', width: '100%', marginBottom: 30 }}>Không tìm thấy dữ kiệu</Text>
+            <ActivityIndicator size='large' animating={true} /> : <Text style={{ color: COLORS.gray, textAlign: 'center', width: '100%', marginBottom: 30 }}>Không tìm thấy dữ liệu</Text>
         )
     }
     const handleSubmit = (search) => {
@@ -102,7 +100,7 @@ function BottomTab({ navigation }) {
     const onChange = (text) => {
         setSearch(text)
     }
-    
+
     const SearchPage = () => {
         return (
             <View style={{

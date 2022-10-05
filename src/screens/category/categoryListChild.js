@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { ActivityIndicator, FlatList, Image, StyleSheet, TouchableOpacity, View } from 'react-native'
 import { ScrollView } from 'react-native-virtualized-view';
 
-import { Text, Button, Tab, TabView } from "@rneui/themed";
+import { Text, Button, Tab } from "@rneui/themed";
 import { COLORS } from '../../contains'
 import { usePage } from '../../hook/usePage'
 import { AntDesign } from '@expo/vector-icons';
@@ -70,7 +70,6 @@ function CategoryList({ navigation }) {
             <ActivityIndicator size='large' animating={true} /> : <Text style={{ color: COLORS.gray, textAlign: 'center', width: '100%' }}>Không tìm thấy dữ liệu</Text>
         )
     }
-    const [index, setIndex] = React.useState(0);
     return (
         <>
             <View style={styles.header}>
@@ -86,89 +85,37 @@ function CategoryList({ navigation }) {
                     backgroundColor: 'white',
                     height: 3,
                 }}
-                variant='default'
-                style={{ width: '100%' }}
+                variant="primary"
             >
-                <Tab.Item
-                    title="Tất cả"
-                    titleStyle={{ fontSize: 12 }}
-                />
                 <Tab.Item
                     title="Recent"
                     titleStyle={{ fontSize: 12 }}
+                    icon={{ name: 'timer', type: 'ionicon', color: 'white' }}
                 />
                 <Tab.Item
                     title="favorite"
                     titleStyle={{ fontSize: 12 }}
+                    icon={{ name: 'heart', type: 'ionicon', color: 'white' }}
                 />
                 <Tab.Item
                     title="cart"
                     titleStyle={{ fontSize: 12 }}
-                />
-                {/* {listNews?.category_child.forEach((item, index) =>
-                    {
-                        return <Tab.Item
-                        key={item.id}
-                        title={item.title}
-                        titleStyle={{ fontSize: 12 }}
-                    />
-                    }
-                )} */}
-                <FlatList
-                    data={listNews?.category_child}
-                    horizontal={true}
-                    showsVerticalScrollIndicator={false}
-                    showsHorizontalScrollIndicator={false}
-                    // contentContainerStyle={{ width: 300 }}
-                    renderItem={({ item, index }) =>
-                        <Tab.Item
-                            key={item.id}
-                            title={item.title}
-                            titleStyle={{ fontSize: 12 }}
-                        />
-                    }
-                    keyExtractor={(item, index) => index.toString()}
-                    listKey="listNewsCategoryChild"
+                    icon={{ name: 'cart', type: 'ionicon', color: 'white' }}
                 />
             </Tab>
+
             <TabView value={index} onChange={setIndex} animationType="spring">
-                <TabView.Item style={{ backgroundColor: COLORS.white, width: '100%', flex: 1 }}>
-                    <FlatList
-                        contentContainerStyle={{ padding: 16 }}
-                        data={listNews.data}
-                        renderItem={({ item, index }) =>
-                            <View style={styles.blogItem} key={item.id}>
-                                <View style={styles.blogImage}>
-                                    <Image source={{ uri: `${item.homeimgfile ? item.homeimgfile : 'https://artsmidnorthcoast.com/wp-content/uploads/2014/05/no-image-available-icon-6.png'}` }} style={{ width: '100%', height: 90 }} resizeMethod='resize' />
-                                </View>
-                                <TouchableOpacity style={styles.blogContent} onPress={() => {
-                                    navigation.navigate('Detail')
-                                    setDataBlog(item)
-                                    setCateNewsChild(item)
-                                }}>
-                                    <Text style={styles.title} numberOfLines={3}>{item.title}</Text>
-                                    <Text style={styles.time}>{item.publtime}</Text>
-                                </TouchableOpacity>
-                            </View>
-                        }
-                        keyExtractor={(item, index) => item.id}
-                        listKey="listNewsCategory"
-                        ListFooterComponent={renderFooter}
-                        onEndReached={onLoadMore}
-                        onEndReachedThreshold={0}
-                    />
-                </TabView.Item>
-                <TabView.Item style={{ backgroundColor: 'red', width: '100%', flex: 1 }}>
+                <TabView.Item style={{ backgroundColor: 'red', width: '100%' }}>
                     <Text h1>Recent</Text>
                 </TabView.Item>
-                <TabView.Item style={{ backgroundColor: 'blue', width: '100%', flex: 1 }}>
+                <TabView.Item style={{ backgroundColor: 'blue', width: '100%' }}>
                     <Text h1>Favorite</Text>
                 </TabView.Item>
-                <TabView.Item style={{ backgroundColor: 'green', width: '100%', flex: 1 }}>
+                <TabView.Item style={{ backgroundColor: 'green', width: '100%' }}>
                     <Text h1>Cart</Text>
                 </TabView.Item>
             </TabView>
-            {/* {loading ? <ActivityIndicator size='large' animating={true} /> :
+            {loading ? <ActivityIndicator size='large' animating={true} /> :
                 <>
                     <FlatList
                         data={listNews.category_child}
@@ -213,7 +160,7 @@ function CategoryList({ navigation }) {
                         onEndReachedThreshold={0}
                     />
                 </>
-            } */}
+            }
         </>
     )
 }

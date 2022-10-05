@@ -9,7 +9,7 @@ import { usePage } from '../../hook/usePage'
 const list = [{ title: 'Danh mục' }, { title: 'Danh mục' }, { title: 'Danh mục' }, { title: 'Danh mục' }, { title: 'Danh mục' }]
 const data = [{ title: 'Tin tức' }, { title: 'Tin tức' }, { title: 'Tin tức' }, { title: 'Tin tức' }]
 function Category() {
-  const { setIsOpen, setDataBlog } = usePage()
+  const { setIsOpen, setDataBlog,setCateNews } = usePage()
   const [expanded, setExpanded] = useState(false)
   const [category, setCategory] = useState([])
   const [loading, setLoading] = useState(false)
@@ -57,7 +57,7 @@ function Category() {
             // isExpanded={}
             onPress={() => {
               setIsOpen(true)
-              setDataBlog(item)
+              setCateNews(item)
             }}
           >
             {/* <View style={{ marginBottom: 10 }}>

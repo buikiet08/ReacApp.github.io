@@ -7,10 +7,11 @@ export const PageProvider = ({ children }) => {
     const [isOpen, setIsOpen] = useState(false)
     const [dataBlog,setDataBlog] = useState()
     const [cateNews,setCateNews] = useState()
+    const [cateNewsChild,setCateNewsChild] = useState()
     const [relate,setRelate] = useState()
 
 
-    return <Context.Provider value={{ isOpen, setIsOpen, dataBlog,setDataBlog,cateNews,setCateNews,relate,setRelate }}>
+    return <Context.Provider value={{ isOpen, setIsOpen, dataBlog,setDataBlog,cateNews,setCateNews,relate,setRelate,cateNewsChild,setCateNewsChild }}>
         {children}
     </Context.Provider>
 }

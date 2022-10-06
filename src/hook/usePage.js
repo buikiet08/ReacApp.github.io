@@ -1,6 +1,5 @@
 import { createContext, useContext, useEffect, useState } from "react"
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import userService from "../servicer/userService"
 
 const Context = createContext({})
 export const PageProvider = ({ children }) => {
@@ -11,12 +10,42 @@ export const PageProvider = ({ children }) => {
     const [cateNews,setCateNews] = useState()
     const [cateNewsChild,setCateNewsChild] = useState()
     const [relate,setRelate] = useState()
+    const [user, setUser] = useState()
 
-    const [user, setUser] = useState(async () => {
-        const user = await AsyncStorage.getItem('user')
-        if (user) return JSON.parse(user)
-        return false
-    })
+    const infoUser = async () => {
+        let token = await AsyncStorage.getItem('token');
+        token = JSON.parse(token)
+        if (token) {
+            let axios = require('axios')
+            let body = JSON.stringify({
+                "mod": "get_info_user"
+            })
+            const config = {
+                method: 'post',
+                url: 'https://hungtan.demobcb.work/users/register/',
+                headers: {
+                    Authorization: `bearer ${token}`
+                },
+                data: body
+            }
+            if (token) {
+                return axios(config)
+                    .then(function (res) {
+                        const user = AsyncStorage.getItem('user')
+                        if(user) {
+                            setUser(res.data)
+                        }
+                    })
+                    .catch(function (error) {
+                        console.error(error)
+                    });
+            }
+        }
+    }
+    useEffect(() => {
+
+        infoUser()
+    },[])
     // thay đổi dữ liệu máy này thì máy khác cũng dc cập nhật
     // useEffect(() => {
     //     const info = async () => {

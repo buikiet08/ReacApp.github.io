@@ -11,7 +11,7 @@ import Category from '../screens/category';
 import { COLORS, images } from '../contains';
 import { usePage } from '../hook/usePage';
 import CategoryList from '../screens/category/categoryList';
-import CategoryListChild from '../screens/category/categoryListChild';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Tab = createBottomTabNavigator()
 
@@ -22,16 +22,26 @@ function BottomTab({ navigation }) {
     let month = newDate.getMonth() + 1;
     let year = newDate.getFullYear();
 
-    const { isOpen, setIsOpen,isOpenCateChild } = usePage()
+    let today = new Date()
+
+    //Function To Convert Day Integer to String
+
+    function daysToSrting() {
+        const daysOfWeek = ['CN', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7'];
+        return daysOfWeek[today.getDay()]
+    }
+
+    console.log(daysToSrting())
+    const { isOpen, setIsOpen, user, setUser } = usePage()
 
     return (
         <>
             <View style={styles.header}>
-                <ImageBackground source={{ uri: 'https://static.vecteezy.com/system/resources/thumbnails/008/141/217/small/panoramic-abstract-web-background-blue-gradient-vector.jpg' }}
+                <ImageBackground source={images.header}
                     style={styles.background}>
                     <View style={styles.calender}>
-                        <Image source={images.calender} style={styles.calenderIcon} />
-                        <Text style={styles.calenderText}>{date} tháng {month}, {year}</Text>
+                        {/* <Image source={images.calender} style={styles.calenderIcon} /> */}
+                        <Text style={styles.calenderText}>{daysToSrting()}, {date} tháng {month}, {year}</Text>
                     </View>
                     <View style={styles.action}>
                         <TouchableOpacity activeOpacity={0.6} style={styles.search} onPress={() => navigation.navigate('Search')}>
@@ -45,28 +55,44 @@ function BottomTab({ navigation }) {
                                     backgroundColor: 'rgba(255,255,255,0)',
                                     padding: 0,
                                     marginTop: 80,
-                                    marginLeft: 20
+                                    marginLeft: 20,
                                 }}
                                 overlayColor='rgba(0,0,0,0.2)'
                                 popover={
                                     <View visible={open} style={styles.modadAuth}>
-                                        <TouchableOpacity activeOpacity={0.8} onPress={() => {
-                                            setOpen(false)
-                                            navigation.replace('Login')
-                                        }}><Text style={styles.btnLogin}>Đăng nhập</Text></TouchableOpacity>
-                                        <TouchableOpacity activeOpacity={0.8} onPress={() => {
-                                            setOpen(false)
-                                            navigation.replace('Register')
-                                        }}><Text style={styles.btnRegister}>Đăng ký</Text></TouchableOpacity>
+                                        {user?.status === 1 ?
+                                            <TouchableOpacity activeOpacity={0.8} onPress={() => {
+                                                AsyncStorage.removeItem('user')
+                                                AsyncStorage.removeItem('token')
+                                                setUser(null)
+                                                setOpen(false)
+                                                setTimeout(
+                                                    function () {
+                                                        navigation.replace("Login", { replace: true })
+                                                    }, 500
+                                                );
+                                            }}><Text style={styles.btnLogout}>Đăng xuất</Text></TouchableOpacity>
+                                            :
+                                            <>
+                                                <TouchableOpacity activeOpacity={0.8} onPress={() => {
+                                                    setOpen(false)
+                                                    navigation.replace('Login')
+                                                }}><Text style={styles.btnLogin}>Đăng nhập</Text></TouchableOpacity>
+                                                <TouchableOpacity activeOpacity={0.8} onPress={() => {
+                                                    setOpen(false)
+                                                    navigation.replace('Register')
+                                                }}><Text style={styles.btnRegister}>Đăng ký</Text></TouchableOpacity>
+                                            </>
+                                        }
                                     </View>
                                 }
                                 withPointer={false}
                             />}
                             <TouchableOpacity onPress={() => setOpen(!open)}>
                                 <Avatar
-                                    size={40}
+                                    size={32}
                                     rounded
-                                    title='K'
+                                    title={user ? user?.data?.first_name.slice(0, 1) : null}
                                     icon={{ name: 'user', type: 'font-awesome' }}
                                     containerStyle={{ backgroundColor: COLORS.primary, borderColor: COLORS.white, borderWidth: 0.5, borderStyle: 'solid' }}
                                 />
@@ -107,7 +133,7 @@ function BottomTab({ navigation }) {
                 />
                 <Tab.Screen
                     name='Danh mục'
-                    component={isOpen ? CategoryList : isOpenCateChild ? CategoryListChild : Category }
+                    component={isOpen ? CategoryList : Category}
                     options={{
                         tabBarIcon: ({ focused }) =>
                             <AntDesign name="appstore-o" size={24} color={focused ? COLORS.primary : COLORS.secondary} />
@@ -136,7 +162,8 @@ const styles = StyleSheet.create({
     calenderText: {
         color: COLORS.white,
         fontSize: 16,
-        marginLeft: 4
+        marginLeft: 4,
+        fontWeight: 'bold',
     },
     searchBox: {
         flexDirection: 'row',
@@ -168,22 +195,33 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         paddingVertical: 16,
         paddingHorizontal: 32,
-        backgroundColor: COLORS.primary,
-        borderRadius: 20,
+        backgroundColor: COLORS.white,
+        borderRadius: 4,
         overflow: 'hidden',
-        color: COLORS.white,
-        marginBottom: 20
+        color: COLORS.black,
+        marginBottom: 20,
     },
     btnRegister: {
         fontSize: 16,
         fontWeight: 'bold',
         paddingVertical: 16,
         paddingHorizontal: 32,
-        backgroundColor: COLORS.primary,
-        borderRadius: 20,
+        backgroundColor: COLORS.white,
+        borderRadius: 4,
         overflow: 'hidden',
-        color: COLORS.white,
-
+        color: COLORS.black,
+    },
+    btnLogout: {
+        fontSize: 16,
+        fontWeight: 'bold',
+        paddingVertical: 16,
+        height: 50,
+        paddingHorizontal: 32,
+        backgroundColor: COLORS.white,
+        borderRadius: 4,
+        overflow: 'hidden',
+        color: COLORS.black,
+        marginTop: -40
     },
     blogItem: {
         flexDirection: 'row',

@@ -1,11 +1,14 @@
 import React, { useState } from 'react'
-import { StyleSheet, View, TextInput, AsyncStorage } from 'react-native'
+import { StyleSheet, View, TextInput } from 'react-native'
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useForm, Controller } from "react-hook-form";
 import { LinearGradient } from 'expo-linear-gradient';
 import { Text, Button } from "@rneui/themed";
 import { COLORS } from '../../contains';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { AntDesign } from '@expo/vector-icons';
+import infoUser from '../../servicer/userService';
+import { usePage } from '../../hook/usePage';
 
 function Login({ navigation }) {
     const { control, handleSubmit, formState: { errors } } = useForm({
@@ -16,6 +19,7 @@ function Login({ navigation }) {
     });
     const [loading, setLoading] = useState(false)
     const [errorMessage, setErrorMessage] = useState('')
+    const { setUser } = usePage()
 
     const onSubmit = async (data) => {
         try {
@@ -35,24 +39,50 @@ function Login({ navigation }) {
                 .then(function (response) {
                     console.log(response.data, 'vào')
                     if (response.data) {
-                        AsyncStorage.setItem('token', JSON.stringify(response.data))
-                        // AsyncStorage.setItem('accessToken', true)
-                        setTimeout(
-                            function() {
-                                navigation.replace("BottomTab", { replace: true })
-                            }, 1000
-                        );
-                        // if (user.data) {
-                        //     AsyncStorage.setItem('user', JSON.stringify(user.data))
-                        //     // setUser(user.data)
-                        //     AsyncStorage.setItem('accessToken', true)
-                        // }
+                        console.log(response.data.token)
+                        AsyncStorage.setItem('token', JSON.stringify(response.data.token))
+                        const infoUser = async () => {
+                            let token = await AsyncStorage.getItem('token');
+                            token = JSON.parse(token)
+                            if (token) {
+                                let axios = require('axios')
+                                let body = JSON.stringify({
+                                    "mod": "get_info_user"
+                                })
+                                const config = {
+                                    method: 'post',
+                                    url: 'https://hungtan.demobcb.work/users/register/',
+                                    headers: {
+                                        Authorization: `bearer ${token}`
+                                    },
+                                    data: body
+                                }
+                                if (token) {
+                                    return axios(config)
+                                        .then(function (res) {
+                                            AsyncStorage.setItem('user', JSON.stringify(res.data))
+                                            setUser(res.data)
+                                            setTimeout(
+                                                function () {
+                                                    navigation.replace("BottomTab", { replace: true })
+                                                }, 1000
+                                            );
+                                            console.log(res.data, 'thông tin use')
+                                        })
+                                        .catch(function (error) {
+                                            console.error(error)
+                                        });
+                                }
+                            }
+                        }
+                        infoUser()
+
                     }
                     setErrorMessage(response?.data)
                 })
                 .catch(function (error) {
                     setLoading(false)
-                    setErrorMessage(error.data.message)
+                    setErrorMessage(error.message)
                 });
         }
         catch (error) {
@@ -71,7 +101,7 @@ function Login({ navigation }) {
             <View style={styles.formContainer}>
                 <Text h3 style={styles.title}>Đăng nhập</Text>
                 {errorMessage && <View style={{ padding: 8, borderRadius: 4, marginBottom: 10, backgroundColor: COLORS.white }}>
-                    <Text style={errorMessage.status === 0 ? { color: COLORS.red} :{color: COLORS.primary}}>{errorMessage.message}</Text>
+                    <Text style={errorMessage.status === 0 ? { color: COLORS.red } : { color: COLORS.primary }}>{errorMessage.message}</Text>
                 </View>}
                 <View>
                     <View style={styles.formInput}>
@@ -139,6 +169,7 @@ function Login({ navigation }) {
                     <Button
                         title="Đăng nhập"
                         loading={false}
+                        disabled={loading ? true : false}
                         loadingProps={{ size: 'small', color: 'white' }}
                         buttonStyle={{
                             backgroundColor: COLORS.primary,

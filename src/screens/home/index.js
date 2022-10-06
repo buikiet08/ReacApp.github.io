@@ -1,8 +1,9 @@
 import { AntDesign } from '@expo/vector-icons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { LogBox, ActivityIndicator, FlatList, Image, StyleSheet, Text, TouchableOpacity, View, RefreshControl } from 'react-native'
-import { COLORS } from '../../contains'
+import { COLORS, images } from '../../contains'
 import { usePage } from '../../hook/usePage'
 
 function Home({ navigation }) {
@@ -18,6 +19,7 @@ function Home({ navigation }) {
     getData()
   }, [pageCurrent])
   const getData = async () => {
+    setLoading(true)
     let axios = require('axios')
     let body = JSON.stringify({
       "mod": "get_news_home",
@@ -74,16 +76,17 @@ function Home({ navigation }) {
     setTest([])
     getData()
   }
+  
   // onScroll={(event) => setPosition(event.nativeEvent.contentOffset.y)}
   return (
     <>
-      {loading ? <ActivityIndicator size='small' animating={true} /> :
+      {loading ? <ActivityIndicator size='small' animating={true} style={{marginTop:10}} /> :
         <FlatList
           data={test}
           renderItem={({ item, index }) =>
             <View style={styles.blogItem} key={item.id}>
               <View style={styles.blogImage}>
-                <Image source={{ uri: `${item.homeimgfile ? item.homeimgfile : 'https://artsmidnorthcoast.com/wp-content/uploads/2014/05/no-image-available-icon-6.png'}` }} style={{ width: '100%', height: 90 }} resizeMethod='resize' />
+                <Image source={item.homeimgfile ? { uri: item.homeimgfile} : images.noImage} style={{ width: '100%', height: 90 }} resizeMethod='resize' />
               </View>
               <TouchableOpacity style={styles.blogContent} onPress={() => {
                 navigation.navigate('Detail')

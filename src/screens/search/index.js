@@ -2,6 +2,7 @@ import { SearchBar } from '@rneui/themed';
 import React, { useEffect, useState } from 'react'
 import { ActivityIndicator, Image, ImageBackground, StyleSheet, TouchableOpacity, View,Text, FlatList } from 'react-native';
 import { COLORS } from '../../contains'
+import { usePage } from '../../hook/usePage';
 
 function Search({ navigation}) {
     const [search, setSearch] = useState('');
@@ -9,6 +10,7 @@ function Search({ navigation}) {
     const [page, setPage] = useState(1)
     const [data, setData] = useState([])
     const [result, setResult] = useState(false)
+    const {setDataBlog} = usePage()
 
     useEffect(() => {
         getData(search)

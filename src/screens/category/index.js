@@ -1,16 +1,12 @@
 import { Icon, ListItem } from '@rneui/themed'
-import axios from 'axios';
 import React, { useEffect, useState } from 'react'
-import { ActivityIndicator, FlatList, ImageBackground, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { ActivityIndicator, StyleSheet } from 'react-native'
 import { ScrollView } from 'react-native-virtualized-view';
 import { COLORS } from '../../contains'
 import { usePage } from '../../hook/usePage'
 
-const list = [{ title: 'Danh mục' }, { title: 'Danh mục' }, { title: 'Danh mục' }, { title: 'Danh mục' }, { title: 'Danh mục' }]
-const data = [{ title: 'Tin tức' }, { title: 'Tin tức' }, { title: 'Tin tức' }, { title: 'Tin tức' }]
 function Category() {
-  const { setIsOpen, setDataBlog,setCateNews } = usePage()
-  const [expanded, setExpanded] = useState(false)
+  const { setIsOpen, setDataBlog, setCateNews } = usePage()
   const [category, setCategory] = useState([])
   const [loading, setLoading] = useState(false)
 
@@ -18,7 +14,7 @@ function Category() {
     getData()
   }, [])
   const getData = async () => {
-    setLoading(false)
+    setLoading(true)
     let axios = require('axios')
     let body = JSON.stringify({
       "mod": "get_category"
@@ -30,6 +26,7 @@ function Category() {
     }
     await axios(config)
       .then(function (response) {
+        setLoading(false)
         setCategory(response?.data.data)
       })
       .catch(function (error) {
@@ -39,7 +36,7 @@ function Category() {
   }
   return (
     <ScrollView style={styles.container}>
-      {loading ? <ActivityIndicator size='large' animating={true} /> :
+      {loading ? <ActivityIndicator size='small' animating={true} style={{marginTop:10}} /> :
         category.map((item, index) =>
           <ListItem.Accordion
             key={index}
@@ -71,7 +68,6 @@ const styles = StyleSheet.create({
     paddingVertical: 16
   },
   cateItem: {
-
     marginBottom: 10,
     marginHorizontal: 4,
     flex: 1

@@ -1,101 +1,119 @@
-import { Feather } from '@expo/vector-icons'
-import React from 'react'
-import { FlatList, Image, StyleSheet, Text, View } from 'react-native'
-import { ScrollView } from 'react-native-virtualized-view';
-import { COLORS } from '../../contains'
+import { AntDesign } from '@expo/vector-icons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import axios from 'axios';
+import React, { useCallback, useEffect, useRef, useState } from 'react'
+import { LogBox, ActivityIndicator, FlatList, Image, StyleSheet, Text, TouchableOpacity, View, RefreshControl } from 'react-native'
+import { COLORS, images } from '../../contains'
+import { usePage } from '../../hook/usePage'
 
-const list = [
-  {
-    image: 'https://images.unsplash.com/photo-1664516918198-e7ddd1bade3c?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxlZGl0b3JpYWwtZmVlZHw0NXx8fGVufDB8fHx8&auto=format&fit=crop&w=500&q=60',
-    title: 'Tặng trọn bộ thiết bị bán hàng trị giá 3.830.000đ khi mua phần mềm ECNG.',
-    time: '1 giờ'
-  },
-  {
-    image: 'https://images.unsplash.com/photo-1664516918198-e7ddd1bade3c?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxlZGl0b3JpYWwtZmVlZHw0NXx8fGVufDB8fHx8&auto=format&fit=crop&w=500&q=60',
-    title: 'Tặng trọn bộ thiết bị bán hàng trị giá 3.830.000đ khi mua phần mềm ECNG.',
-    time: '1 giờ'
-  },
-  {
-    image: 'https://images.unsplash.com/photo-1664516918198-e7ddd1bade3c?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxlZGl0b3JpYWwtZmVlZHw0NXx8fGVufDB8fHx8&auto=format&fit=crop&w=500&q=60',
-    title: 'Tặng trọn bộ thiết bị bán hàng trị giá 3.830.000đ khi mua phần mềm ECNG.',
-    time: '1 giờ'
-  },
-  {
-    image: 'https://images.unsplash.com/photo-1664516918198-e7ddd1bade3c?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxlZGl0b3JpYWwtZmVlZHw0NXx8fGVufDB8fHx8&auto=format&fit=crop&w=500&q=60',
-    title: 'Tặng trọn bộ thiết bị bán hàng trị giá 3.830.000đ khi mua phần mềm ECNG.',
-    time: '1 giờ'
-  },
-  {
-    image: 'https://images.unsplash.com/photo-1664516918198-e7ddd1bade3c?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxlZGl0b3JpYWwtZmVlZHw0NXx8fGVufDB8fHx8&auto=format&fit=crop&w=500&q=60',
-    title: 'Tặng trọn bộ thiết bị bán hàng trị giá 3.830.000đ khi mua phần mềm ECNG.',
-    time: '1 giờ'
-  },
-  {
-    image: 'https://images.unsplash.com/photo-1664516918198-e7ddd1bade3c?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxlZGl0b3JpYWwtZmVlZHw0NXx8fGVufDB8fHx8&auto=format&fit=crop&w=500&q=60',
-    title: 'Tặng trọn bộ thiết bị bán hàng trị giá 3.830.000đ khi mua phần mềm ECNG.',
-    time: '1 giờ'
-  },
-  {
-    image: 'https://images.unsplash.com/photo-1664516918198-e7ddd1bade3c?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxlZGl0b3JpYWwtZmVlZHw0NXx8fGVufDB8fHx8&auto=format&fit=crop&w=500&q=60',
-    title: 'Tặng trọn bộ thiết bị bán hàng trị giá 3.830.000đ khi mua phần mềm ECNG.',
-    time: '1 giờ'
-  },
-  {
-    image: 'https://images.unsplash.com/photo-1664516918198-e7ddd1bade3c?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxlZGl0b3JpYWwtZmVlZHw0NXx8fGVufDB8fHx8&auto=format&fit=crop&w=500&q=60',
-    title: 'Tặng trọn bộ thiết bị bán hàng trị giá 3.830.000đ khi mua phần mềm ECNG.',
-    time: '1 giờ'
-  },
-]
-function Domestic() {
+function Domestic({ navigation }) {
+  let listNews = useRef()
+  const { setDataBlog } = usePage(null)
+  const [test, setTest] = useState([])
+  const [loading, setLoading] = useState(false)
+  const [pageCurrent, setPageCurrent] = useState(1)
+  // fetch API
+  useEffect(() => {
+    getData()
+  }, [pageCurrent])
+  const getData = async () => {
+    setLoading(true)
+    let axios = require('axios')
+    let body = JSON.stringify({
+      "mod": "get_news_home",
+      "page": pageCurrent,
+    });
+    const config = {
+      method: 'post',
+      url: 'https://hungtan.demobcb.work/api/',
+      data: body
+    }
+    await axios(config)
+      .then(function (response) {
+        setLoading(false)
+        setTest(response?.data.data)
+      })
+      .catch(function (error) {
+        setLoading(false)
+        console.error(error)
+      });
+  }
+  const onLoadMore = async () => {
+    let axios = require('axios')
+    let body = JSON.stringify({
+      "mod": "get_news_home",
+      "page": pageCurrent + 1,
+    });
+    const config = {
+      method: 'post',
+      url: 'https://hungtan.demobcb.work/api/',
+      data: body
+    }
+    await axios(config)
+      .then(function (response) {
+        setLoading(false)
+        setTest([...test, ...response.data?.data])
+        setPageCurrent(...pageCurrent, pageCurrent + 1)
+      })
+      .catch(function (error) {
+        setLoading(false)
+        console.error(error)
+      });
+  }
+  // loading
+  const renderFooter = () => {
+    return (loading ?
+      <ActivityIndicator size='large' animating={true} /> : <Text style={{ color: COLORS.gray, textAlign: 'center', width: '100%' }}>Không tìm thấy dữ liệu</Text>
+    )
+  }
+
+  const scrollTop = () => {
+    listNews.scrollToOffset({ offset: 0, animated: true })
+  }
+  const onRefreshMore = () => {
+    setTest([])
+    getData()
+  }
+  
+  // onScroll={(event) => setPosition(event.nativeEvent.contentOffset.y)}
   return (
-    <ScrollView style={styles.container}>
-      <View style={styles.boxBlog}>
-        <View style={styles.titleHeader}>
-          <Text style={styles.iconTrending} ><Feather name="trending-up" size={22} color={COLORS.primary} /></Text>
-          <Text style={styles.textTrending}>Đang được quan tâm</Text>
-        </View>
+    <>
+      {loading ? <ActivityIndicator size='small' animating={true} style={{marginTop:10}} /> :
         <FlatList
-          data={list}
+          data={test}
           renderItem={({ item, index }) =>
-            index < 3 &&
-            <View style={styles.blogItem} key={index}>
+            <View style={styles.blogItem} key={item.id}>
               <View style={styles.blogImage}>
-                <Image source={{ uri: `${item.image}` }} style={{ width: '100%', height: 80 }} resizeMethod='resize' />
+                <Image source={item.homeimgfile ? { uri: item.homeimgfile} : images.noImage} style={{ width: '100%', height: 90 }} resizeMethod='resize' />
               </View>
-              <View style={styles.blogContent}>
+              <TouchableOpacity style={styles.blogContent} onPress={() => {
+                navigation.navigate('Detail')
+                setDataBlog(item)
+              }}>
                 <Text style={styles.title} numberOfLines={3}>{item.title}</Text>
-                <Text style={styles.time}>{item.time}</Text>
-              </View>
+                <Text style={styles.time}>{item.publtime}</Text>
+              </TouchableOpacity>
             </View>
           }
+          contentContainerStyle={{ padding: 16 }}
           keyExtractor={(item, index) => index.toString()}
-          listKey="listCategory"
-        />
-      </View>
-      <View style={styles.boxBlog}>
-        <View style={styles.titleHeader}>
-          <Text style={styles.iconTrending} ><Feather name="trending-up" size={22} color={COLORS.primary} /></Text>
-          <Text style={styles.textTrending}>Nổi bật 24h</Text>
-        </View>
-        <FlatList
-          data={list}
-          renderItem={({ item, index }) =>
-            index < 3 &&
-            <View style={styles.blogItem} key={index}>
-              <View style={styles.blogImage}>
-                <Image source={{ uri: `${item.image}` }} style={{ width: '100%', height: 80 }} resizeMethod='resize' />
-              </View>
-              <View style={styles.blogContent}>
-                <Text style={styles.title} numberOfLines={3}>{item.title}</Text>
-                <Text style={styles.time}>{item.time}</Text>
-              </View>
-            </View>
+          listKey={`list${Math.random()}`}
+          ListFooterComponent={renderFooter}
+          onEndReached={onLoadMore}
+          onEndReachedThreshold={0.5}
+          ref={(ref) => listNews = ref}
+          refreshControl={
+            <RefreshControl
+              refreshing={loading}
+              onRefresh={onRefreshMore}
+            />
           }
-          keyExtractor={(item, index) => index.toString()}
-          listKey="listCategorydomestic"
         />
-      </View>
-    </ScrollView>
+      }
+      <TouchableOpacity style={styles.scrollTopButton} onPress={scrollTop}>
+        <AntDesign name="upcircle" size={36} color={COLORS.primary} />
+      </TouchableOpacity>
+    </>
   )
 }
 
@@ -106,29 +124,13 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 16
   },
-  boxBlog:{
-    marginBottom:0
-  },
-  titleHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 16
-  },
-  iconTrending: {
-    marginRight: 8
-  },
-  textTrending: {
-    color: COLORS.primary,
-    fontSize: 14,
-    textTransform: 'uppercase',
-  },
   blogItem: {
     flexDirection: 'row',
     justifyContent: 'flex-start',
     alignItems: 'flex-start',
     marginBottom: 16,
     paddingBottom: 16,
-    borderBottomWidth: 0.5,
+    borderBottomWidth: 0.3,
     borderBottomColor: COLORS.gray,
     borderBottomStyle: 'solid'
   },
@@ -138,14 +140,24 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
   },
   blogContent: {
-    paddingLeft: 8
+    paddingLeft: 8,
+    width: '70%',
+    flexDirection: 'column',
+    justifyContent: 'space-between',
+    alignItems: 'flex-start',
+    height: 90
   },
   title: {
-    fontSize: 16,
+    fontSize: 17,
     lineHeight: 24,
     flex: 1
   },
   time: {
     color: COLORS.gray2,
-  }
+  },
+  scrollTopButton: {
+    position: 'absolute',
+    bottom: 20,
+    right: 10
+  },
 });

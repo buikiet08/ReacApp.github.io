@@ -33,7 +33,7 @@ function BottomTab({ navigation }) {
 
     console.log(daysToSrting())
     const { isOpen, setIsOpen, user, setUser } = usePage()
-
+    console.log(user)
     return (
         <>
             <View style={styles.header}>
@@ -92,7 +92,7 @@ function BottomTab({ navigation }) {
                                 <Avatar
                                     size={32}
                                     rounded
-                                    title={user ? user?.data?.first_name.slice(0, 1) : null}
+                                    title={user ? user?.data?.first_name.slice(0, 1) || user?._3?.data?.first_name.slice(0, 1) : null}
                                     icon={{ name: 'user', type: 'font-awesome' }}
                                     containerStyle={{ backgroundColor: COLORS.primary, borderColor: COLORS.white, borderWidth: 0.5, borderStyle: 'solid' }}
                                 />
@@ -116,15 +116,15 @@ function BottomTab({ navigation }) {
                     }}
                 />
                 <Tab.Screen
-                    name='Trong nước'
+                    name='Tin Hot'
                     component={Domestic}
                     options={{
                         tabBarIcon: ({ focused }) =>
-                            <AntDesign name="home" size={24} color={focused ? COLORS.primary : COLORS.secondary} />
+                            <Ionicons name="flame-outline" size={24} color={focused ? COLORS.primary : COLORS.secondary} />
                     }}
                 />
                 <Tab.Screen
-                    name='Thế giới'
+                    name='Covid-19'
                     component={World}
                     options={{
                         tabBarIcon: ({ focused }) =>

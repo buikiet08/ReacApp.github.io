@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
-import { StyleSheet, View, TextInput, AsyncStorage } from 'react-native'
+import { StyleSheet, View, TextInput } from 'react-native'
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useForm, Controller } from "react-hook-form";
 import { LinearGradient } from 'expo-linear-gradient';
 import { Text, Button } from "@rneui/themed";
@@ -23,7 +24,6 @@ function Register({ navigation }) {
     const onSubmit = async (data) => {
         try {
             let axios = require('axios')
-
             let body = JSON.stringify({
                 "mod": "api_register_user",
                 "full_name": data.full_name,
@@ -42,6 +42,11 @@ function Register({ navigation }) {
                     console.log(response.data, 'vào')
                     if (response.data) {
                         AsyncStorage.setItem('token', JSON.stringify(response.data))
+                        setTimeout(
+                            function () {
+                                navigation.replace("Login", { replace: true })
+                            }, 1000
+                        );
                     }
                     setErrorMessage(response.data)
                 })
@@ -190,6 +195,7 @@ function Register({ navigation }) {
 
                     <Button
                         title="Đăng ký"
+                        disabled={loading ? true : false}
                         loading={false}
                         loadingProps={{ size: 'small', color: 'white' }}
                         buttonStyle={{

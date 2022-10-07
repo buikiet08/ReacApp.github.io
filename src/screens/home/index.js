@@ -72,21 +72,22 @@ function Home({ navigation }) {
   const scrollTop = () => {
     listNews.scrollToOffset({ offset: 0, animated: true })
   }
+
   const onRefreshMore = () => {
     setTest([])
     getData()
   }
-  
+
   // onScroll={(event) => setPosition(event.nativeEvent.contentOffset.y)}
   return (
     <>
-      {loading ? <ActivityIndicator size='small' animating={true} style={{marginTop:10}} /> :
+      {loading ? <ActivityIndicator size='small' animating={true} style={{ marginTop: 10 }} /> :
         <FlatList
           data={test}
           renderItem={({ item, index }) =>
             <View style={styles.blogItem} key={item.id}>
               <View style={styles.blogImage}>
-                <Image source={item.homeimgfile ? { uri: item.homeimgfile} : images.noImage} style={{ width: '100%', height: 90 }} resizeMethod='resize' />
+                <Image source={item.homeimgfile ? { uri: item.homeimgfile } : images.noImage} style={{ width: '100%', height: 90 }} resizeMethod='resize' />
               </View>
               <TouchableOpacity style={styles.blogContent} onPress={() => {
                 navigation.navigate('Detail')

@@ -61,17 +61,22 @@ function BottomTab({ navigation }) {
                                 popover={
                                     <View visible={open} style={styles.modadAuth}>
                                         {user?.status === 1 ?
-                                            <TouchableOpacity activeOpacity={0.8} onPress={() => {
-                                                AsyncStorage.removeItem('user')
-                                                AsyncStorage.removeItem('token')
-                                                setUser(null)
-                                                setOpen(false)
-                                                setTimeout(
-                                                    function () {
-                                                        navigation.replace("Login", { replace: true })
-                                                    }, 500
-                                                );
-                                            }}><Text style={styles.btnLogout}>Đăng xuất</Text></TouchableOpacity>
+                                            <>
+                                                <TouchableOpacity activeOpacity={0.8} onPress={() => {
+                                                    navigation.replace('Info')
+                                                }}><Text style={styles.btnLogin}>Tài khoản</Text></TouchableOpacity>
+                                                <TouchableOpacity activeOpacity={0.8} onPress={() => {
+                                                    AsyncStorage.removeItem('user')
+                                                    AsyncStorage.removeItem('token')
+                                                    setUser(null)
+                                                    setOpen(false)
+                                                    setTimeout(
+                                                        function () {
+                                                            navigation.replace("Login", { replace: true })
+                                                        }, 500
+                                                    );
+                                                }}><Text style={styles.btnLogout}>Đăng xuất</Text></TouchableOpacity>
+                                            </>
                                             :
                                             <>
                                                 <TouchableOpacity activeOpacity={0.8} onPress={() => {

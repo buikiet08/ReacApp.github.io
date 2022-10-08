@@ -63,7 +63,7 @@ function Domestic({ navigation }) {
   // loading
   const renderFooter = () => {
     return (loading ?
-      <ActivityIndicator size='large' animating={true} /> : <Text style={{ color: COLORS.gray, textAlign: 'center', width: '100%' }}>Không tìm thấy dữ liệu</Text>
+      <ActivityIndicator size='small' animating={true} /> : pageCurrent.length-1 ? <Text style={{ color: COLORS.gray, textAlign: 'center', width: '100%' }}>Bạn đã xem hết tin</Text> : null
     )
   }
 

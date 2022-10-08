@@ -203,7 +203,7 @@ const styles = StyleSheet.create({
         width: '100%',
     },
     formContainer: {
-        width: 280
+        width: 300
     },
     title: {
         color: COLORS.white,

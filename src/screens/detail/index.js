@@ -115,7 +115,7 @@ function Detail({ navigation }) {
                     onRefresh={onRefreshMore}
                 />
             }>
-                {loading ? <ActivityIndicator size='small' animating={true} /> :
+                {loading ? <ActivityIndicator size='small' animating={true} style={{marginTop:18}} /> :
                     <>
                         <Text style={{ fontSize: 20, fontWeight: 'bold', lineHeight: 28, marginBottom: 8 }}>{data.title}</Text>
                         <Text style={{ marginBottom: 8 }}>{data.publtime}</Text>

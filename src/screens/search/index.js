@@ -17,6 +17,7 @@ function Search({ navigation}) {
         onLoadMore({search,page})
     }, [page])
     const getData = async () => {
+        setLoading(true)
         const axios = require('axios')
         let value = JSON.stringify({
             "mod": "search",
@@ -64,7 +65,7 @@ function Search({ navigation}) {
     // loading
     const renderFooter = () => {
         return (loading ?
-            <ActivityIndicator size='large' animating={true} /> : <Text style={{ color: COLORS.gray, textAlign: 'center', width: '100%', marginBottom: 30 }}>Không tìm thấy dữ liệu</Text>
+            <ActivityIndicator size='small' animating={true} /> : page.length-1 ? <Text style={{ color: COLORS.gray, textAlign: 'center', width: '100%' }}>Bạn đã xem hết tin</Text> : null
         )
     }
     const handleSubmit = (value) => {
@@ -193,7 +194,7 @@ const styles = StyleSheet.create({
         width: null,
         height: null,
         paddingHorizontal: 16,
-        paddingTop: 20
+        paddingTop: 26
     },
     search: {
         marginRight: 16

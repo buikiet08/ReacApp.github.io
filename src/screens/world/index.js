@@ -63,7 +63,7 @@ function World({ navigation }) {
   // loading
   const renderFooter = () => {
     return (loading ?
-      <ActivityIndicator size='large' animating={true} /> : <Text style={{ color: COLORS.gray, textAlign: 'center', width: '100%' }}>Không tìm thấy dữ liệu</Text>
+      <ActivityIndicator size='small' animating={true} /> : pageCurrent.length-1 ? <Text style={{ color: COLORS.gray, textAlign: 'center', width: '100%' }}>Bạn đã xem hết tin</Text> : null
     )
   }
 
@@ -85,7 +85,7 @@ function World({ navigation }) {
         <FlatList
           data={test}
           renderItem={({ item, index }) =>
-            item.title.toLocaleUpperCase().indexOf(listKey) > -1 ?
+            // item.title.toLocaleUpperCase().indexOf(listKey) > -1 ?
             <View style={styles.blogItem} key={item.id}>
               <View style={styles.blogImage}>
                 <Image source={item.homeimgfile ? { uri: item.homeimgfile } : images.noImage} style={{ width: '100%', height: 90 }} resizeMethod='resize' />
@@ -97,7 +97,7 @@ function World({ navigation }) {
                 <Text style={styles.title} numberOfLines={3}>{item.title}</Text>
                 <Text style={styles.time}>{item.publtime}</Text>
               </TouchableOpacity>
-            </View> : null
+            </View>
           }
           contentContainerStyle={{ padding: 16 }}
           keyExtractor={(item, index) => index.toString()}

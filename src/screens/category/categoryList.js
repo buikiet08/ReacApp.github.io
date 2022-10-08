@@ -67,14 +67,18 @@ function CategoryList({ navigation }) {
     // loading
     const renderFooter = () => {
         return (loading ?
-            <ActivityIndicator size='large' animating={true} /> : <Text style={{ color: COLORS.gray, textAlign: 'center', width: '100%' }}>Không tìm thấy dữ liệu</Text>
+            <ActivityIndicator size='small' animating={true} /> : page.length - 1 ? <Text style={{ color: COLORS.gray, textAlign: 'center', width: '100%' }}>Bạn đã xem hết tin</Text> : null
         )
     }
     return (
         <>
             <View style={styles.header}>
-                <TouchableOpacity onPress={() =>
-                    setIsOpen(false)
+                <TouchableOpacity onPress={() => {
+                    setTitle(cateNews.title)
+                    setListNews([])
+                    getData()
+                    title === cateNews.title && setIsOpen(false)
+                }
                 }>
                     <AntDesign name="arrowleft" size={24} color={COLORS.black4} />
                 </TouchableOpacity>
@@ -88,7 +92,7 @@ function CategoryList({ navigation }) {
                             horizontal={true}
                             showsVerticalScrollIndicator={false}
                             showsHorizontalScrollIndicator={false}
-                            contentContainerStyle={{ padding: 16, paddingTop: 0,height:'auto'}}
+                            contentContainerStyle={{ padding: 16, paddingTop: 0, height: 'auto' }}
                             renderItem={({ item, index }) =>
                                 <TouchableOpacity activeOpacity={0.8} key={Number(item.id)} style={{ minWidth: 200 }} onPress={async () => {
                                     setTitle(item.title)
@@ -132,7 +136,7 @@ function CategoryList({ navigation }) {
                         renderItem={({ item, index }) =>
                             <View style={styles.blogItem} key={item.id}>
                                 <View style={styles.blogImage}>
-                                    <Image source={item.homeimgfile ? { uri: item.homeimgfile} : images.noImage} style={{ width: '100%', height: 90 }} resizeMethod='resize' />
+                                    <Image source={item.homeimgfile ? { uri: item.homeimgfile } : images.noImage} style={{ width: '100%', height: 90 }} resizeMethod='resize' />
                                 </View>
                                 <TouchableOpacity style={styles.blogContent} onPress={() => {
                                     navigation.navigate('Detail')

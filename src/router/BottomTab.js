@@ -61,7 +61,7 @@ function BottomTab({ navigation }) {
                                 overlayColor='rgba(0,0,0,0.2)'
                                 popover={
                                     <View visible={open} style={styles.modadAuth}>
-                                        {user?.status === 1 ?
+                                        {user?.status === 1 &&
                                             <>
                                                 <TouchableOpacity activeOpacity={0.8} onPress={() => {
                                                     navigation.replace('Info')
@@ -78,27 +78,26 @@ function BottomTab({ navigation }) {
                                                     );
                                                 }}><Text style={styles.btnRegister}>Đăng xuất</Text></TouchableOpacity>
                                             </>
-                                            :
-                                            <>
-                                                <TouchableOpacity activeOpacity={0.8} onPress={() => {
-                                                    setOpen(false)
-                                                    navigation.replace('Login')
-                                                }}><Text style={styles.btnLogin}>Đăng nhập</Text></TouchableOpacity>
-                                                <TouchableOpacity activeOpacity={0.8} onPress={() => {
-                                                    setOpen(false)
-                                                    navigation.replace('Register')
-                                                }}><Text style={styles.btnRegister}>Đăng ký</Text></TouchableOpacity>
-                                            </>
+                                            // <>
+                                            //     <TouchableOpacity activeOpacity={0.8} onPress={() => {
+                                            //         setOpen(false)
+                                            //         navigation.replace('Login')
+                                            //     }}><Text style={styles.btnLogin}>Đăng nhập</Text></TouchableOpacity>
+                                            //     <TouchableOpacity activeOpacity={0.8} onPress={() => {
+                                            //         setOpen(false)
+                                            //         navigation.replace('Register')
+                                            //     }}><Text style={styles.btnRegister}>Đăng ký</Text></TouchableOpacity>
+                                            // </>
                                         }
                                     </View>
                                 }
                                 withPointer={false}
                             />}
-                            <TouchableOpacity onPress={() => setOpen(!open)}>
+                            <TouchableOpacity onPress={() => user?.status === 1 ? setOpen(!open) : navigation.navigate('Login')}>
                                 <Avatar
                                     size={32}
                                     rounded
-                                    title={user ? nameUser?.split(" ")[nameUser?.split(" ").length-1].slice(0,1).toLocaleUpperCase() : null}
+                                    title={user ? nameUser?.split(" ")[nameUser?.split(" ").length - 1].slice(0, 1).toLocaleUpperCase() : null}
                                     icon={{ name: 'user', type: 'font-awesome' }}
                                     containerStyle={{ backgroundColor: COLORS.primary, borderColor: COLORS.white, borderWidth: 0.5, borderStyle: 'solid' }}
                                 />
@@ -143,6 +142,11 @@ function BottomTab({ navigation }) {
                     options={{
                         tabBarIcon: ({ focused }) =>
                             <AntDesign name="appstore-o" size={24} color={focused ? COLORS.primary : COLORS.secondary} />
+                    }}
+                    listeners={{
+                        tabPress: () => {
+                            CategoryList ? setIsOpen(false) : Category
+                        },
                     }}
                 />
             </Tab.Navigator>
@@ -189,7 +193,7 @@ const styles = StyleSheet.create({
         width: null,
         height: null,
         paddingHorizontal: 16,
-        paddingTop: 20
+        paddingTop: 24
     },
     search: {
         marginRight: 16

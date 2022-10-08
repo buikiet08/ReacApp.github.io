@@ -149,6 +149,7 @@ function Login({ navigation }) {
                                     value={value}
                                     type='password'
                                     placeholder='Mật khẩu'
+                                    secureTextEntry={true}
                                     placeholderTextColor={"#fff"}
                                 />
                             )}

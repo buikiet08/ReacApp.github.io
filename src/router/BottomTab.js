@@ -33,7 +33,8 @@ function BottomTab({ navigation }) {
 
     console.log(daysToSrting())
     const { isOpen, setIsOpen, user, setUser } = usePage()
-    console.log(user)
+    const nameUser = user?.data?.first_name
+    console.log(nameUser.split(" ")[nameUser.split(" ").length-1].slice(0,1))
     return (
         <>
             <View style={styles.header}>
@@ -75,7 +76,7 @@ function BottomTab({ navigation }) {
                                                             navigation.replace("Login", { replace: true })
                                                         }, 500
                                                     );
-                                                }}><Text style={styles.btnLogout}>Đăng xuất</Text></TouchableOpacity>
+                                                }}><Text style={styles.btnRegister}>Đăng xuất</Text></TouchableOpacity>
                                             </>
                                             :
                                             <>
@@ -97,7 +98,7 @@ function BottomTab({ navigation }) {
                                 <Avatar
                                     size={32}
                                     rounded
-                                    title={user ? user?.data?.first_name.slice(0, 1) : null}
+                                    title={user ? nameUser.split(" ")[nameUser.split(" ").length-1].slice(0,1) : null}
                                     icon={{ name: 'user', type: 'font-awesome' }}
                                     containerStyle={{ backgroundColor: COLORS.primary, borderColor: COLORS.white, borderWidth: 0.5, borderStyle: 'solid' }}
                                 />

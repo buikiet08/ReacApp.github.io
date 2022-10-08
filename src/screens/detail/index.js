@@ -12,7 +12,32 @@ function Detail({ navigation }) {
     const [data, setData] = useState([])
     const [cate, setCate] = useState([])
     const [loading, setLoading] = useState(false)
-
+    const tagsStyles = {
+        body: {
+            fontSize: 16,
+            lineHeight: 24,
+            flexDirection: 'colums',
+            justifyContent: 'flex-start',
+            alignItems: 'flex-start',
+        },
+        div:{
+            width:width - 16,
+            TextAlign: 'left',
+        },
+        span:{
+            fontSize: 16,
+            lineHeight: 24,
+        },
+        img:{
+            textAlign:'left',
+            width:'100%',
+            height:'auto',
+            maxWidth:width - 32
+        },
+        p:{
+            marginBottom:0
+        }
+    };
     useEffect(() => {
         getData()
     }, [])
@@ -94,14 +119,11 @@ function Detail({ navigation }) {
                     <>
                         <Text style={{ fontSize: 20, fontWeight: 'bold', lineHeight: 28, marginBottom: 8 }}>{data.title}</Text>
                         <Text style={{ marginBottom: 8 }}>{data.publtime}</Text>
-                        <Text style={{ marginBottom: 20, fontSize: 16, lineHeight: 20 }}>{data.hometext}</Text>
+                        <Text style={{ marginBottom: 20, fontSize: 16, lineHeight: 24 }}>{data.hometext}</Text>
                         <RenderHtml
                             contentWidth={width}
                             source={source}
-                            baseStyle={{ fontSize: 16, lineHeight: 20 }}
-                            tagsStyles={{ fontSize: 16, lineHeight: 20 }}
-                            classesStyles={{ fontSize: 16, lineHeight: 20 }}
-                            idsStyles={{ fontSize: 16, lineHeight: 20 }}
+                            tagsStyles={tagsStyles}
                         />
                         <Text style={{ marginVertical: 20, fontWeight: 'bold', fontSize: 16 }}>Tin liên quan</Text>
                         <FlatList
@@ -173,7 +195,7 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         alignItems: 'center',
         padding: 16,
-        paddingTop:30,
+        paddingTop: 30,
         borderBottomWidth: 0.5,
         borderBottomColor: COLORS.gray,
         borderBottomStyle: 'solid'

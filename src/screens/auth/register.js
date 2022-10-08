@@ -147,6 +147,7 @@ function Register({ navigation }) {
                                     value={value}
                                     type='password'
                                     placeholder='Mật khẩu'
+                                    secureTextEntry={true}
                                     placeholderTextColor={"#fff"}
                                 />
                             )}
@@ -179,6 +180,7 @@ function Register({ navigation }) {
                                     onChangeText={onChange}
                                     value={value}
                                     type='password'
+                                    secureTextEntry={true}
                                     placeholder='Nhập lại mật khẩu'
                                     placeholderTextColor={"#fff"}
                                 />

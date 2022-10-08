@@ -34,7 +34,7 @@ function BottomTab({ navigation }) {
     console.log(daysToSrting())
     const { isOpen, setIsOpen, user, setUser } = usePage()
     const nameUser = user?.data?.first_name
-    console.log(nameUser.split(" ")[nameUser.split(" ").length-1].slice(0,1))
+    // console.log(nameUser.split(" ")[nameUser.split(" ").length-1].slice(0,1))
     return (
         <>
             <View style={styles.header}>
@@ -98,7 +98,7 @@ function BottomTab({ navigation }) {
                                 <Avatar
                                     size={32}
                                     rounded
-                                    title={user ? nameUser.split(" ")[nameUser.split(" ").length-1].slice(0,1) : null}
+                                    title={user ? nameUser?.split(" ")[nameUser?.split(" ").length-1].slice(0,1).toLocaleUpperCase() : null}
                                     icon={{ name: 'user', type: 'font-awesome' }}
                                     containerStyle={{ backgroundColor: COLORS.primary, borderColor: COLORS.white, borderWidth: 0.5, borderStyle: 'solid' }}
                                 />
@@ -122,19 +122,19 @@ function BottomTab({ navigation }) {
                     }}
                 />
                 <Tab.Screen
-                    name='Tin Hot'
+                    name='Thông báo'
                     component={Domestic}
                     options={{
                         tabBarIcon: ({ focused }) =>
-                            <Ionicons name="flame-outline" size={24} color={focused ? COLORS.primary : COLORS.secondary} />
+                            <Ionicons name="notifications-outline" size={24} color={focused ? COLORS.primary : COLORS.secondary} />
                     }}
                 />
                 <Tab.Screen
-                    name='Covid-19'
+                    name='Văn bản'
                     component={World}
                     options={{
                         tabBarIcon: ({ focused }) =>
-                            <Ionicons name="earth" size={24} color={focused ? COLORS.primary : COLORS.secondary} />
+                            <Ionicons name="receipt-outline" size={24} color={focused ? COLORS.primary : COLORS.secondary} />
                     }}
                 />
                 <Tab.Screen

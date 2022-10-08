@@ -46,7 +46,7 @@ function Info({ navigation }) {
                                     onChangeText={onChange}
                                     value={value}
                                     type="text"
-                                    defaultValue={user.data.first_name}
+                                    defaultValue={user?.data?.first_name}
                                     placeholderTextColor={"#fff"}
                                 />
                             </View>

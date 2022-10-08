@@ -88,7 +88,7 @@ function CategoryList({ navigation }) {
                             horizontal={true}
                             showsVerticalScrollIndicator={false}
                             showsHorizontalScrollIndicator={false}
-                            contentContainerStyle={{ padding: 16, paddingTop: 0 }}
+                            contentContainerStyle={{ padding: 16, paddingTop: 0,height:'auto'}}
                             renderItem={({ item, index }) =>
                                 <TouchableOpacity activeOpacity={0.8} key={Number(item.id)} style={{ minWidth: 200 }} onPress={async () => {
                                     setTitle(item.title)

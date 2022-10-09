@@ -4,11 +4,14 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 const Context = createContext({})
 export const PageProvider = ({ children }) => {
     const [isOpen, setIsOpen] = useState(false)
-    const [isOpenCateChild, setIsOpenCateChild] = useState(false)
+    const [isVideo, setIsVideo] = useState(false)
+    const [isAlbum, setIsAlbum] = useState(false)
 
+    const [isOpenCateChild, setIsOpenCateChild] = useState(false)
+    const [dataAlbum,setDataAlbum] = useState()
     const [dataBlog,setDataBlog] = useState()
+    const [dataLaws,setDataLaws] = useState()
     const [cateNews,setCateNews] = useState()
-    const [cateNewsChild,setCateNewsChild] = useState()
     const [relate,setRelate] = useState()
     const [user, setUser] = useState()
 
@@ -59,7 +62,28 @@ export const PageProvider = ({ children }) => {
     //     info()
     // }, [])
 
-    return <Context.Provider value={{ user,setUser,isOpen, setIsOpen,isOpenCateChild,setIsOpenCateChild, dataBlog,setDataBlog,cateNews,setCateNews,relate,setRelate,cateNewsChild,setCateNewsChild }}>
+    return <Context.Provider value={{ 
+        user,
+        setUser,
+        isOpen, 
+        setIsOpen,
+        isVideo,
+        setIsVideo,
+        isAlbum,
+        setIsAlbum,
+        dataAlbum,
+        setDataAlbum,
+        dataLaws,
+        setDataLaws,
+        isOpenCateChild,
+        setIsOpenCateChild, 
+        dataBlog,
+        setDataBlog,
+        cateNews,
+        setCateNews,
+        relate,
+        setRelate,
+        }}>
         {children}
     </Context.Provider>
 }

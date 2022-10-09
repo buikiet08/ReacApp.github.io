@@ -5,8 +5,8 @@ import { ScrollView } from 'react-native-virtualized-view';
 import { COLORS } from '../../contains'
 import { usePage } from '../../hook/usePage'
 
-function Category() {
-  const { setIsOpen, setDataBlog, setCateNews } = usePage()
+function Category({ navigation}) {
+  const { setIsOpen,setIsVideo,setIsAlbum, setDataBlog, setCateNews } = usePage()
   const [category, setCategory] = useState([])
   const [loading, setLoading] = useState(false)
 
@@ -36,10 +36,29 @@ function Category() {
   }
   return (
     <ScrollView style={styles.container}>
-      {loading ? <ActivityIndicator size='small' animating={true} style={{marginTop:10}} /> :
-        category.map((item, index) =>
+      {loading ? <ActivityIndicator size='small' animating={true} style={{ marginTop: 10 }} /> :
+        <>{
+          category.map((item, index) =>
+            <ListItem.Accordion
+              key={index}
+              style={{ marginBottom: 10 }}
+              icon={false}
+              containerStyle={{ padding: 16 }}
+              content={
+                <>
+                  <Icon name="align-left" type='feather' size={24} color={COLORS.gray} style={{ marginRight: 8 }} />
+                  <ListItem.Content>
+                    <ListItem.Title>{item.title}</ListItem.Title>
+                  </ListItem.Content>
+                </>
+              }
+              onPress={() => {
+                setIsOpen(true)
+                setCateNews(item)
+              }}
+            />
+          )}
           <ListItem.Accordion
-            key={index}
             style={{ marginBottom: 10 }}
             icon={false}
             containerStyle={{ padding: 16 }}
@@ -47,16 +66,30 @@ function Category() {
               <>
                 <Icon name="align-left" type='feather' size={24} color={COLORS.gray} style={{ marginRight: 8 }} />
                 <ListItem.Content>
-                  <ListItem.Title>{item.title}</ListItem.Title>
+                  <ListItem.Title>Video nổi bật</ListItem.Title>
                 </ListItem.Content>
               </>
             }
             onPress={() => {
-              setIsOpen(true)
-              setCateNews(item)
+              setIsVideo(true)
+              setIsOpen(false)
             }}
           />
-        )
+          <ListItem.Accordion
+            style={{ marginBottom: 30 }}
+            icon={false}
+            containerStyle={{ padding: 16 }}
+            content={
+              <>
+                <Icon name="align-left" type='feather' size={24} color={COLORS.gray} style={{ marginRight: 8 }} />
+                <ListItem.Content>
+                  <ListItem.Title>Hình ảnh</ListItem.Title>
+                </ListItem.Content>
+              </>
+            }
+            onPress={() => setIsAlbum(true) }
+          />
+        </>
       }
     </ScrollView>
   )

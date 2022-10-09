@@ -1,15 +1,14 @@
-import { AntDesign } from '@expo/vector-icons';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import axios from 'axios';
-import React, { useCallback, useEffect, useRef, useState } from 'react'
-import { LogBox, ActivityIndicator, FlatList, Image, StyleSheet, Text, TouchableOpacity, View, RefreshControl } from 'react-native'
+import { AntDesign, Ionicons } from '@expo/vector-icons';
+import React, { useEffect, useRef, useState } from 'react'
+import { ActivityIndicator, FlatList, StyleSheet, Text, TouchableOpacity, View, RefreshControl } from 'react-native'
+import HeaderContent from '../../component/HeaderContent';
 import { COLORS, images } from '../../contains'
 import { usePage } from '../../hook/usePage'
 
 function World({ navigation }) {
   let listNews = useRef()
-  const { setDataBlog } = usePage(null)
-  const [test, setTest] = useState([])
+  const { setDataLaws } = usePage(null)
+  const [data, setData] = useState([])
   const [loading, setLoading] = useState(false)
   const [pageCurrent, setPageCurrent] = useState(1)
   // fetch API
@@ -20,18 +19,18 @@ function World({ navigation }) {
     setLoading(true)
     let axios = require('axios')
     let body = JSON.stringify({
-      "mod": "get_news_home",
+      "mod" : "get_laws",
       "page": pageCurrent,
     });
     const config = {
       method: 'post',
-      url: 'https://hungtan.demobcb.work/api/',
+      url: 'https://hungtan-hungnguyen.nghean.gov.vn/laws/api/',
       data: body
     }
     await axios(config)
       .then(function (response) {
         setLoading(false)
-        setTest(response?.data.data)
+        setData(response?.data)
       })
       .catch(function (error) {
         setLoading(false)
@@ -41,18 +40,18 @@ function World({ navigation }) {
   const onLoadMore = async () => {
     let axios = require('axios')
     let body = JSON.stringify({
-      "mod": "get_news_home",
+      "mod" : "get_laws",
       "page": pageCurrent + 1,
     });
     const config = {
       method: 'post',
-      url: 'https://hungtan.demobcb.work/api/',
+      url: 'https://hungtan-hungnguyen.nghean.gov.vn/laws/api/',
       data: body
     }
     await axios(config)
       .then(function (response) {
         setLoading(false)
-        setTest([...test, ...response.data?.data])
+        setData([...data, ...response?.data])
         setPageCurrent(...pageCurrent, pageCurrent + 1)
       })
       .catch(function (error) {
@@ -63,56 +62,55 @@ function World({ navigation }) {
   // loading
   const renderFooter = () => {
     return (loading ?
-      <ActivityIndicator size='small' animating={true} /> : pageCurrent.length-1 ? <Text style={{ color: COLORS.gray, textAlign: 'center', width: '100%' }}>Bạn đã xem hết tin</Text> : null
+      <ActivityIndicator size='small' animating={true} /> : pageCurrent.length - 1 ? <Text style={{ color: COLORS.gray, textAlign: 'center', width: '100%' }}>Bạn đã xem hết tin</Text> : null
     )
   }
 
   const scrollTop = () => {
     listNews.scrollToOffset({ offset: 0, animated: true })
   }
+
   const onRefreshMore = () => {
-    setTest([])
+    setData([])
     getData()
   }
-  const key1 = 'Covid'
-  const key2 = 'Tiêm chủng'
-  const key3 = 'số ca mắc'
-  const listKey = key1.toLocaleUpperCase() || key2.toLocaleUpperCase() || key3.toLocaleUpperCase()
-  // onScroll={(event) => setPosition(event.nativeEvent.contentOffset.y)}
   return (
     <>
       {loading ? <ActivityIndicator size='small' animating={true} style={{ marginTop: 10 }} /> :
-        <FlatList
-          data={test}
-          renderItem={({ item, index }) =>
-            // item.title.toLocaleUpperCase().indexOf(listKey) > -1 ?
-            <View style={styles.blogItem} key={item.id}>
-              <View style={styles.blogImage}>
-                <Image source={item.homeimgfile ? { uri: item.homeimgfile } : images.noImage} style={{ width: '100%', height: 90 }} resizeMethod='resize' />
-              </View>
+        <View style={{ flex: 1 }}>
+          {/* <View style={{ paddingHorizontal: 16, marginTop: 10 }}>
+            <HeaderContent title='Văn bản chỉ đạo' />
+          </View> */}
+          <FlatList
+            data={data.data}
+            renderItem={({ item, index }) =>
               <TouchableOpacity style={styles.blogContent} onPress={() => {
-                navigation.navigate('Detail')
-                setDataBlog(item)
+                navigation.navigate('DetailLaws')
+                setDataLaws(item)
               }}>
-                <Text style={styles.title} numberOfLines={3}>{item.title}</Text>
-                <Text style={styles.time}>{item.publtime}</Text>
+                <View style={styles.contentTop}>
+                  <Ionicons name='document-text' size={18} />
+                  <Text style={{ fontWeight: 'bold', fontSize: 16,marginLeft:4 }}>Số</Text>
+                  <Text style={{ fontSize: 16, color: 'red', marginLeft: 8 }}>{item.code}</Text>
+                </View>
+                <Text style={{ fontSize: 16, lineHeight: 24,color:COLORS.black4}} numberOfLines={2}>Tên : {item.title}</Text>
               </TouchableOpacity>
-            </View>
-          }
-          contentContainerStyle={{ padding: 16 }}
-          keyExtractor={(item, index) => index.toString()}
-          listKey={`list${Math.random()}`}
-          ListFooterComponent={renderFooter}
-          onEndReached={onLoadMore}
-          onEndReachedThreshold={0.5}
-          ref={(ref) => listNews = ref}
-          refreshControl={
-            <RefreshControl
-              refreshing={loading}
-              onRefresh={onRefreshMore}
-            />
-          }
-        />
+            }
+            contentContainerStyle={{ padding: 16 }}
+            keyExtractor={(item, index) => index.toString()}
+            listKey={`list${Math.random()}`}
+            ListFooterComponent={renderFooter}
+            onEndReached={onLoadMore}
+            onEndReachedThreshold={0.5}
+            ref={(ref) => listNews = ref}
+            refreshControl={
+              <RefreshControl
+                refreshing={loading}
+                onRefresh={onRefreshMore}
+              />
+            }
+          />
+        </View>
       }
       <TouchableOpacity style={styles.scrollTopButton} onPress={scrollTop}>
         <AntDesign name="upcircle" size={36} color={COLORS.primary} />
@@ -128,28 +126,18 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 16
   },
-  blogItem: {
-    flexDirection: 'row',
-    justifyContent: 'flex-start',
-    alignItems: 'flex-start',
-    marginBottom: 16,
-    paddingBottom: 16,
-    borderBottomWidth: 0.3,
+  blogContent: {
+    marginBottom: 15,
+    paddingBottom:15,
+    borderBottomWidth: 0.5,
     borderBottomColor: COLORS.gray,
     borderBottomStyle: 'solid'
   },
-  blogImage: {
-    width: '30%',
-    borderRadius: 4,
-    overflow: 'hidden',
-  },
-  blogContent: {
-    paddingLeft: 8,
-    width: '70%',
-    flexDirection: 'column',
-    justifyContent: 'space-between',
-    alignItems: 'flex-start',
-    height: 90
+  contentTop: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'flex-start',
+    marginBottom: 10
   },
   title: {
     fontSize: 17,

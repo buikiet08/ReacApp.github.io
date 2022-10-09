@@ -148,14 +148,13 @@ function Info({ navigation }) {
                                         dateIcon: {
                                             position: 'absolute',
                                             right: -5,
-                                            top: 4,
+                                            top: 8,
                                             marginLeft: 0,
                                         },
                                         dateInput: {
-                                            borderColor: "gray",
                                             alignItems: "flex-start",
                                             borderWidth:0,
-                                            height:50,
+                                            paddingTop:8
                                         },
                                         placeholderText: {
                                             fontSize: 17,
@@ -165,9 +164,7 @@ function Info({ navigation }) {
                                             fontSize: 14,
                                         }
                                     }}
-                                    onDateChange={(date) => {
-                                        // setDate(date);
-                                    }}
+                                    onDateChange={setDate}
                                 />
                             </View>
                         )}

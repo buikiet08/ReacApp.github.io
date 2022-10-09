@@ -125,7 +125,9 @@ function Detail({ navigation }) {
                             source={source}
                             tagsStyles={tagsStyles}
                         />
-                        <Text style={{ marginVertical: 20, fontWeight: 'bold', fontSize: 16 }}>Tin liên quan</Text>
+                        <View style={{paddingBottom: 10, marginBottom: 10, borderBottomStyle: 'solid', borderBottomColor: COLORS.gray, borderBottomWidth: 0.5 }}>
+                            <Text style={{ fontSize: 20, fontWeight: 'bold', color:COLORS.primary}}>Nội dung</Text>
+                        </View>
                         <FlatList
                             data={cate.related_news}
                             renderItem={({ item, index }) =>

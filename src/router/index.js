@@ -7,6 +7,8 @@ import Detail from '../screens/detail';
 import Search from '../screens/search';
 import Info from '../screens/info';
 import SplashScreen from '../screens/splashScreen';
+import DetailListAlbum from '../screens/detail/detailListAlbum';
+import DetailLaws from '../screens/detail/detailLaws';
 
 const Root = createStackNavigator()
 const Router = () => {
@@ -19,6 +21,8 @@ const Router = () => {
             <Root.Screen name='Search' component={Search} />
             <Root.Screen name='Register' component={Register} />
             <Root.Screen name='Detail' component={Detail} />
+            <Root.Screen name='DetailListAlbum' component={DetailListAlbum} />
+            <Root.Screen name='DetailLaws' component={DetailLaws} />
 
         </Root.Navigator>
     )

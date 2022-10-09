@@ -1,7 +1,6 @@
 import React, { useState } from 'react'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
-import { Image, ImageBackground, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { Tooltip } from '@rneui/themed';
+import { ImageBackground, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { Avatar } from '@rneui/base';
 import { Ionicons, Entypo, AntDesign } from '@expo/vector-icons';
 import Home from '../screens/home';
@@ -12,6 +11,8 @@ import { COLORS, images } from '../contains';
 import { usePage } from '../hook/usePage';
 import CategoryList from '../screens/category/categoryList';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import ListVideo from '../screens/category/listVideo';
+import ListAlbum from '../screens/category/listAlbum';
 
 const Tab = createBottomTabNavigator()
 
@@ -32,7 +33,7 @@ function BottomTab({ navigation }) {
     }
 
     console.log(daysToSrting())
-    const { isOpen, setIsOpen, user, setUser } = usePage()
+    const { isOpen, setIsOpen,isVideo,setIsVideo,isAlbum,setIsAlbum, user, setUser } = usePage()
     const nameUser = user?.data?.first_name
     // console.log(nameUser.split(" ")[nameUser.split(" ").length-1].slice(0,1))
     return (
@@ -41,7 +42,6 @@ function BottomTab({ navigation }) {
                 <ImageBackground source={images.header}
                     style={styles.background}>
                     <View style={styles.calender}>
-                        {/* <Image source={images.calender} style={styles.calenderIcon} /> */}
                         <Text style={styles.calenderText}>{daysToSrting()}, {date} tháng {month}, {year}</Text>
                     </View>
                     <View style={styles.action}>
@@ -49,51 +49,7 @@ function BottomTab({ navigation }) {
                             <AntDesign name="search1" size={24} color={COLORS.white} />
                         </TouchableOpacity>
                         <View>
-                            {open && <Tooltip
-                                visible={open}
-                                onClose={() => setOpen(!open)}
-                                containerStyle={{
-                                    backgroundColor: 'rgba(255,255,255,0)',
-                                    padding: 0,
-                                    marginTop: 80,
-                                    marginLeft: 20,
-                                }}
-                                overlayColor='rgba(0,0,0,0.2)'
-                                popover={
-                                    <View visible={open} style={styles.modadAuth}>
-                                        {user?.status === 1 &&
-                                            <>
-                                                <TouchableOpacity activeOpacity={0.8} onPress={() => {
-                                                    navigation.replace('Info')
-                                                }}><Text style={styles.btnLogin}>Tài khoản</Text></TouchableOpacity>
-                                                <TouchableOpacity activeOpacity={0.8} onPress={() => {
-                                                    AsyncStorage.removeItem('user')
-                                                    AsyncStorage.removeItem('token')
-                                                    setUser(null)
-                                                    setOpen(false)
-                                                    setTimeout(
-                                                        function () {
-                                                            navigation.replace("Login", { replace: true })
-                                                        }, 500
-                                                    );
-                                                }}><Text style={styles.btnRegister}>Đăng xuất</Text></TouchableOpacity>
-                                            </>
-                                            // <>
-                                            //     <TouchableOpacity activeOpacity={0.8} onPress={() => {
-                                            //         setOpen(false)
-                                            //         navigation.replace('Login')
-                                            //     }}><Text style={styles.btnLogin}>Đăng nhập</Text></TouchableOpacity>
-                                            //     <TouchableOpacity activeOpacity={0.8} onPress={() => {
-                                            //         setOpen(false)
-                                            //         navigation.replace('Register')
-                                            //     }}><Text style={styles.btnRegister}>Đăng ký</Text></TouchableOpacity>
-                                            // </>
-                                        }
-                                    </View>
-                                }
-                                withPointer={false}
-                            />}
-                            <TouchableOpacity onPress={() => user?.status === 1 ? setOpen(!open) : navigation.navigate('Login')}>
+                            <TouchableOpacity onPress={() => user?.status === 1 ? navigation.replace('Info') : navigation.navigate('Login')}>
                                 <Avatar
                                     size={32}
                                     rounded
@@ -138,14 +94,17 @@ function BottomTab({ navigation }) {
                 />
                 <Tab.Screen
                     name='Danh mục'
-                    component={isOpen ? CategoryList : Category}
+                    component={isOpen ? CategoryList : isVideo ? ListVideo : isAlbum ? ListAlbum : Category}
                     options={{
                         tabBarIcon: ({ focused }) =>
                             <AntDesign name="appstore-o" size={24} color={focused ? COLORS.primary : COLORS.secondary} />
                     }}
                     listeners={{
                         tabPress: () => {
-                            CategoryList ? setIsOpen(false) : Category
+                            Category
+                            setIsOpen(false)
+                            setIsVideo(false)
+                            setIsAlbum(false) 
                         },
                     }}
                 />

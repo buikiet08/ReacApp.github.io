@@ -1,27 +1,26 @@
 import { AntDesign } from '@expo/vector-icons';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import axios from 'axios';
-import React, { useCallback, useEffect, useRef, useState } from 'react'
-import { LogBox, ActivityIndicator, FlatList, Image, StyleSheet, Text, TouchableOpacity, View, RefreshControl } from 'react-native'
+import React, { useEffect, useRef, useState } from 'react'
+import { ActivityIndicator, FlatList, Image, StyleSheet, Text, TouchableOpacity, View, RefreshControl } from 'react-native'
 import { COLORS, images } from '../../contains'
 import { usePage } from '../../hook/usePage'
 
 function Domestic({ navigation }) {
   let listNews = useRef()
   const { setDataBlog } = usePage(null)
-  const [test, setTest] = useState([])
+  const [dataNotification, setDataNotification] = useState([])
+  const [page, setPage] = useState(1)
   const [loading, setLoading] = useState(false)
-  const [pageCurrent, setPageCurrent] = useState(1)
-  // fetch API
-  useEffect(() => {
+
+  useEffect(() => { 
     getData()
-  }, [pageCurrent])
+  }, [])
   const getData = async () => {
     setLoading(true)
     let axios = require('axios')
     let body = JSON.stringify({
-      "mod": "get_news_home",
-      "page": pageCurrent,
+      "mod": "get_news_category",
+      "id": 6,
+      "page": page
     });
     const config = {
       method: 'post',
@@ -31,18 +30,20 @@ function Domestic({ navigation }) {
     await axios(config)
       .then(function (response) {
         setLoading(false)
-        setTest(response?.data.data)
+        setDataNotification(response?.data)
       })
       .catch(function (error) {
         setLoading(false)
         console.error(error)
       });
   }
+
   const onLoadMore = async () => {
     let axios = require('axios')
     let body = JSON.stringify({
-      "mod": "get_news_home",
-      "page": pageCurrent + 1,
+      "mod": "get_news_category",
+      "id": getId,
+      "page": page + 1
     });
     const config = {
       method: 'post',
@@ -52,8 +53,8 @@ function Domestic({ navigation }) {
     await axios(config)
       .then(function (response) {
         setLoading(false)
-        setTest([...test, ...response.data?.data])
-        setPageCurrent(...pageCurrent, pageCurrent + 1)
+        setDataNotification([...dataNotification, ...response?.data])
+        setPage(...page, page + 1)
       })
       .catch(function (error) {
         setLoading(false)
@@ -63,7 +64,7 @@ function Domestic({ navigation }) {
   // loading
   const renderFooter = () => {
     return (loading ?
-      <ActivityIndicator size='small' animating={true} /> : pageCurrent.length-1 ? <Text style={{ color: COLORS.gray, textAlign: 'center', width: '100%' }}>Bạn đã xem hết tin</Text> : null
+      <ActivityIndicator size='small' animating={true} /> : page.length - 1 ? <Text style={{ color: COLORS.gray, textAlign: 'center', width: '100%' }}>Bạn đã xem hết tin</Text> : null
     )
   }
 
@@ -71,20 +72,20 @@ function Domestic({ navigation }) {
     listNews.scrollToOffset({ offset: 0, animated: true })
   }
   const onRefreshMore = () => {
-    setTest([])
+    setDataNotification([])
     getData()
   }
-  
+
   // onScroll={(event) => setPosition(event.nativeEvent.contentOffset.y)}
   return (
     <>
-      {loading ? <ActivityIndicator size='small' animating={true} style={{marginTop:10}} /> :
+      {loading ? <ActivityIndicator size='small' animating={true} style={{ marginTop: 10 }} /> :
         <FlatList
-          data={test}
+          data={dataNotification.data}
           renderItem={({ item, index }) =>
             <View style={styles.blogItem} key={item.id}>
               <View style={styles.blogImage}>
-                <Image source={item.homeimgfile ? { uri: item.homeimgfile} : images.noImage} style={{ width: '100%', height: 90 }} resizeMethod='resize' />
+                <Image source={item.homeimgfile ? { uri: item.homeimgfile } : images.noImage} style={{ width: '100%', height: 90 }} resizeMethod='resize' />
               </View>
               <TouchableOpacity style={styles.blogContent} onPress={() => {
                 navigation.navigate('Detail')
@@ -96,7 +97,7 @@ function Domestic({ navigation }) {
             </View>
           }
           contentContainerStyle={{ padding: 16 }}
-          keyExtractor={(item, index) => index.toString()}
+          keyExtractor={(item, index) => item.id}
           listKey={`list${Math.random()}`}
           ListFooterComponent={renderFooter}
           onEndReached={onLoadMore}

@@ -20,22 +20,22 @@ function Detail({ navigation }) {
             justifyContent: 'flex-start',
             alignItems: 'flex-start',
         },
-        div:{
-            width:width - 16,
+        div: {
+            width: width - 16,
             TextAlign: 'left',
         },
-        span:{
+        span: {
             fontSize: 16,
             lineHeight: 24,
         },
-        img:{
-            textAlign:'left',
-            width:'100%',
-            height:'auto',
-            maxWidth:width - 32
+        img: {
+            textAlign: 'left',
+            width: '100%',
+            height: 'auto',
+            maxWidth: width - 32
         },
-        p:{
-            marginBottom:0
+        p: {
+            marginBottom: 0
         }
     };
     useEffect(() => {
@@ -115,18 +115,19 @@ function Detail({ navigation }) {
                     onRefresh={onRefreshMore}
                 />
             }>
-                {loading ? <ActivityIndicator size='small' animating={true} style={{marginTop:18}} /> :
+                {loading ? <ActivityIndicator size='small' animating={true} style={{ marginTop: 18 }} /> :
                     <>
+                        <Text style={{marginBottom:10, color: COLORS.black4}}>{data.catid_title}</Text>
                         <Text style={{ fontSize: 20, fontWeight: 'bold', lineHeight: 28, marginBottom: 8 }}>{data.title}</Text>
-                        <Text style={{ marginBottom: 8 }}>{data.publtime}</Text>
+                        <Text style={{ marginBottom: 8, color:COLORS.black4 }}>{data.publtime}</Text>
                         <Text style={{ marginBottom: 20, fontSize: 16, lineHeight: 24 }}>{data.hometext}</Text>
                         <RenderHtml
                             contentWidth={width}
                             source={source}
                             tagsStyles={tagsStyles}
                         />
-                        <View style={{paddingBottom: 10, marginBottom: 10, borderBottomStyle: 'solid', borderBottomColor: COLORS.gray, borderBottomWidth: 0.5 }}>
-                            <Text style={{ fontSize: 20, fontWeight: 'bold', color:COLORS.primary}}>Nội dung</Text>
+                        <View style={{ marginTop:20,paddingBottom: 10, marginBottom: 10, borderBottomStyle: 'solid', borderBottomColor: COLORS.gray, borderBottomWidth: 0.5 }}>
+                            <Text style={{ fontSize: 20, fontWeight: 'bold', color: COLORS.primary }}>Tin liên quan</Text>
                         </View>
                         <FlatList
                             data={cate.related_news}

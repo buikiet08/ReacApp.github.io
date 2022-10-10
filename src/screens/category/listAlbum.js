@@ -1,41 +1,63 @@
-import { AntDesign } from '@expo/vector-icons'
-import { Video } from 'expo-av'
-import React, { useRef, useState } from 'react'
-import { ActivityIndicator, Button, FlatList, Image, SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { AntDesign } from '@expo/vector-icons';
+import React, { useEffect, useRef, useState } from 'react'
+import { ActivityIndicator, FlatList, Image, StyleSheet, Text, TouchableOpacity, View, RefreshControl, SafeAreaView } from 'react-native'
 import { COLORS, images } from '../../contains'
 import { usePage } from '../../hook/usePage'
 
-const listAlbum = [
-    {
-        id: 1,
-        title: 'Tập huấn Chương trình Mỗi xã một sản phẩm (OCOP) năm 2021 video demo',
-        link: 'https://images.unsplash.com/photo-1661956602868-6ae368943878?ixlib=rb-1.2.1&ixid=MnwxMjA3fDF8MHxlZGl0b3JpYWwtZmVlZHwxfHx8ZW58MHx8fHw%3D&auto=format&fit=crop&w=500&q=60'
-    },
-    {
-        id: 2,
-        title: 'Tập huấn Chương trình Mỗi xã một sản phẩm (OCOP) năm 2021 video demo',
-        link: 'https://images.unsplash.com/photo-1665237814256-16b9e0f697dd?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxlZGl0b3JpYWwtZmVlZHw0fHx8ZW58MHx8fHw%3D&auto=format&fit=crop&w=500&q=60'
-    },
-    {
-        id: 3,
-        title: 'Tập huấn Chương trình Mỗi xã một sản phẩm (OCOP) năm 2021 video demo',
-        link: 'https://images.unsplash.com/photo-1664575599730-0814817939de?ixlib=rb-1.2.1&ixid=MnwxMjA3fDF8MHxlZGl0b3JpYWwtZmVlZHw2fHx8ZW58MHx8fHw%3D&auto=format&fit=crop&w=500&q=60'
-    },
-    {
-        id: 4,
-        title: 'Tập huấn Chương trình Mỗi xã một sản phẩm (OCOP) năm 2021 video demo',
-        link: 'https://images.unsplash.com/photo-1664574653790-cee0e10a4242?ixlib=rb-1.2.1&ixid=MnwxMjA3fDF8MHxlZGl0b3JpYWwtZmVlZHwxMXx8fGVufDB8fHx8&auto=format&fit=crop&w=500&q=60'
-    }
-]
-function ListAlbum({ navigation}) {
-    const { setIsAlbum,setDataAlbum } = usePage()
-    const video = useRef(null)
-    const [status, setStatus] = useState({})
-    const [loading, setLoading] = useState(false)
+function ListAlbum({ navigation }) {
+    let listNews = useRef()
+    const { setIsAlbum, setDataAlbum } = usePage()
+    const [dataNotification, setDataNotification] = useState([])
     const [page, setPage] = useState(1)
-    // video.current.pauseAsync()
+    const [loading, setLoading] = useState(false)
+
+    useEffect(() => {
+        getData()
+    }, [])
+    const getData = async () => {
+        setLoading(true)
+        let axios = require('axios')
+        let body = JSON.stringify({
+            "mod": "get_album",
+            "page": page
+        });
+        const config = {
+            method: 'post',
+            url: 'https://hungtan-hungnguyen.nghean.gov.vn/nvalbums/api/',
+            data: body
+        }
+        await axios(config)
+            .then(function (response) {
+                setLoading(false)
+                setDataNotification(response?.data.data)
+            })
+            .catch(function (error) {
+                setLoading(false)
+                console.error(error)
+            });
+    }
+
     const onLoadMore = async () => {
-        
+        let axios = require('axios')
+        let body = JSON.stringify({
+            "mod": "get_album",
+            "page": page + 1
+        });
+        const config = {
+            method: 'post',
+            url: 'https://hungtan-hungnguyen.nghean.gov.vn/nvalbums/api/',
+            data: body
+        }
+        await axios(config)
+            .then(function (response) {
+                setLoading(false)
+                setDataNotification([...dataNotification, ...response?.data.data])
+                setPage(...page, page + 1)
+            })
+            .catch(function (error) {
+                setLoading(false)
+                console.error(error)
+            });
     }
     // loading
     const renderFooter = () => {
@@ -43,8 +65,24 @@ function ListAlbum({ navigation}) {
             <ActivityIndicator size='small' animating={true} /> : page.length - 1 ? <Text style={{ color: COLORS.gray, textAlign: 'center', width: '100%' }}>Bạn đã xem hết tin</Text> : null
         )
     }
+
+    const scrollTop = () => {
+        listNews.scrollToOffset({ offset: 0, animated: true })
+    }
+    const onRefreshMore = () => {
+        setDataNotification([])
+        getData()
+    }
+    let data = Object.keys(dataNotification)
+    let data1 = Object.values(dataNotification)
+
+    // const data2 = data.map(key => console.log(data1[key]))
+    // console.log(data2)
+
+    // console.log(data.map(key => dataNotification[key].title))
+    // onScroll={(event) => setPosition(event.nativeEvent.contentOffset.y)}
     return (
-        <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
+        <>
             <View style={styles.header}>
                 <TouchableOpacity onPress={() => {
                     setIsAlbum(false)
@@ -53,40 +91,61 @@ function ListAlbum({ navigation}) {
                 </TouchableOpacity>
                 <Text style={{ marginLeft: 20, fontSize: 18, fontWeight: 'bold' }}>Hình ảnh</Text>
             </View>
-            <FlatList
-                contentContainerStyle={{ padding: 16,paddingTop:0}}
-                data={listAlbum}
-                renderItem={({ item, index }) =>
-                    <TouchableOpacity 
-                    onPress={() => {
-                        setDataAlbum(item)
-                        navigation.navigate('DetailListAlbum')
-                    }}
-                    activeOpacity={0.8} 
-                    style={{marginBottom:20,paddingBottom:20, borderBottomWidth:0.5,borderBottomColor:COLORS.gray,borderBottomStyle:'solid'}}>
-                        <Image
-                            ref={video}
-                            style={styles.video}
-                            source={{
-                                uri: item.link,
+            {loading ? <ActivityIndicator size='small' animating={true} style={{ marginTop: 10 }} /> :
+                <FlatList
+                    data={data}
+                    renderItem={(item, index) =>
+                        // console.log(data1[key.item]?.title, 'vào nha')
+                        <TouchableOpacity
+                            key={data1[item.item]?.id}
+                            onPress={() => {
+                                setDataAlbum(data1[item.item])
+                                navigation.navigate('DetailListAlbum')
                             }}
-                            resizeMode="contain"
+                            activeOpacity={0.8}
+                            style={{ marginBottom: 20, paddingBottom: 20, borderBottomWidth: 0.5, borderBottomColor: COLORS.gray, borderBottomStyle: 'solid' }}>
+                            <Image
+                                style={styles.video}
+                                source={{
+                                    uri: data1[item.item]?.thumb,
+                                }}
+                                // resizeMode="contain"
+                            />
+                            <Text numberOfLines={3} style={{ marginTop: 8, fontSize: 16, lineHeight: 24 }}>{data1[item.item]?.title}</Text>
+                            <View style={{ marginTop: 8, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+                                <Text style={{ fontSize: 12, color: COLORS.black4 }}>{data1[item.item]?.post_name}</Text>
+                                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                                    <Text style={{ fontSize: 12, color: COLORS.black4 }}>{data1[item.item]?.post_time}</Text>
+                                    <Text style={{ fontSize: 12, color: COLORS.black4, marginLeft: 8 }}>({data1[item.item]?.num_views} ảnh)</Text>
+                                </View>
+                            </View>
+                        </TouchableOpacity>
+                    }
+                    contentContainerStyle={{ padding: 16 }}
+                    keyExtractor={(item, index) => item.id}
+                    listKey={`list${Math.random()}`}
+                    ListFooterComponent={renderFooter}
+                    onEndReached={onLoadMore}
+                    onEndReachedThreshold={0.5}
+                    ref={(ref) => listNews = ref}
+                    refreshControl={
+                        <RefreshControl
+                            refreshing={loading}
+                            onRefresh={onRefreshMore}
                         />
-                        <Text numberOfLines={3} style={{marginTop:8, fontSize: 16, lineHeight: 24}}>{item.title}</Text>
-                    </TouchableOpacity>
-                }
-                keyExtractor={(item, index) => item.id}
-                listKey="listAlbum"
-                ListFooterComponent={renderFooter}
-                onEndReached={onLoadMore}
-                onEndReachedThreshold={0}
-            />
-            
-        </SafeAreaView>
+                    }
+                />
+            }
+            <TouchableOpacity style={styles.scrollTopButton} onPress={scrollTop}>
+                <AntDesign name="upcircle" size={36} color={COLORS.primary} />
+            </TouchableOpacity>
+        </>
     )
 }
-const styles = StyleSheet.create({
 
+export default ListAlbum
+
+const styles = StyleSheet.create({
     header: {
         flexDirection: 'row',
         justifyContent: 'flex-start',
@@ -95,7 +154,11 @@ const styles = StyleSheet.create({
     },
     video: {
         height: 200,
-        borderRadius: 10,
-    }
-})
-export default ListAlbum
+        borderRadius: 10
+    },
+    scrollTopButton: {
+        position: 'absolute',
+        bottom: 20,
+        right: 10
+    },
+});

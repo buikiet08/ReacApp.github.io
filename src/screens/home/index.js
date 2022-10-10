@@ -27,7 +27,7 @@ function Home({ navigation }) {
     });
     const config = {
       method: 'post',
-      url: 'https://hungtan.demobcb.work/api/',
+      url: 'https://hungtan-hungnguyen.nghean.gov.vn/api/',
       data: body
     }
     await axios(config)
@@ -48,7 +48,7 @@ function Home({ navigation }) {
     });
     const config = {
       method: 'post',
-      url: 'https://hungtan.demobcb.work/api/',
+      url: 'https://hungtan-hungnguyen.nghean.gov.vn/api/',
       data: body
     }
     await axios(config)

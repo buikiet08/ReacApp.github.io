@@ -51,7 +51,7 @@ function Login({ navigation }) {
                                 })
                                 const config = {
                                     method: 'post',
-                                    url: 'https://hungtan.demobcb.work/users/register/',
+                                    url: 'https://hungtan-hungnguyen.nghean.gov.vn/users/register/',
                                     headers: {
                                         Authorization: `bearer ${token}`
                                     },

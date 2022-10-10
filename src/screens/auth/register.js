@@ -33,7 +33,7 @@ function Register({ navigation }) {
             });
             const config = {
                 method: 'post',
-                url: 'https://hungtan.demobcb.work/users/register/',
+                url: 'https://hungtan-hungnguyen.nghean.gov.vn/users/register/',
                 data: body
             }
             await axios(config)

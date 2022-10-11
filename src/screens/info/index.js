@@ -4,7 +4,6 @@ import { Button } from '@rneui/themed';
 import React, { useState } from 'react'
 import { Controller, useForm } from 'react-hook-form';
 import { SafeAreaView, StyleSheet, TextInput, TouchableOpacity, View, Text } from 'react-native'
-import DatePicker from 'react-native-datepicker';
 import { COLORS } from '../../contains'
 import { usePage } from '../../hook/usePage';
 
@@ -16,9 +15,13 @@ function Info({ navigation }) {
         }
     });
     const [loading, setLoading] = useState(false)
-    const [date, setDate] = useState();
+    // const [date, setDate] = useState();
     const { user, setUser } = usePage()
     console.log(user)
+    const [value,setValue] = useState('')
+    const handleChange = (text) => {
+        setValue(text)
+    }
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
             <View style={styles.header}>
@@ -134,37 +137,16 @@ function Info({ navigation }) {
                         render={({ field: { onChange, onBlur, value } }) => (
                             <View style={styles.formItem}>
                                 <Text style={{ width: 100, fontWeight: 'bold' }}>Ngày sinh :</Text>
-                                <DatePicker
+
+                                <TextInput
+                                    placeholder="Nhập ngày sinh"
                                     style={styles.input}
-                                    date={date}
-                                    mode="date"
-                                    placeholder="Ngày sinh"
-                                    format="DD/MM/YYYY"
-                                    minDate="01-01-1900"
-                                    maxDate="01-01-2000"
-                                    confirmBtnText="Xác nhận"
-                                    cancelBtnText="Thoát"
-                                    customStyles={{
-                                        dateIcon: {
-                                            position: 'absolute',
-                                            right: -5,
-                                            top: 8,
-                                            marginLeft: 0,
-                                        },
-                                        dateInput: {
-                                            alignItems: "flex-start",
-                                            borderWidth:0,
-                                            paddingTop:8
-                                        },
-                                        placeholderText: {
-                                            fontSize: 17,
-                                            color: COLORS.gray
-                                        },
-                                        dateText: {
-                                            fontSize: 14,
-                                        }
+                                    type="datetime"
+                                    options={{
+                                        format: 'DD-MM-YYYY'
                                     }}
-                                    onDateChange={setDate}
+                                    value={value}
+                                    onChange={handleChange}
                                 />
                             </View>
                         )}
@@ -243,7 +225,7 @@ const styles = StyleSheet.create({
     formItem: {
         flexDirection: 'row',
         alignItems: 'center',
-        justifyContent:'center'
+        justifyContent: 'center'
     },
     input: {
         flex: 1,

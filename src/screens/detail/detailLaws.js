@@ -121,7 +121,7 @@ function DetailLaws({ navigation }) {
                             </View>
                             <View style={styles.row}>
                                 <Text style={styles.lable}>Thể loại</Text>
-                                <Text style={styles.content}>{data.cid}</Text>
+                                <Text style={styles.content}>{data.cat}</Text>
                             </View>
                             <View style={[styles.row, styles.active]}>
                                 <Text style={styles.lable}>Lĩnh vực</Text>

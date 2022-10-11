@@ -93,13 +93,13 @@ function ListAlbum({ navigation }) {
             </View>
             {loading ? <ActivityIndicator size='small' animating={true} style={{ marginTop: 10 }} /> :
                 <FlatList
-                    data={dataKey}
+                    data={dataValue}
                     renderItem={(item, index) =>
                         // console.log(data1[key.item]?.title, 'vào nha')
                         <TouchableOpacity
-                            key={dataValue[item.item]?.id}
+                            key={item.item?.id}
                             onPress={() => {
-                                setDataAlbum(dataValue[item.item])
+                                setDataAlbum(item.item)
                                 navigation.navigate('DetailListAlbum')
                             }}
                             activeOpacity={0.8}
@@ -107,16 +107,16 @@ function ListAlbum({ navigation }) {
                             <Image
                                 style={styles.video}
                                 source={{
-                                    uri: dataValue[item.item]?.thumb,
+                                    uri: item.item?.thumb,
                                 }}
                                 // resizeMode="contain"
                             />
-                            <Text numberOfLines={3} style={{ marginTop: 8, fontSize: 16, lineHeight: 24 }}>{dataValue[item.item]?.title}</Text>
+                            <Text numberOfLines={3} style={{ marginTop: 8, fontSize: 16, lineHeight: 24 }}>{item.item?.title}</Text>
                             <View style={{ marginTop: 8, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-                                <Text style={{ fontSize: 12, color: COLORS.black4 }}>{dataValue[item.item]?.post_name}</Text>
+                                <Text style={{ fontSize: 12, color: COLORS.black4 }}>{item.item?.post_name}</Text>
                                 <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                                    <Text style={{ fontSize: 12, color: COLORS.black4 }}>{dataValue[item.item]?.post_time}</Text>
-                                    <Text style={{ fontSize: 12, color: COLORS.black4, marginLeft: 8 }}>({dataValue[item.item]?.num_views} ảnh)</Text>
+                                    <Text style={{ fontSize: 12, color: COLORS.black4 }}>{item.item?.post_time}</Text>
+                                    <Text style={{ fontSize: 12, color: COLORS.black4, marginLeft: 8 }}>({item.item?.num_views} ảnh)</Text>
                                 </View>
                             </View>
                         </TouchableOpacity>

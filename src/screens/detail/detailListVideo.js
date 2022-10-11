@@ -11,15 +11,16 @@ function DetailListVideo({ navigation }) {
     const [loading, setLoading] = useState(false)
     const [data, setData] = useState([])
     const [cate, setCate] = useState([])
+    const [isId, setIsId] = useState(dataVideo?.id)
     useEffect(() => {
         getData()
-    }, [])
+    }, [isId])
     const getData = async () => {
         setLoading(true)
         let axios = require('axios')
         let body = JSON.stringify({
             "mod": "detail_videoclips",
-            "id": dataVideo?.id
+            "id": isId
         });
         const config = {
             method: 'post',
@@ -37,16 +38,11 @@ function DetailListVideo({ navigation }) {
                 console.error(error)
             });
     }
-    console.log(data.data?.externalpath.slice(32))
-    // let dataKey = Object.keys(data?.other)
-    // let dataValue = Object.values(data?.other)
-    // dataKey.map(key => console.log(dataValue[key]))
-    // console.log(Object.values(data?.other).addtime)
     const onRefreshMore = () => {
         setData([])
         getData()
+        setCate([])
     }
-
     // scroll Top
     const scrollTop = () => {
         scrollRef.current?.scrollTo({
@@ -74,10 +70,11 @@ function DetailListVideo({ navigation }) {
                     refreshing={loading}
                     onRefresh={onRefreshMore}
                 />}>
-                {loading ? <ActivityIndicator size='small' animating={true} style={{ marginTop: 10 }} /> :
+                {loading ? <ActivityIndicator size='small' animating={true} style={{ marginTop: -100 }} /> :
                     <>
-                        <Text style={{ fontWeight: 'bold', fontSize: 18, lineHeight: 24, marginTop: 10, }}>{data.data?.title}</Text>
-                        <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginTop: 10 }}>
+                        <Text style={{ fontSize: 10, color: COLORS.blue, marginBottom: 4 }}>#{data.data?.keywords}</Text>
+                        <Text style={{ fontWeight: 'bold', fontSize: 18, lineHeight: 24 }}>{data.data?.title}</Text>
+                        <View style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginTop: 10, marginBottom: 20, paddingBottom: 10, borderBottomStyle: 'solid', borderBottomWidth: 0.5, borderBottomColor: COLORS.gray }}>
                             <Text style={{ color: COLORS.black4 }}><Ionicons name='eye-outline' size={16} /> lượt xem {data.data?.view}</Text>
                             <Text style={{ color: COLORS.black4 }}>
                                 <Ionicons name='thumbs-up-outline' size={16} /> {data.data?.liked} <Ionicons name='thumbs-down-outline' size={16} style={{ marginLeft: 8 }} /> {data.data?.unlike}
@@ -87,33 +84,17 @@ function DetailListVideo({ navigation }) {
                             Object.values(cate?.other)?.map(key =>
                                 // console.log(key?.title ,'vàoooooooo')
                                 <View key={key.id} style={{ marginBottom: 20, paddingBottom: 20, borderBottomWidth: 0.5, borderBottomColor: COLORS.gray, borderBottomStyle: 'solid' }}>
-                                    <ImageBackground source={{ uri: key?.img }} style={{ height: 200, borderRadius: 10, overflow: 'hidden' }} resizeMode='cover'>
+                                    <ImageBackground source={{ uri: key?.img }} style={{ height: 200, borderRadius: 10, overflow: 'hidden', borderColor: COLORS.lightGray, borderStyle: 'solid', borderWidth: 1 }} resizeMode='cover'>
                                         <TouchableOpacity activeOpacity={0.8} style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center', flex: 1 }}
-                                            onPress={async () => {
-                                                setLoading(true);
-                                                let axios = require('axios')
-                                                let body = JSON.stringify({
-                                                    "mod": "detail_videoclips",
-                                                    "id": key.id
-                                                });
-                                                const config = {
-                                                    method: 'post',
-                                                    url: 'https://hungtan-hungnguyen.nghean.gov.vn/api/',
-                                                    data: body
-                                                }
-                                                await axios(config)
-                                                    .then(function (response) {
-                                                        setLoading(false)
-                                                        setData(response?.data)
-                                                        setCate(response?.data)
-                                                    })
-                                                    .catch(function (error) {
-                                                        setLoading(false)
-                                                        console.error(error)
-                                                    });
+                                            onPress={() => {
                                                 setDataVideo(key)
+                                                setIsId(key?.id)
+                                                setData([])
+                                                setCate([])
+                                                getData()
                                                 scrollTop()
-                                            }}
+                                            }
+                                            }
                                         >
                                             <Ionicons name='play-outline' size={80} color='white' />
                                         </TouchableOpacity>
@@ -138,7 +119,7 @@ function DetailListVideo({ navigation }) {
                     </TouchableOpacity>
                 </View>
             </View>
-        </SafeAreaView>
+        </SafeAreaView >
     )
 }
 const styles = StyleSheet.create({

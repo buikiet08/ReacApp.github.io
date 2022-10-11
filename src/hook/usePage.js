@@ -9,6 +9,7 @@ export const PageProvider = ({ children }) => {
 
     const [isOpenCateChild, setIsOpenCateChild] = useState(false)
     const [dataAlbum,setDataAlbum] = useState()
+    const [dataVideo,setDataVideo] = useState()
     const [dataBlog,setDataBlog] = useState()
     const [dataLaws,setDataLaws] = useState()
     const [cateNews,setCateNews] = useState()
@@ -25,7 +26,7 @@ export const PageProvider = ({ children }) => {
             })
             const config = {
                 method: 'post',
-                url: 'https://hungtan.demobcb.work/users/register/',
+                url: 'https://hungtan-hungnguyen.nghean.gov.vn/users/register/',
                 headers: {
                     Authorization: `bearer ${token}`
                 },
@@ -73,6 +74,8 @@ export const PageProvider = ({ children }) => {
         setIsAlbum,
         dataAlbum,
         setDataAlbum,
+        dataVideo,
+        setDataVideo,
         dataLaws,
         setDataLaws,
         isOpenCateChild,

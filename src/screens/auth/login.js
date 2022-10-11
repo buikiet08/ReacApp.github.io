@@ -32,7 +32,7 @@ function Login({ navigation }) {
             });
             const config = {
                 method: 'post',
-                url: 'https://hungtan.demobcb.work/users/register/',
+                url: 'https://hungtan-hungnguyen.nghean.gov.vn/users/register/',
                 data: body
             }
             await axios(config)
@@ -62,11 +62,13 @@ function Login({ navigation }) {
                                         .then(function (res) {
                                             AsyncStorage.setItem('user', JSON.stringify(res.data))
                                             setUser(res.data)
-                                            setTimeout(
-                                                function () {
-                                                    navigation.replace("BottomTab", { replace: true })
-                                                }, 1000
-                                            );
+                                            if(res.data.status === 1) {
+                                                setTimeout(
+                                                    function () {
+                                                        navigation.replace("BottomTab", { replace: true })
+                                                    }, 1000
+                                                );
+                                            }
                                             console.log(res.data, 'thông tin use')
                                         })
                                         .catch(function (error) {
@@ -94,6 +96,7 @@ function Login({ navigation }) {
         }
         console.log(data)
     }
+    console.log(errorMessage.message)
     return (
         <LinearGradient
             colors={['#097ead', '#097ead', '#0891ae']}

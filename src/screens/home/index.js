@@ -65,7 +65,7 @@ function Home({ navigation }) {
   // loading
   const renderFooter = () => {
     return (loading ?
-      <ActivityIndicator size='small' animating={true} /> : pageCurrent.length-1 ? <Text style={{ color: COLORS.gray, textAlign: 'center', width: '100%' }}>Bạn đã xem hết tin</Text> : null
+      <ActivityIndicator size='small' animating={true} /> : pageCurrent.length - 1 ? <Text style={{ color: COLORS.gray, textAlign: 'center', width: '100%' }}>Bạn đã xem hết tin</Text> : null
     )
   }
 
@@ -85,18 +85,18 @@ function Home({ navigation }) {
         <FlatList
           data={test}
           renderItem={({ item, index }) =>
-            <View style={styles.blogItem} key={item.id}>
+            <TouchableOpacity activeOpacity={0.8} style={styles.blogItem} key={item.id} onPress={() => {
+              navigation.navigate('Detail')
+              setDataBlog(item)
+            }}>
               <View style={styles.blogImage}>
                 <Image source={item.homeimgfile ? { uri: item.homeimgfile } : images.noImage} style={{ width: '100%', height: 90 }} resizeMethod='resize' />
               </View>
-              <TouchableOpacity style={styles.blogContent} onPress={() => {
-                navigation.navigate('Detail')
-                setDataBlog(item)
-              }}>
+              <View style={styles.blogContent}>
                 <Text style={styles.title} numberOfLines={3}>{item.title}</Text>
                 <Text style={styles.time}>{item.publtime}</Text>
-              </TouchableOpacity>
-            </View>
+              </View>
+            </TouchableOpacity>
           }
           contentContainerStyle={{ padding: 16 }}
           keyExtractor={(item, index) => index.toString()}

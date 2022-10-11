@@ -7,7 +7,7 @@ import { usePage } from '../../hook/usePage'
 function ListAlbum({ navigation }) {
     let listNews = useRef()
     const { setIsAlbum, setDataAlbum } = usePage()
-    const [dataNotification, setDataNotification] = useState([])
+    const [data, setData] = useState([])
     const [page, setPage] = useState(1)
     const [loading, setLoading] = useState(false)
 
@@ -29,7 +29,7 @@ function ListAlbum({ navigation }) {
         await axios(config)
             .then(function (response) {
                 setLoading(false)
-                setDataNotification(response?.data.data)
+                setData(response?.data.data)
             })
             .catch(function (error) {
                 setLoading(false)
@@ -51,7 +51,7 @@ function ListAlbum({ navigation }) {
         await axios(config)
             .then(function (response) {
                 setLoading(false)
-                setDataNotification([...dataNotification, ...response?.data.data])
+                setData([...dataNotification, ...response?.data.data])
                 setPage(...page, page + 1)
             })
             .catch(function (error) {
@@ -70,11 +70,11 @@ function ListAlbum({ navigation }) {
         listNews.scrollToOffset({ offset: 0, animated: true })
     }
     const onRefreshMore = () => {
-        setDataNotification([])
+        setData([])
         getData()
     }
-    let data = Object.keys(dataNotification)
-    let data1 = Object.values(dataNotification)
+    let dataKey = Object.keys(data)
+    let dataValue = Object.values(data)
 
     // const data2 = data.map(key => console.log(data1[key]))
     // console.log(data2)
@@ -93,13 +93,13 @@ function ListAlbum({ navigation }) {
             </View>
             {loading ? <ActivityIndicator size='small' animating={true} style={{ marginTop: 10 }} /> :
                 <FlatList
-                    data={data}
+                    data={dataKey}
                     renderItem={(item, index) =>
                         // console.log(data1[key.item]?.title, 'vào nha')
                         <TouchableOpacity
-                            key={data1[item.item]?.id}
+                            key={dataValue[item.item]?.id}
                             onPress={() => {
-                                setDataAlbum(data1[item.item])
+                                setDataAlbum(dataValue[item.item])
                                 navigation.navigate('DetailListAlbum')
                             }}
                             activeOpacity={0.8}
@@ -107,16 +107,16 @@ function ListAlbum({ navigation }) {
                             <Image
                                 style={styles.video}
                                 source={{
-                                    uri: data1[item.item]?.thumb,
+                                    uri: dataValue[item.item]?.thumb,
                                 }}
                                 // resizeMode="contain"
                             />
-                            <Text numberOfLines={3} style={{ marginTop: 8, fontSize: 16, lineHeight: 24 }}>{data1[item.item]?.title}</Text>
+                            <Text numberOfLines={3} style={{ marginTop: 8, fontSize: 16, lineHeight: 24 }}>{dataValue[item.item]?.title}</Text>
                             <View style={{ marginTop: 8, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-                                <Text style={{ fontSize: 12, color: COLORS.black4 }}>{data1[item.item]?.post_name}</Text>
+                                <Text style={{ fontSize: 12, color: COLORS.black4 }}>{dataValue[item.item]?.post_name}</Text>
                                 <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                                    <Text style={{ fontSize: 12, color: COLORS.black4 }}>{data1[item.item]?.post_time}</Text>
-                                    <Text style={{ fontSize: 12, color: COLORS.black4, marginLeft: 8 }}>({data1[item.item]?.num_views} ảnh)</Text>
+                                    <Text style={{ fontSize: 12, color: COLORS.black4 }}>{dataValue[item.item]?.post_time}</Text>
+                                    <Text style={{ fontSize: 12, color: COLORS.black4, marginLeft: 8 }}>({dataValue[item.item]?.num_views} ảnh)</Text>
                                 </View>
                             </View>
                         </TouchableOpacity>

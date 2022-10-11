@@ -19,14 +19,17 @@ function Detail({ navigation }) {
             flexDirection: 'colums',
             justifyContent: 'flex-start',
             alignItems: 'flex-start',
+            maxWidth: width - 32
         },
         div: {
             width: width - 16,
             TextAlign: 'left',
+            paddingRight: 16
         },
         span: {
             fontSize: 16,
             lineHeight: 24,
+            maxWidth: width - 32
         },
         img: {
             textAlign: 'left',
@@ -35,7 +38,8 @@ function Detail({ navigation }) {
             maxWidth: width - 32
         },
         p: {
-            marginBottom: 0
+            marginBottom: 0,
+            maxWidth: width - 32
         }
     };
     useEffect(() => {
@@ -117,54 +121,54 @@ function Detail({ navigation }) {
             }>
                 {loading ? <ActivityIndicator size='small' animating={true} style={{ marginTop: 18 }} /> :
                     <>
-                        <Text style={{marginBottom:10, color: COLORS.black4}}>{data.catid_title}</Text>
+                        <Text style={{ marginBottom: 10, color: COLORS.black4 }}>{data.catid_title}</Text>
                         <Text style={{ fontSize: 20, fontWeight: 'bold', lineHeight: 28, marginBottom: 8 }}>{data.title}</Text>
-                        <Text style={{ marginBottom: 8, color:COLORS.black4 }}>{data.publtime}</Text>
+                        <Text style={{ marginBottom: 8, color: COLORS.black4 }}>{data.publtime}</Text>
                         <Text style={{ marginBottom: 20, fontSize: 16, lineHeight: 24 }}>{data.hometext}</Text>
                         <RenderHtml
                             contentWidth={width}
                             source={source}
                             tagsStyles={tagsStyles}
                         />
-                        <View style={{ marginTop:20,paddingBottom: 10, marginBottom: 10, borderBottomStyle: 'solid', borderBottomColor: COLORS.gray, borderBottomWidth: 0.5 }}>
+                        <View style={{ marginTop: 20, paddingBottom: 10, marginBottom: 10, borderBottomStyle: 'solid', borderBottomColor: COLORS.gray, borderBottomWidth: 0.5 }}>
                             <Text style={{ fontSize: 20, fontWeight: 'bold', color: COLORS.primary }}>Tin liên quan</Text>
                         </View>
                         <FlatList
                             data={cate.related_news}
                             renderItem={({ item, index }) =>
-                                <View style={styles.blogItem} key={item.id}>
+                                <TouchableOpacity activeOpacity={0.8} style={styles.blogItem} key={item.id} onPress={async () => {
+                                    setLoading(true);
+                                    let axios = require('axios')
+                                    let body = JSON.stringify({
+                                        "mod": "detail_news",
+                                        "id": item.id
+                                    });
+                                    const config = {
+                                        method: 'post',
+                                        url: 'https://hungtan-hungnguyen.nghean.gov.vn/api/',
+                                        data: body
+                                    }
+                                    await axios(config)
+                                        .then(function (response) {
+                                            setLoading(false)
+                                            setData(response?.data.data)
+                                            setCate(response?.data)
+                                        })
+                                        .catch(function (error) {
+                                            setLoading(false)
+                                            console.error(error)
+                                        });
+                                    setDataBlog(item)
+                                    scrollTop()
+                                }}>
                                     <View style={styles.blogImage}>
                                         <Image source={item.homeimgfile ? { uri: item.homeimgfile } : images.noImage} style={{ width: '100%', height: 90 }} resizeMethod='resize' />
                                     </View>
-                                    <TouchableOpacity style={styles.blogContent} onPress={async () => {
-                                        setLoading(true);
-                                        let axios = require('axios')
-                                        let body = JSON.stringify({
-                                            "mod": "detail_news",
-                                            "id": item.id
-                                        });
-                                        const config = {
-                                            method: 'post',
-                                            url: 'https://hungtan-hungnguyen.nghean.gov.vn/api/',
-                                            data: body
-                                        }
-                                        await axios(config)
-                                            .then(function (response) {
-                                                setLoading(false)
-                                                setData(response?.data.data)
-                                                setCate(response?.data)
-                                            })
-                                            .catch(function (error) {
-                                                setLoading(false)
-                                                console.error(error)
-                                            });
-                                        setDataBlog(item)
-                                        scrollTop()
-                                    }}>
+                                    <View style={styles.blogContent}>
                                         <Text style={styles.title} numberOfLines={3}>{item.title}</Text>
                                         <Text style={styles.time}>{item.publtime}</Text>
-                                    </TouchableOpacity>
-                                </View>
+                                    </View>
+                                </TouchableOpacity>
                             }
                             keyExtractor={(item, index) => item.id}
                             listKey="new_category"

@@ -1,20 +1,20 @@
 import { SearchBar } from '@rneui/themed';
 import React, { useEffect, useState } from 'react'
-import { ActivityIndicator, Image, ImageBackground, StyleSheet, TouchableOpacity, View,Text, FlatList } from 'react-native';
-import { COLORS } from '../../contains'
+import { ActivityIndicator, Image, ImageBackground, StyleSheet, TouchableOpacity, View, Text, FlatList } from 'react-native';
+import { COLORS, images } from '../../contains'
 import { usePage } from '../../hook/usePage';
 
-function Search({ navigation}) {
+function Search({ navigation }) {
     const [search, setSearch] = useState('');
     const [loading, setLoading] = useState(false)
     const [page, setPage] = useState(1)
     const [data, setData] = useState([])
     const [result, setResult] = useState(false)
-    const {setDataBlog} = usePage()
+    const { setDataBlog } = usePage()
 
     useEffect(() => {
         getData(search)
-        onLoadMore({search,page})
+        onLoadMore({ search, page })
     }, [page])
     const getData = async () => {
         setLoading(true)
@@ -65,7 +65,7 @@ function Search({ navigation}) {
     // loading
     const renderFooter = () => {
         return (loading ?
-            <ActivityIndicator size='small' animating={true} /> : page.length-1 ? <Text style={{ color: COLORS.gray, textAlign: 'center', width: '100%' }}>Bạn đã xem hết tin</Text> : null
+            <ActivityIndicator size='small' animating={true} /> : page.length - 1 ? <Text style={{ color: COLORS.gray, textAlign: 'center', width: '100%' }}>Bạn đã xem hết tin</Text> : null
         )
     }
     const handleSubmit = (value) => {
@@ -92,18 +92,18 @@ function Search({ navigation}) {
                     <FlatList
                         data={data}
                         renderItem={({ item, index }) =>
-                            <View style={styles.blogItem} key={item.id}>
+                            <TouchableOpacity activeOpacity={0.8} style={styles.blogItem} key={item.id} onPress={() => {
+                                navigation.navigate('Detail')
+                                setDataBlog(item)
+                            }}>
                                 <View style={styles.blogImage}>
-                                    <Image source={{ uri: `${item.homeimgfile ? item.homeimgfile : 'https://artsmidnorthcoast.com/wp-content/uploads/2014/05/no-image-available-icon-6.png'}` }} style={{ width: '100%', height: 90 }} resizeMethod='resize' />
+                                    <Image source={item.homeimgfile ? { uri: item.homeimgfile } : images.noImage} style={{ width: '100%', height: 90 }} resizeMethod='resize' />
                                 </View>
-                                <TouchableOpacity style={styles.blogContent} onPress={() => {
-                                    navigation.navigate('Detail')
-                                    setDataBlog(item)
-                                }}>
+                                <View style={styles.blogContent}>
                                     <Text style={styles.title} numberOfLines={3}>{item.title}</Text>
                                     <Text style={styles.time}>{item.publtime}</Text>
-                                </TouchableOpacity>
-                            </View>
+                                </View>
+                            </TouchableOpacity>
                         }
                         keyExtractor={(item, index) => item.id}
                         listKey="search"
@@ -117,40 +117,40 @@ function Search({ navigation}) {
     }
     return (
         <>
-        <View style={styles.header}>
-            <ImageBackground source={{ uri: 'https://static.vecteezy.com/system/resources/thumbnails/008/141/217/small/panoramic-abstract-web-background-blue-gradient-vector.jpg' }}
-                style={styles.background}>
-                <View style={{ flex: 1 }}>
-                    <SearchBar
-                        containerStyle={{
-                            backgroundColor: COLORS.white,
-                            height: 48,
-                            borderRadius: 30,
-                            padding: 0,
-                            overflow: 'hidden',
-                        }}
-                        inputContainerStyle={{ backgroundColor: 'white', borderRadius: 30, marginTop: -1 }}
-                        inputStyle={{ borderColor: COLORS.white }}
-                        showCancel={true}
-                        placeholder="Tìm kiếm..."
-                        value={search}
-                        onChangeText={text => onChange(text)}
-                        onSubmitEditing={handleSubmit}
-                    />
+            <View style={styles.header}>
+                <ImageBackground source={images.header}
+                    style={styles.background}>
+                    <View style={{ flex: 1 }}>
+                        <SearchBar
+                            containerStyle={{
+                                backgroundColor: COLORS.white,
+                                height: 48,
+                                borderRadius: 30,
+                                padding: 0,
+                                overflow: 'hidden',
+                            }}
+                            inputContainerStyle={{ backgroundColor: 'white', borderRadius: 30, marginTop: -1 }}
+                            inputStyle={{ borderColor: COLORS.white }}
+                            showCancel={true}
+                            placeholder="Tìm kiếm..."
+                            value={search}
+                            onChangeText={text => onChange(text)}
+                            onSubmitEditing={handleSubmit}
+                        />
 
-                </View>
-                <TouchableOpacity activeOpacity={0.6} style={{ marginLeft: 8 }} onPress={() => {
-                    navigation.navigate('BottomTab')
-                    setData([])
-                    setPage(1)
-                }}>
-                    {/* <AntDesign name="close" size={24} color={COLORS.white} /> */}
-                    <Text style={{ color: COLORS.white,fontWeight: 'bold',fontSize: 16 }}>Đóng</Text>
-                </TouchableOpacity>
-            </ImageBackground>
-        </View>
-        {result && loading ? <ActivityIndicator size='small' animating={true} /> : <SearchPage />
-        }
+                    </View>
+                    <TouchableOpacity activeOpacity={0.6} style={{ marginLeft: 8 }} onPress={() => {
+                        navigation.navigate('BottomTab')
+                        setData([])
+                        setPage(1)
+                    }}>
+                        {/* <AntDesign name="close" size={24} color={COLORS.white} /> */}
+                        <Text style={{ color: COLORS.white, fontWeight: 'bold', fontSize: 16 }}>Đóng</Text>
+                    </TouchableOpacity>
+                </ImageBackground>
+            </View>
+            {result && loading ? <ActivityIndicator size='small' animating={true} /> : <SearchPage />
+            }
         </>
     )
 }

@@ -13,39 +13,7 @@ function DetailLaws({ navigation }) {
     const [cate, setCate] = useState([])
     const [loading, setLoading] = useState(false)
     const tagsStyles = {
-        span: {
-            fontSize: 12
-        },
-        body: {
-            fontSize: 12,
-            whiteSpace: 'normal',
-            width: width - 32
-        },
-        p: {
-            fontSize: 12
-        },
-        a: {
-            fontSize: 12
-        },
-        tbody: {
-            fontSize: 12
-        },
-        i: {
-            fontSize: 12
-        },
-        td: {
-            fontSize: 12
-        },
-        table: {
-            fontSize: 12
-        },
-        tr: {
-            fontSize: 12
-        },
-        div: {
-            fontSize: 12,
-            width: width - 32
-        }
+        
     };
     useEffect(() => {
         getData()

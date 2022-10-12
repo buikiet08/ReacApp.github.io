@@ -65,7 +65,7 @@ function DetailListAlbum({ navigation }) {
                 {loading ? <ActivityIndicator size='small' animating={true} /> :
                     <>
                         <Text style={{ fontWeight: 'bold', fontSize: 18, lineHeight: 24, marginBottom: 20 }}>{dataAlbum?.title}</Text>
-                        {data.map((item) =>
+                        {data === null ? <Text style={{color:COLORS.black4, textAlign:'center', marginTop:20}}>Hiện không có hình ảnh</Text> : data.map((item) =>
                             <View key={item.id} style={{ marginBottom: 20 }}>
                                 <Image
                                     source={{ uri: item.link }}

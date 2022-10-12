@@ -103,7 +103,7 @@ function DetailListVideo({ navigation }) {
                                     <Text style={{ flexDirection: 'row', alignItems: 'center', color: COLORS.black4 }}><Ionicons name='eye-outline' size={14} /> lượt xem: {key?.view}</Text>
                                 </View>
                             )
-                            : null
+                            : <Text style={{color:COLORS.black4, textAlign:'center', marginTop:20}}>Hiện không có video</Text>
                         }
                     </>
                 }

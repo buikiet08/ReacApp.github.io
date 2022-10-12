@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "ReactApp",
+    "name": "Trang Thông Tin Điện Tử Xã Hưng Tân - Nghệ An",
     "slug": "ReactApp",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -18,7 +18,8 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.coldboya123.ReactApp"
     },
     "android": {
       "adaptiveIcon": {

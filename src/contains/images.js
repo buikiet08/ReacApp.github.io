@@ -4,6 +4,8 @@ export const header = require("../../assets/images/bg-header.jpg");
 export const noImage = require("../../assets/images/mo-image.png");
 export const headerContent = require("../../assets/images/bg-head.png");
 export const newspaper = require("../../assets/images/news1.png");
+export const logoNa = require("../../assets/images/logo-na-removebg-preview.png");
+
 
 
 
@@ -14,5 +16,6 @@ export default {
     noImage,
     headerContent,
     newspaper, 
+    logoNa
 }
 

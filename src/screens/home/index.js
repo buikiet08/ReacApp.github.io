@@ -2,7 +2,7 @@ import { AntDesign } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import React, { useCallback, useEffect, useRef, useState } from 'react'
-import { LogBox, ActivityIndicator, FlatList, Image, StyleSheet, Text, TouchableOpacity, View, RefreshControl } from 'react-native'
+import { LogBox, ActivityIndicator, FlatList, Image, StyleSheet, Text, TouchableOpacity, View, RefreshControl, ImageBackground } from 'react-native'
 import { COLORS, images } from '../../contains'
 import { usePage } from '../../hook/usePage'
 
@@ -11,7 +11,7 @@ function Home({ navigation }) {
   LogBox.ignoreLogs(['Warning: ...']); // Ignore log notification by message
   LogBox.ignoreAllLogs();//Ignore all log notifications
   const { setDataBlog } = usePage(null)
-  const [test, setTest] = useState([])
+  const [data, setData] = useState([])
   const [loading, setLoading] = useState(false)
   const [pageCurrent, setPageCurrent] = useState(1)
   // fetch API
@@ -33,7 +33,7 @@ function Home({ navigation }) {
     await axios(config)
       .then(function (response) {
         setLoading(false)
-        setTest(response?.data.data)
+        setData(response?.data.data)
       })
       .catch(function (error) {
         setLoading(false)
@@ -54,7 +54,7 @@ function Home({ navigation }) {
     await axios(config)
       .then(function (response) {
         setLoading(false)
-        setTest([...test, ...response.data?.data])
+        setData([...data, ...response.data?.data])
         setPageCurrent(...pageCurrent, pageCurrent + 1)
       })
       .catch(function (error) {
@@ -74,27 +74,26 @@ function Home({ navigation }) {
   }
 
   const onRefreshMore = () => {
-    setTest([])
+    setData([])
     getData()
   }
-
   // onScroll={(event) => setPosition(event.nativeEvent.contentOffset.y)}
   return (
     <>
       {loading ? <ActivityIndicator size='small' animating={true} style={{ marginTop: 10 }} /> :
         <FlatList
-          data={test}
+          data={data}
           renderItem={({ item, index }) =>
-            <TouchableOpacity activeOpacity={0.8} style={styles.blogItem} key={item.id} onPress={() => {
+            <TouchableOpacity activeOpacit={0.8} style={styles.blogItem} key={item?.id} onPress={() => {
               navigation.navigate('Detail')
               setDataBlog(item)
             }}>
               <View style={styles.blogImage}>
-                <Image source={item.homeimgfile ? { uri: item.homeimgfile } : images.noImage} style={{ width: '100%', height: 90 }} resizeMethod='resize' />
+                <Image source={item?.homeimgfile ? { uri: item?.homeimgfile } : images.noImage} style={{ width: '100%', height: 90 }} resizeMethod='resize' />
               </View>
               <View style={styles.blogContent}>
-                <Text style={styles.title} numberOfLines={3}>{item.title}</Text>
-                <Text style={styles.time}>{item.publtime}</Text>
+                <Text style={styles.title} numberOfLines={3}>{item?.title}</Text>
+                <Text style={styles.time}>{item?.publtime}</Text>
               </View>
             </TouchableOpacity>
           }
@@ -135,7 +134,8 @@ const styles = StyleSheet.create({
     paddingBottom: 16,
     borderBottomWidth: 0.3,
     borderBottomColor: COLORS.gray,
-    borderBottomStyle: 'solid'
+    borderBottomStyle: 'solid',
+    position: 'relative',
   },
   blogImage: {
     width: '30%',

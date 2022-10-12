@@ -7,9 +7,9 @@ function SplashScreen({navigation}) {
     setTimeout(function () {navigation.replace('BottomTab')}, 1500)
     return (
         <LinearGradient
-            colors={['#087ead','#097ead','#0891ae', '#0891ae','#097ead','#087ead',]}
+            colors={['#087ead','#0891ae',"#fff",'#fff','#fff', '#0891ae','#087ead',]}
             style={styles.container}>
-            <Image source={images.newspaper} style={{width:100, height:100}} />
+            <Image source={images.logoNa} style={{width:220, height:220}} />
         </LinearGradient>
     )
 }

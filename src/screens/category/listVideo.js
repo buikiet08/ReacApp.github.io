@@ -76,7 +76,7 @@ function ListVideo({ navigation}) {
     }
     let dataKey = Object.keys(data)
     let dataValue = Object.values(data)
-    // console.log(dataKey)
+    // console.log(dataValue.reverse())
     // console.log(dataValue)
 
     return (
@@ -92,23 +92,21 @@ function ListVideo({ navigation}) {
             </View>
             <FlatList
                 contentContainerStyle={{ padding: 16, paddingTop: 0 }}
-                data={dataValue}
+                data={dataValue.reverse()}
                 renderItem={(item, index) =>
                     // console.log(item.item?.title, 'vào nha')
-                    <View style={{ marginBottom: 20, paddingBottom: 20, borderBottomWidth: 0.5, borderBottomColor: COLORS.gray, borderBottomStyle: 'solid' }}>
+                    <TouchableOpacity onPress={() => {
+                        setDataVideo(item.item)
+                        navigation.navigate('DetailListVideo')
+                    }} activeOpacity={0.8} style={{ marginBottom: 20, paddingBottom: 20, borderBottomWidth: 0.5, borderBottomColor: COLORS.gray, borderBottomStyle: 'solid' }}>
                         <ImageBackground source={{ uri: item.item?.img }} style={{ height: 200, borderRadius: 10, overflow: 'hidden' }} resizeMode='cover'>
-                            <TouchableOpacity activeOpacity={0.8} style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center', flex: 1 }}
-                                onPress={() => {
-                                    setDataVideo(item.item)
-                                    navigation.navigate('DetailListVideo')
-                                }}
-                            >
+                            <View  style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center', flex: 1 }}>
                                 <Ionicons name='play-outline' size={80} color='white' />
-                            </TouchableOpacity>
+                            </View>
                         </ImageBackground>
                         <Text numberOfLines={3} style={{ marginVertical: 10, fontSize: 16, lineHeight: 24 }}>{item.item?.title}</Text>
                         <Text style={{ flexDirection: 'row', alignItems: 'center', color: COLORS.black4 }}><Ionicons name='eye-outline' size={14} /> lượt xem: {item.item?.view}</Text>
-                    </View>
+                    </TouchableOpacity>
                 }
                 keyExtractor={(item, index) => item.id}
                 listKey="listVideo"

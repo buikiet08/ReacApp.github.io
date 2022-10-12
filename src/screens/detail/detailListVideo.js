@@ -83,25 +83,22 @@ function DetailListVideo({ navigation }) {
                         {cate?.other && Object(cate?.other) ?
                             Object.values(cate?.other)?.map(key =>
                                 // console.log(key?.title ,'vàoooooooo')
-                                <View key={key.id} style={{ marginBottom: 20, paddingBottom: 20, borderBottomWidth: 0.5, borderBottomColor: COLORS.gray, borderBottomStyle: 'solid' }}>
+                                <TouchableOpacity onPress={() => {
+                                    setDataVideo(key)
+                                    setIsId(key?.id)
+                                    setData([])
+                                    setCate([])
+                                    getData()
+                                    scrollTop()
+                                }} activeOpacity={0.8} key={key.id} style={{ marginBottom: 20, paddingBottom: 20, borderBottomWidth: 0.5, borderBottomColor: COLORS.gray, borderBottomStyle: 'solid' }}>
                                     <ImageBackground source={{ uri: key?.img }} style={{ height: 200, borderRadius: 10, overflow: 'hidden', borderColor: COLORS.lightGray, borderStyle: 'solid', borderWidth: 1 }} resizeMode='cover'>
-                                        <TouchableOpacity activeOpacity={0.8} style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center', flex: 1 }}
-                                            onPress={() => {
-                                                setDataVideo(key)
-                                                setIsId(key?.id)
-                                                setData([])
-                                                setCate([])
-                                                getData()
-                                                scrollTop()
-                                            }
-                                            }
-                                        >
+                                        <View style={{ flexDirection: 'row', justifyContent: 'center', alignItems: 'center', flex: 1 }}>
                                             <Ionicons name='play-outline' size={80} color='white' />
-                                        </TouchableOpacity>
+                                        </View>
                                     </ImageBackground>
                                     <Text numberOfLines={3} style={{ marginVertical: 10, fontSize: 16, lineHeight: 24 }}>{key?.title}</Text>
                                     <Text style={{ flexDirection: 'row', alignItems: 'center', color: COLORS.black4 }}><Ionicons name='eye-outline' size={14} /> lượt xem: {key?.view}</Text>
-                                </View>
+                                </TouchableOpacity>
                             )
                             : <Text style={{color:COLORS.black4, textAlign:'center', marginTop:20}}>Hiện không có video</Text>
                         }

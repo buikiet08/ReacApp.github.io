@@ -1,37 +1,9 @@
 import { AntDesign, Ionicons } from '@expo/vector-icons'
-import { Video } from 'expo-av'
 import React, { useEffect, useRef, useState } from 'react'
 import { ActivityIndicator, Image, FlatList, RefreshControl, SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View, useWindowDimensions, ImageBackground } from 'react-native'
 import { COLORS, images } from '../../contains'
 import { usePage } from '../../hook/usePage'
 
-const listVideo = [
-    {
-        id: 1,
-        title: 'Tập huấn Chương trình Mỗi xã một sản phẩm (OCOP) năm 2021 video demo',
-        link: 'https://d23dyxeqlo5psv.cloudfront.net/big_buck_bunny.mp4'
-    },
-    {
-        id: 2,
-        title: 'Tập huấn Chương trình Mỗi xã một sản phẩm (OCOP) năm 2021 video demo',
-        link: 'https://d23dyxeqlo5psv.cloudfront.net/big_buck_bunny.mp4'
-    },
-    {
-        id: 3,
-        title: 'Tập huấn Chương trình Mỗi xã một sản phẩm (OCOP) năm 2021 video demo',
-        link: 'https://d23dyxeqlo5psv.cloudfront.net/big_buck_bunny.mp4'
-    },
-    {
-        id: 4,
-        title: 'Tập huấn Chương trình Mỗi xã một sản phẩm (OCOP) năm 2021 video demo',
-        link: 'https://d23dyxeqlo5psv.cloudfront.net/big_buck_bunny.mp4'
-    },
-    {
-        id: 5,
-        title: 'Tập huấn Chương trình Mỗi xã một sản phẩm (OCOP) năm 2021 video demo',
-        link: 'https://d23dyxeqlo5psv.cloudfront.net/big_buck_bunny.mp4'
-    },
-]
 function ListVideo({ navigation}) {
     const { width } = useWindowDimensions();
     let listNews = useRef()

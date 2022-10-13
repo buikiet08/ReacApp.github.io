@@ -83,7 +83,7 @@ function Home({ navigation }) {
       {loading ? <ActivityIndicator size='small' animating={true} style={{ marginTop: 10 }} /> :
         <FlatList
           data={data}
-          renderItem={({ item, index }) =>
+          renderItem={({ item, index }) => {(
             <TouchableOpacity activeOpacit={0.8} style={styles.blogItem} key={item?.id} onPress={() => {
               navigation.navigate('Detail')
               setDataBlog(item)
@@ -95,7 +95,11 @@ function Home({ navigation }) {
                 <Text style={styles.title} numberOfLines={3}>{item?.title}</Text>
                 <Text style={styles.time}>{item?.publtime}</Text>
               </View>
-            </TouchableOpacity>
+            </TouchableOpacity>)
+            if(item.id === 3) {
+              item = <View style={{width: '100%', height: 200, backgroundColor:'red'}}></View>
+            }  
+          }
           }
           contentContainerStyle={{ padding: 16 }}
           keyExtractor={(item, index) => index.toString()}

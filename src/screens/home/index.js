@@ -77,29 +77,50 @@ function Home({ navigation }) {
     setData([])
     getData()
   }
+  // Array.prototype.insert = function (index, item) {
+  //   this.splice(index, 0, item);
+  // };
+  const insert = (arr, index, newItem) => [
+    // part of the array before the specified index
+    ...arr.slice(0, index),
+    // inserted item
+    newItem,
+    // part of the array after the specified index
+    ...arr.slice(index)
+  ]
+  const result = insert(data, 3, { "homeimgfile": 'https://images.unsplash.com/photo-1661956600684-97d3a4320e45?ixlib=rb-1.2.1&ixid=MnwxMjA3fDF8MHxlZGl0b3JpYWwtZmVlZHwxfHx8ZW58MHx8fHw%3D&auto=format&fit=crop&w=500&q=60' })
+  // data.insert(3, { "homeimgfile": 'https://images.unsplash.com/photo-1661956600684-97d3a4320e45?ixlib=rb-1.2.1&ixid=MnwxMjA3fDF8MHxlZGl0b3JpYWwtZmVlZHwxfHx8ZW58MHx8fHw%3D&auto=format&fit=crop&w=500&q=60' })
   // onScroll={(event) => setPosition(event.nativeEvent.contentOffset.y)}
+  console.log(data)
   return (
     <>
       {loading ? <ActivityIndicator size='small' animating={true} style={{ marginTop: 10 }} /> :
         <FlatList
-          data={data}
-          renderItem={({ item, index }) => {(
-            <TouchableOpacity activeOpacit={0.8} style={styles.blogItem} key={item?.id} onPress={() => {
+          data={result}
+          renderItem={({ item, index }) =>
+            index === 3 ? <ImageBackground source={item?.homeimgfile ? { uri: item?.homeimgfile } : images.noImage} style={{ 
+              width: '100%', 
+              height: 200, 
+              borderRadius:10,  
+              marginBottom:32, 
+              borderBottomStyle: 'solid',
+              borderBottomWidth: 0.5, 
+              borderBottomColor: COLORS.gray,
+              overflow: 'hidden'
+            }} resizeMethod='resize' /> : 
+            <TouchableOpacity activeOpacity={index !== 3 ? 0.8 : 1} style={styles.blogItem} key={item?.id} onPress={() => {
               navigation.navigate('Detail')
               setDataBlog(item)
             }}>
               <View style={styles.blogImage}>
                 <Image source={item?.homeimgfile ? { uri: item?.homeimgfile } : images.noImage} style={{ width: '100%', height: 90 }} resizeMethod='resize' />
               </View>
-              <View style={styles.blogContent}>
-                <Text style={styles.title} numberOfLines={3}>{item?.title}</Text>
-                <Text style={styles.time}>{item?.publtime}</Text>
-              </View>
-            </TouchableOpacity>)
-            if(item.id === 3) {
-              item = <View style={{width: '100%', height: 200, backgroundColor:'red'}}></View>
-            }  
-          }
+              
+                <View style={styles.blogContent}>
+                  <Text style={styles.title} numberOfLines={3}>{item?.title}</Text>
+                  <Text style={styles.time}>{item?.publtime}</Text>
+                </View>
+            </TouchableOpacity>
           }
           contentContainerStyle={{ padding: 16 }}
           keyExtractor={(item, index) => index.toString()}
@@ -145,6 +166,12 @@ const styles = StyleSheet.create({
     width: '30%',
     borderRadius: 4,
     overflow: 'hidden',
+  },
+  banner: {
+    width: '100%',
+    height: 200,
+    borderRadius: 10,
+    overflow: 'hidden'
   },
   blogContent: {
     paddingLeft: 8,

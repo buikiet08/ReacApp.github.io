@@ -4,23 +4,84 @@ import { Button } from '@rneui/themed';
 import React, { useState } from 'react'
 import { Controller, useForm } from 'react-hook-form';
 import { SafeAreaView, StyleSheet, TextInput, TouchableOpacity, View, Text } from 'react-native'
+import url from '../../config/api';
 import { COLORS } from '../../contains'
 import { usePage } from '../../hook/usePage';
 
 function Info({ navigation }) {
-    const { control, handleSubmit, formState: { errors } } = useForm({
+    const {  watch, control, handleSubmit, formState: { errors }} = useForm({
         defaultValues: {
-            username: '',
-            password: ''
+            full_name: '',
         }
     });
     const [loading, setLoading] = useState(false)
     // const [date, setDate] = useState();
     const { user, setUser } = usePage()
-    console.log(user)
-    const [value,setValue] = useState('')
+    const [value, setValue] = useState('')
     const handleChange = (text) => {
         setValue(text)
+    }
+    const [errorMessage, setErrorMessage] = useState('')
+
+    const onSubmit = (data) => {
+        console.error(data,'vào')
+
+        // let token = await AsyncStorage.getItem('token');
+
+        // try {
+        //     let axios = require('axios')
+        //     let body = JSON.stringify({
+        //         "mod": "api_register_user",
+        //         "full_name": data.full_name,
+        //     });
+        //     const config = {
+        //         method: 'post',
+        //         url: `${url}users/register/`,
+        //         data: body
+        //     }
+        //     await axios(config)
+        //         .then(function (response) {
+        //             setLoading(true)
+        //             console.log(response.data, 'vào')
+        //             if (response.data) {
+        //                 let body = JSON.stringify({
+        //                     "mod": "get_info_user"
+        //                 })
+        //                 const config = {
+        //                     method: 'post',
+        //                     url: `${url}users/register/`,
+        //                     headers: {
+        //                         Authorization: `bearer ${token}`
+        //                     },
+        //                     data: body
+        //                 }
+        //                 if (token) {
+        //                     return axios(config)
+        //                         .then(function (res) {
+        //                             const user = AsyncStorage.getItem('user', JSON.stringify(res.data))
+        //                             if (user) {
+        //                                 setUser(res.data)
+        //                             }
+        //                         })
+        //                         .catch(function (error) {
+        //                             console.error(error)
+        //                         });
+        //                 }
+        //             }
+        //             setErrorMessage(response.data)
+        //         })
+        //         .catch(function (error) {
+        //             setLoading(false)
+        //             setErrorMessage(error.data.message)
+        //         });
+        // }
+        // catch (error) {
+        //     console.error(error.message)
+        //     setErrorMessage(error.message)
+        // }
+        // finally {
+        //     setLoading(false)
+        // }
     }
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
@@ -47,7 +108,6 @@ function Info({ navigation }) {
                                     style={styles.input}
                                     onBlur={onBlur}
                                     onChangeText={onChange}
-                                    value={value}
                                     type="text"
                                     defaultValue={user?.data?.first_name}
                                     placeholderTextColor={"#fff"}
@@ -63,7 +123,7 @@ function Info({ navigation }) {
                         </Text>
                     }
                 </View>
-                <View style={styles.formInput}>
+                {/* <View style={styles.formInput}>
                     <Controller
                         control={control}
                         rules={{
@@ -129,11 +189,6 @@ function Info({ navigation }) {
                 <View style={styles.formInput}>
                     <Controller
                         control={control}
-                        rules={{
-                            required: true,
-                            minLength: 10
-                        }}
-
                         render={({ field: { onChange, onBlur, value } }) => (
                             <View style={styles.formItem}>
                                 <Text style={{ width: 100, fontWeight: 'bold' }}>Ngày sinh :</Text>
@@ -152,13 +207,7 @@ function Info({ navigation }) {
                         )}
                         name="birthday"
                     />
-                    {Object.keys(errors).length !== 0 &&
-                        <Text style={styles.error}>
-                            {errors.birthday?.type === 'required' && 'Ngày sinh không được để trống'}
-                            {errors.birthday?.type === 'minLength' && 'Vui lòng nhập tối thiểu 10 số'}
-                        </Text>
-                    }
-                </View>
+                </View> */}
                 <View styles={styles.btnBottom}>
                     <Button
                         title="Cập nhật thông tin"
@@ -176,7 +225,7 @@ function Info({ navigation }) {
                             width: '100%',
                             marginBottom: 20,
                         }}
-                    // onPress={handleSubmit(onSubmit)}
+                        onPress={handleSubmit(onSubmit)}
                     />
                     <Button
                         title="Đăng xuất"

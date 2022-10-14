@@ -82,7 +82,7 @@ function CategoryList({ navigation }) {
                 }>
                     <AntDesign name="arrowleft" size={24} color={COLORS.black4} />
                 </TouchableOpacity>
-                <Text style={{ marginLeft: 20, fontSize: 18, fontWeight: 'bold' }}>{title}</Text>
+                <Text style={{ marginLeft: 20, fontSize: 18, fontWeight: 'bold', flexWrap: 'wrap', width: '85%' }}>{title}</Text>
             </View>
             {loading ? <ActivityIndicator size='small' animating={true} /> :
                 <>
@@ -130,29 +130,31 @@ function CategoryList({ navigation }) {
                             listKey="listNewsCategoryChild"
                         />
                     }
-                    <FlatList
-                        contentContainerStyle={{ padding: 16 }}
-                        data={listNews.data}
-                        renderItem={({ item, index }) =>
-                            <TouchableOpacity activeOpacity={0.8} style={styles.blogItem} key={item.id} onPress={() => {
-                                navigation.navigate('Detail')
-                                setDataBlog(item)
-                            }}>
-                                <View style={styles.blogImage}>
-                                    <Image source={item.homeimgfile ? { uri: item.homeimgfile } : images.noImage} style={{ width: '100%', height: 90 }} resizeMethod='resize' />
-                                </View>
-                                <View style={styles.blogContent}>
-                                    <Text style={styles.title} numberOfLines={3}>{item.title}</Text>
-                                    <Text style={styles.time}>{item.publtime}</Text>
-                                </View>
-                            </TouchableOpacity>
-                        }
-                        keyExtractor={(item, index) => item.id}
-                        listKey="listNewsCategory"
-                        ListFooterComponent={renderFooter}
-                        onEndReached={onLoadMore}
-                        onEndReachedThreshold={0}
-                    />
+                    {listNews.data?.length === 0 ? <Text style={{color:COLORS.black4, textAlign:'center', marginTop:20}}>Hiện không có tin tức</Text> :
+                        <FlatList
+                            contentContainerStyle={{ padding: 16 }}
+                            data={listNews.data}
+                            renderItem={({ item, index }) =>
+                                <TouchableOpacity activeOpacity={0.8} style={styles.blogItem} key={item.id} onPress={() => {
+                                    navigation.navigate('Detail')
+                                    setDataBlog(item)
+                                }}>
+                                    <View style={styles.blogImage}>
+                                        <Image source={item.homeimgfile ? { uri: item.homeimgfile } : images.noImage} style={{ width: '100%', height: 90 }} resizeMethod='resize' />
+                                    </View>
+                                    <View style={styles.blogContent}>
+                                        <Text style={styles.title} numberOfLines={3}>{item.title}</Text>
+                                        <Text style={styles.time}>{item.publtime}</Text>
+                                    </View>
+                                </TouchableOpacity>
+                            }
+                            keyExtractor={(item, index) => item.id}
+                            listKey="listNewsCategory"
+                            ListFooterComponent={renderFooter}
+                            onEndReached={onLoadMore}
+                            onEndReachedThreshold={0}
+                        />
+                    }
                 </>
             }
         </>

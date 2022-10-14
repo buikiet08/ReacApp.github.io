@@ -62,7 +62,7 @@ export const PageProvider = ({ children }) => {
                 method: 'post',
                 url: `${url}users/register/`,
                 headers: {
-                    Authorization: `bearer ${token}`
+                    Authorization: `bearer ${JSON.parse(token)}`
                 },
                 data: body
             }

@@ -72,8 +72,7 @@ function DetailListAlbum({ navigation }) {
                                     style={{ height: 200 }}
                                 />
                                 <View style={{ marginTop: 8, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-                                    <Text style={{ color: COLORS.black4 }}>{item.title}</Text>
-                                    <Text style={{ color: COLORS.black4 }}>{item.num_views} lượt xem</Text>
+                                    <Text style={{ color: COLORS.black4, fontSize:12 }}>{item.title}</Text>
                                 </View>
                             </View>
                         )}

@@ -14,13 +14,14 @@ function Home({ navigation }) {
   const [data, setData] = useState([])
   const [loading, setLoading] = useState(false)
   const [pageCurrent, setPageCurrent] = useState(1)
+  const [banner, setBanner] = useState([])
   // fetch API
+  let axios = require('axios')
   useEffect(() => {
     getData()
   }, [pageCurrent])
   const getData = async () => {
     setLoading(true)
-    let axios = require('axios')
     let body = JSON.stringify({
       "mod": "get_news_home",
       "page": pageCurrent,
@@ -39,9 +40,27 @@ function Home({ navigation }) {
         setLoading(false)
         console.error(error)
       });
+
+    // ---------------------
+    let banner = JSON.stringify({
+      "mod": "get_banner"
+    });
+    const configBanner = {
+      method: 'post',
+      url: 'https://hungtan-hungnguyen.nghean.gov.vn/users/register/',
+      data: banner
+    }
+    await axios(configBanner)
+      .then(function (response) {
+        setLoading(false)
+        setBanner(response?.data.data)
+      })
+      .catch(function (error) {
+        setLoading(false)
+        console.error(error)
+      });
   }
   const onLoadMore = async () => {
-    let axios = require('axios')
     let body = JSON.stringify({
       "mod": "get_news_home",
       "page": pageCurrent + 1,
@@ -77,9 +96,7 @@ function Home({ navigation }) {
     setData([])
     getData()
   }
-  // Array.prototype.insert = function (index, item) {
-  //   this.splice(index, 0, item);
-  // };
+  
   const insert = (arr, index, newItem) => [
     // part of the array before the specified index
     ...arr.slice(0, index),
@@ -88,39 +105,42 @@ function Home({ navigation }) {
     // part of the array after the specified index
     ...arr.slice(index)
   ]
-  const result = insert(data, 3, { "homeimgfile": 'https://images.unsplash.com/photo-1661956600684-97d3a4320e45?ixlib=rb-1.2.1&ixid=MnwxMjA3fDF8MHxlZGl0b3JpYWwtZmVlZHwxfHx8ZW58MHx8fHw%3D&auto=format&fit=crop&w=500&q=60' })
-  // data.insert(3, { "homeimgfile": 'https://images.unsplash.com/photo-1661956600684-97d3a4320e45?ixlib=rb-1.2.1&ixid=MnwxMjA3fDF8MHxlZGl0b3JpYWwtZmVlZHwxfHx8ZW58MHx8fHw%3D&auto=format&fit=crop&w=500&q=60' })
+  const result = insert(data, 3, { "homeimgfile": `${banner}` })
   // onScroll={(event) => setPosition(event.nativeEvent.contentOffset.y)}
-  console.log(data)
+  console.log(banner)
+  // get banner
+
   return (
     <>
       {loading ? <ActivityIndicator size='small' animating={true} style={{ marginTop: 10 }} /> :
         <FlatList
           data={result}
           renderItem={({ item, index }) =>
-            index === 3 ? <ImageBackground source={item?.homeimgfile ? { uri: item?.homeimgfile } : images.noImage} style={{ 
-              width: '100%', 
-              height: 200, 
-              borderRadius:10,  
-              marginBottom:32, 
-              borderBottomStyle: 'solid',
-              borderBottomWidth: 0.5, 
-              borderBottomColor: COLORS.gray,
-              overflow: 'hidden'
-            }} resizeMethod='resize' /> : 
-            <TouchableOpacity activeOpacity={index !== 3 ? 0.8 : 1} style={styles.blogItem} key={item?.id} onPress={() => {
-              navigation.navigate('Detail')
-              setDataBlog(item)
-            }}>
-              <View style={styles.blogImage}>
-                <Image source={item?.homeimgfile ? { uri: item?.homeimgfile } : images.noImage} style={{ width: '100%', height: 90 }} resizeMethod='resize' />
-              </View>
-              
+            index === 3 ? <View style={{flexDirection:'row', justifyContent:'center', alignItems:'center', minHeight:80, paddingVertical:10}}>
+              <ImageBackground source={item?.homeimgfile ? { uri: item?.homeimgfile } : images.noImage} style={{
+                width: '100%',
+                height: '100%',
+                borderRadius: 4,
+                marginBottom: 32,
+                borderBottomStyle: 'solid',
+                borderBottomWidth: 0.5,
+                borderBottomColor: COLORS.gray,
+                overflow: 'hidden'
+              }} resizeMode='cover' resizeMethod='resize' />
+            </View> :
+              <TouchableOpacity activeOpacity={index !== 3 ? 0.8 : 1} style={styles.blogItem} key={item?.id} onPress={() => {
+                navigation.navigate('Detail')
+                setDataBlog(item)
+              }}>
+                <View style={styles.blogImage}>
+                  <Image source={item?.homeimgfile ? { uri: item?.homeimgfile } : images.noImage} style={{ width: '100%', height: 90 }} resizeMethod='resize' />
+                </View>
+
                 <View style={styles.blogContent}>
                   <Text style={styles.title} numberOfLines={3}>{item?.title}</Text>
                   <Text style={styles.time}>{item?.publtime}</Text>
                 </View>
-            </TouchableOpacity>
+              </TouchableOpacity>
           }
           contentContainerStyle={{ padding: 16 }}
           keyExtractor={(item, index) => index.toString()}

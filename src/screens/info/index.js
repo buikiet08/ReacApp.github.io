@@ -5,11 +5,12 @@ import React, { useState } from 'react'
 import { Controller, useForm } from 'react-hook-form';
 import { SafeAreaView, StyleSheet, TextInput, TouchableOpacity, View, Text } from 'react-native'
 import url from '../../config/api';
+import axios from 'axios';
 import { COLORS } from '../../contains'
 import { usePage } from '../../hook/usePage';
 
 function Info({ navigation }) {
-    const {  watch, control, handleSubmit, formState: { errors }} = useForm({
+    const { watch, control, handleSubmit, formState: { errors } } = useForm({
         defaultValues: {
             full_name: '',
         }
@@ -23,65 +24,85 @@ function Info({ navigation }) {
     }
     const [errorMessage, setErrorMessage] = useState('')
 
-    const onSubmit = (data) => {
-        console.error(data,'vào')
-
-        // let token = await AsyncStorage.getItem('token');
-
-        // try {
-        //     let axios = require('axios')
-        //     let body = JSON.stringify({
-        //         "mod": "api_register_user",
-        //         "full_name": data.full_name,
-        //     });
-        //     const config = {
-        //         method: 'post',
-        //         url: `${url}users/register/`,
-        //         data: body
-        //     }
-        //     await axios(config)
-        //         .then(function (response) {
-        //             setLoading(true)
-        //             console.log(response.data, 'vào')
-        //             if (response.data) {
-        //                 let body = JSON.stringify({
-        //                     "mod": "get_info_user"
-        //                 })
-        //                 const config = {
-        //                     method: 'post',
-        //                     url: `${url}users/register/`,
-        //                     headers: {
-        //                         Authorization: `bearer ${token}`
-        //                     },
-        //                     data: body
-        //                 }
-        //                 if (token) {
-        //                     return axios(config)
-        //                         .then(function (res) {
-        //                             const user = AsyncStorage.getItem('user', JSON.stringify(res.data))
-        //                             if (user) {
-        //                                 setUser(res.data)
-        //                             }
-        //                         })
-        //                         .catch(function (error) {
-        //                             console.error(error)
-        //                         });
-        //                 }
-        //             }
-        //             setErrorMessage(response.data)
-        //         })
-        //         .catch(function (error) {
-        //             setLoading(false)
-        //             setErrorMessage(error.data.message)
-        //         });
-        // }
-        // catch (error) {
-        //     console.error(error.message)
-        //     setErrorMessage(error.message)
-        // }
-        // finally {
-        //     setLoading(false)
-        // }
+    const onSubmit = async (data) => {
+        try {
+            let token = await AsyncStorage.getItem('token');
+            console.log(JSON.parse(token));
+            let axios = require('axios')
+            let body = JSON.stringify({
+                "mod": "update_user",
+                "full_name": data.full_name,
+            });
+            const config = {
+                method: 'post',
+                url: 'https://hungtan-hungnguyen.nghean.gov.vn/users/register/',
+                headers: {
+                    "Content-Type": "application/json",
+                    Authorization: `bearer ${JSON.parse(token)}`
+                },
+                data: body,
+            }
+            await axios(config)
+                .then(function (response) {
+                    setLoading(true)
+                    // setUser()
+                    console.log(response.data, 'vaof roi')
+                    if (response.data) {
+                        // let token = AsyncStorage.getItem('token');
+                        const infoUser = async () => {
+                            let token = await AsyncStorage.getItem('token');
+                            token = JSON.parse(token)
+                            if (token) {
+                                let axios = require('axios')
+                                let body = JSON.stringify({
+                                    "mod": "get_info_user"
+                                })
+                                const config = {
+                                    method: 'post',
+                                    url: 'https://hungtan-hungnguyen.nghean.gov.vn/users/register/',
+                                    headers: {
+                                        Authorization: `bearer ${token}`
+                                    },
+                                    data: body
+                                }
+                                if (token) {
+                                    return axios(config)
+                                        .then(function (res) {
+                                            AsyncStorage.setItem('user', JSON.stringify(res.data))
+                                            setUser(res.data)
+                                            if (res.data.status === 1) {
+                                                setTimeout(
+                                                    function () {
+                                                        navigation.replace("BottomTab", { replace: true })
+                                                    }, 1000
+                                                );
+                                            }
+                                            console.log(res.data, 'thông tin use')
+                                        })
+                                        .catch(function (error) {
+                                            console.error(error)
+                                        });
+                                }
+                            }
+                        }
+                        infoUser()
+                    }
+                    setErrorMessage(response.data)
+                })
+                .catch(function (error) {
+                    console.error(error)
+                    setLoading(false)
+                    setErrorMessage(error.data)
+                    return error.status(500).send({ ret_code: ReturnCodes.SOMETHING_WENT_WRONG });
+                });
+        }
+        catch (error) {
+            console.error(error)
+            setErrorMessage(error)
+        }
+        finally {
+            setLoading(false)
+        }
     }
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
@@ -93,6 +114,9 @@ function Info({ navigation }) {
                 <View style={{ width: 24 }}></View>
             </View>
             <View style={styles.content}>
+                {errorMessage && <View style={{ padding: 8, borderRadius: 4, marginBottom: 10, backgroundColor: COLORS.white }}>
+                    <Text style={errorMessage.status === 0 ? { color: COLORS.red } : { color: COLORS.primary }}>{errorMessage.error || errorMessage.message}</Text>
+                </View>}
                 <View style={styles.formInput}>
                     <Controller
                         control={control}

@@ -105,16 +105,18 @@ function Home({ navigation }) {
     // part of the array after the specified index
     ...arr.slice(index)
   ]
-  const result = insert(data, 3, { "homeimgfile": `${banner}` })
+  const result = insert(data, 3, { "homeimgfile": `${banner[0]}` })
+  const result2 = insert(result,8, { "homeimgfile": `${banner[1]}` })
+
   // onScroll={(event) => setPosition(event.nativeEvent.contentOffset.y)}
-  console.log(banner)
+  console.log(result2)
   // get banner
 
   return (
     <>
       {loading ? <ActivityIndicator size='small' animating={true} style={{ marginTop: 10 }} /> :
         <FlatList
-          data={result}
+          data={result2}
           renderItem={({ item, index }) =>
             index === 3 ? <View style={{flexDirection:'row', justifyContent:'center', alignItems:'center', minHeight:80, paddingVertical:10}}>
               <ImageBackground source={item?.homeimgfile ? { uri: item?.homeimgfile } : images.noImage} style={{
@@ -127,8 +129,19 @@ function Home({ navigation }) {
                 borderBottomColor: COLORS.gray,
                 overflow: 'hidden'
               }} resizeMode='cover' resizeMethod='resize' />
+            </View> : index === 8 ? <View style={{flexDirection:'row', justifyContent:'center', alignItems:'center', minHeight:80, paddingVertical:10}}>
+              <ImageBackground source={item?.homeimgfile ? { uri: item?.homeimgfile } : images.noImage} style={{
+                width: '100%',
+                height: '100%',
+                borderRadius: 4,
+                marginBottom: 32,
+                borderBottomStyle: 'solid',
+                borderBottomWidth: 0.5,
+                borderBottomColor: COLORS.gray,
+                overflow: 'hidden'
+              }} resizeMode='cover' resizeMethod='resize' />
             </View> :
-              <TouchableOpacity activeOpacity={index !== 3 ? 0.8 : 1} style={styles.blogItem} key={item?.id} onPress={() => {
+              <TouchableOpacity activeOpacity={index !== 3 ? 0.8 : index !== 8 ? 0.8 : 1} style={styles.blogItem} key={item?.id} onPress={() => {
                 navigation.navigate('Detail')
                 setDataBlog(item)
               }}>

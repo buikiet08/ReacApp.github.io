@@ -1,6 +1,7 @@
 import { SearchBar } from '@rneui/themed';
 import React, { useEffect, useState } from 'react'
 import { ActivityIndicator, Image, ImageBackground, StyleSheet, TouchableOpacity, View, Text, FlatList } from 'react-native';
+import url from '../../config/api';
 import { COLORS, images } from '../../contains'
 import { usePage } from '../../hook/usePage';
 
@@ -26,7 +27,7 @@ function Search({ navigation }) {
         });
         const config = {
             method: 'post',
-            url: 'https://hungtan-hungnguyen.nghean.gov.vn/api/',
+            url: `${url}api/`,
             data: value
         }
         await axios(config)
@@ -48,7 +49,7 @@ function Search({ navigation }) {
         });
         const config = {
             method: 'post',
-            url: 'https://hungtan-hungnguyen.nghean.gov.vn/api/',
+            url: `${url}api/`,
             data: value
         }
         await axios(config)

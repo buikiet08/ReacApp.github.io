@@ -3,6 +3,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import { LogBox, ActivityIndicator, FlatList, Image, StyleSheet, Text, TouchableOpacity, View, RefreshControl, ImageBackground } from 'react-native'
+import url from '../../config/api';
 import { COLORS, images } from '../../contains'
 import { usePage } from '../../hook/usePage'
 
@@ -28,7 +29,7 @@ function Home({ navigation }) {
     });
     const config = {
       method: 'post',
-      url: 'https://hungtan-hungnguyen.nghean.gov.vn/api/',
+      url: `${url}api/`,
       data: body
     }
     await axios(config)
@@ -47,7 +48,7 @@ function Home({ navigation }) {
     });
     const configBanner = {
       method: 'post',
-      url: 'https://hungtan-hungnguyen.nghean.gov.vn/users/register/',
+      url: `${url}users/register/`,
       data: banner
     }
     await axios(configBanner)
@@ -67,7 +68,7 @@ function Home({ navigation }) {
     });
     const config = {
       method: 'post',
-      url: 'https://hungtan-hungnguyen.nghean.gov.vn/api/',
+      url: `${url}api/`,
       data: body
     }
     await axios(config)
@@ -106,10 +107,9 @@ function Home({ navigation }) {
     ...arr.slice(index)
   ]
   const result = insert(data, 3, { "homeimgfile": `${banner[0]}` })
-  const result2 = insert(result,8, { "homeimgfile": `${banner[1]}` })
+  const result2 = insert(result,12, { "homeimgfile": `${banner[1]}` })
 
   // onScroll={(event) => setPosition(event.nativeEvent.contentOffset.y)}
-  console.log(result2)
   // get banner
 
   return (
@@ -129,7 +129,7 @@ function Home({ navigation }) {
                 borderBottomColor: COLORS.gray,
                 overflow: 'hidden'
               }} resizeMode='cover' resizeMethod='resize' />
-            </View> : index === 8 ? <View style={{flexDirection:'row', justifyContent:'center', alignItems:'center', minHeight:80, paddingVertical:10}}>
+            </View> : index === 12 ? <View style={{flexDirection:'row', justifyContent:'center', alignItems:'center', minHeight:80, paddingVertical:10}}>
               <ImageBackground source={item?.homeimgfile ? { uri: item?.homeimgfile } : images.noImage} style={{
                 width: '100%',
                 height: '100%',

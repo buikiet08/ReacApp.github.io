@@ -5,6 +5,7 @@ import { COLORS, images } from '../../contains'
 import { usePage } from '../../hook/usePage'
 import { AntDesign } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
+import url from '../../config/api';
 
 function CategoryList({ navigation }) {
     const { setIsOpen, cateNews, setDataBlog } = usePage()
@@ -27,7 +28,7 @@ function CategoryList({ navigation }) {
         });
         const config = {
             method: 'post',
-            url: 'https://hungtan-hungnguyen.nghean.gov.vn/api/',
+            url: `${url}api/`,
             data: body
         }
         await axios(config)
@@ -50,7 +51,7 @@ function CategoryList({ navigation }) {
         });
         const config = {
             method: 'post',
-            url: 'https://hungtan-hungnguyen.nghean.gov.vn/api/',
+            url: `${url}api/`,
             data: body
         }
         await axios(config)

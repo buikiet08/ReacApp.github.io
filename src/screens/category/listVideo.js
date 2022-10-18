@@ -1,6 +1,7 @@
 import { AntDesign, Ionicons } from '@expo/vector-icons'
 import React, { useEffect, useRef, useState } from 'react'
 import { ActivityIndicator, Image, FlatList, RefreshControl, SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, View, useWindowDimensions, ImageBackground } from 'react-native'
+import url from '../../config/api'
 import { COLORS, images } from '../../contains'
 import { usePage } from '../../hook/usePage'
 
@@ -24,7 +25,7 @@ function ListVideo({ navigation}) {
         });
         const config = {
             method: 'post',
-            url: 'https://hungtan-hungnguyen.nghean.gov.vn/videoclips/api/',
+            url: `${url}videoclips/api/`,
             data: body
         }
         await axios(config)
@@ -46,7 +47,7 @@ function ListVideo({ navigation}) {
         });
         const config = {
             method: 'post',
-            url: 'https://hungtan-hungnguyen.nghean.gov.vn/videoclips/api/',
+            url: `${url}videoclips/api/`,
             data: body
         }
         await axios(config)

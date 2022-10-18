@@ -1,6 +1,7 @@
 import { AntDesign } from '@expo/vector-icons';
 import React, { useEffect, useRef, useState } from 'react'
 import { ActivityIndicator, FlatList, Image, StyleSheet, Text, TouchableOpacity, View, RefreshControl } from 'react-native'
+import url from '../../config/api';
 import { COLORS, images } from '../../contains'
 import { usePage } from '../../hook/usePage'
 
@@ -24,7 +25,7 @@ function Domestic({ navigation }) {
     });
     const config = {
       method: 'post',
-      url: 'https://hungtan-hungnguyen.nghean.gov.vn/api/',
+      url: `${url}api/`,
       data: body
     }
     await axios(config)
@@ -47,7 +48,7 @@ function Domestic({ navigation }) {
     });
     const config = {
       method: 'post',
-      url: 'https://hungtan-hungnguyen.nghean.gov.vn/api/',
+      url: `${url}api/`,
       data: body
     }
     await axios(config)

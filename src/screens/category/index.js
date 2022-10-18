@@ -2,6 +2,7 @@ import { Icon, ListItem } from '@rneui/themed'
 import React, { useEffect, useState } from 'react'
 import { ActivityIndicator, StyleSheet } from 'react-native'
 import { ScrollView } from 'react-native-virtualized-view';
+import url from '../../config/api';
 import { COLORS } from '../../contains'
 import { usePage } from '../../hook/usePage'
 
@@ -21,7 +22,7 @@ function Category({ navigation}) {
     });
     const config = {
       method: 'post',
-      url: 'https://hungtan-hungnguyen.nghean.gov.vn/api/',
+      url: `${url}api/`,
       data: body
     }
     await axios(config)

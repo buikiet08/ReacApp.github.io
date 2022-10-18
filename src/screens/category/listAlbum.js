@@ -1,6 +1,7 @@
 import { AntDesign, Ionicons } from '@expo/vector-icons';
 import React, { useEffect, useRef, useState } from 'react'
 import { ActivityIndicator, FlatList, Image, StyleSheet, Text, TouchableOpacity, View, RefreshControl, SafeAreaView } from 'react-native'
+import url from '../../config/api';
 import { COLORS, images } from '../../contains'
 import { usePage } from '../../hook/usePage'
 
@@ -23,7 +24,7 @@ function ListAlbum({ navigation }) {
         });
         const config = {
             method: 'post',
-            url: 'https://hungtan-hungnguyen.nghean.gov.vn/nvalbums/api/',
+            url: `${url}nvalbums/api/`,
             data: body
         }
         await axios(config)
@@ -45,7 +46,7 @@ function ListAlbum({ navigation }) {
         });
         const config = {
             method: 'post',
-            url: 'https://hungtan-hungnguyen.nghean.gov.vn/nvalbums/api/',
+            url: `${url}nvalbums/api/`,
             data: body
         }
         await axios(config)

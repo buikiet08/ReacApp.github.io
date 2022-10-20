@@ -2,10 +2,11 @@ import { AntDesign } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import React, { useCallback, useEffect, useRef, useState } from 'react'
-import { LogBox, ActivityIndicator, FlatList, Image, StyleSheet, Text, TouchableOpacity, View, RefreshControl, ImageBackground } from 'react-native'
+import { LogBox, ActivityIndicator, FlatList, Image, StyleSheet, Text, TouchableOpacity, View, RefreshControl, ImageBackground, Dimensions } from 'react-native'
 import url from '../../config/api';
 import { COLORS, images } from '../../contains'
 import { usePage } from '../../hook/usePage'
+
 
 function Home({ navigation }) {
   let listNews = useRef()
@@ -16,6 +17,7 @@ function Home({ navigation }) {
   const [loading, setLoading] = useState(false)
   const [pageCurrent, setPageCurrent] = useState(1)
   const [banner, setBanner] = useState([])
+
   // fetch API
   let axios = require('axios')
   useEffect(() => {
@@ -97,7 +99,7 @@ function Home({ navigation }) {
     setData([])
     getData()
   }
-  
+
   const insert = (arr, index, newItem) => [
     // part of the array before the specified index
     ...arr.slice(0, index),
@@ -106,40 +108,85 @@ function Home({ navigation }) {
     // part of the array after the specified index
     ...arr.slice(index)
   ]
-  const result = insert(data, 3, { "homeimgfile": `${banner[0]}` })
-  const result2 = insert(result,12, { "homeimgfile": `${banner[1]}` })
+
+  const imageUrl = banner[1]
+  const imageUrl2 = banner[0]
+  const result = insert(data, 3, { "homeimgfile": `${imageUrl}` })
+  const result2 = insert(result, 12, { "homeimgfile": `${imageUrl2}` })
+  function useImageAspectRatio1(imageUrl) {
+    const [aspectRatio, setAspectRatio] = useState(1);
+
+    useEffect(() => {
+      if (!imageUrl) {
+        return;
+      }
+
+      let isValid = true;
+      Image.getSize(imageUrl, (width, height) => {
+        if (isValid) {
+          setAspectRatio(width / height);
+        }
+      });
+
+      return () => {
+        isValid = false;
+      };
+    }, [imageUrl]);
+
+    return aspectRatio;
+  }
+  function useImageAspectRatio2(imageUrl2) {
+    const [aspectRatio2, setAspectRatio2] = useState(0);
+
+    useEffect(() => {
+      if (!imageUrl2) {
+        return;
+      }
+
+      let isValid = true;
+      Image.getSize(imageUrl2, (width, height) => {
+        if (isValid) {
+          setAspectRatio2(width / height);
+        }
+      });
+
+      return () => {
+        isValid = false;
+      };
+    }, [imageUrl2]);
+
+    return aspectRatio2;
+  }
+  const aspectRatio = useImageAspectRatio1(imageUrl);
+  const aspectRatio2 = useImageAspectRatio2(imageUrl2);
+
 
   // onScroll={(event) => setPosition(event.nativeEvent.contentOffset.y)}
   // get banner
-
+  
   return (
     <>
       {loading ? <ActivityIndicator size='small' animating={true} style={{ marginTop: 10 }} /> :
         <FlatList
           data={result2}
           renderItem={({ item, index }) =>
-            index === 3 ? <View style={{flexDirection:'row', justifyContent:'center', alignItems:'center', minHeight:80, paddingVertical:10}}>
-              <ImageBackground source={item?.homeimgfile ? { uri: item?.homeimgfile } : images.noImage} style={{
+            index === 3 ? <View style={{ flexDirection: 'row', width: '100%', justifyContent: 'center', flex: 1, alignItems: 'center', paddingVertical: 10 }}>
+              <Image source={item?.homeimgfile ? { uri: item?.homeimgfile } : images.noImage} style={{
                 width: '100%',
-                height: '100%',
+                aspectRatio,
                 borderRadius: 4,
                 marginBottom: 32,
-                borderBottomStyle: 'solid',
-                borderBottomWidth: 0.5,
-                borderBottomColor: COLORS.gray,
-                overflow: 'hidden'
-              }} resizeMode='cover' resizeMethod='resize' />
-            </View> : index === 12 ? <View style={{flexDirection:'row', justifyContent:'center', alignItems:'center', minHeight:80, paddingVertical:10}}>
-              <ImageBackground source={item?.homeimgfile ? { uri: item?.homeimgfile } : images.noImage} style={{
+                overflow: 'hidden',
+              }} />
+            </View> : index === 12 ? <View style={{ flexDirection: 'row', width: '100%', justifyContent: 'center', flex: 1, alignItems: 'center', paddingVertical: 10 }}>
+              <Image source={item?.homeimgfile ? { uri: item?.homeimgfile } : images.noImage} style={{
                 width: '100%',
-                height: '100%',
+                aspectRatio2,
                 borderRadius: 4,
                 marginBottom: 32,
-                borderBottomStyle: 'solid',
-                borderBottomWidth: 0.5,
-                borderBottomColor: COLORS.gray,
-                overflow: 'hidden'
-              }} resizeMode='cover' resizeMethod='resize' />
+                minHeight: 40,
+                overflow: 'hidden',
+              }} />
             </View> :
               <TouchableOpacity activeOpacity={index !== 3 ? 0.8 : index !== 8 ? 0.8 : 1} style={styles.blogItem} key={item?.id} onPress={() => {
                 navigation.navigate('Detail')

@@ -1,6 +1,6 @@
 import { Icon, ListItem } from '@rneui/themed'
 import React, { useEffect, useState } from 'react'
-import { ActivityIndicator, StyleSheet } from 'react-native'
+import { ActivityIndicator, Linking, StyleSheet } from 'react-native'
 import { ScrollView } from 'react-native-virtualized-view';
 import url from '../../config/api';
 import { COLORS } from '../../contains'
@@ -59,6 +59,20 @@ function Category({ navigation}) {
               }}
             />
           )}
+          <ListItem.Accordion
+            style={{ marginBottom: 10 }}
+            icon={false}
+            containerStyle={{ padding: 16 }}
+            content={
+              <>
+                <Icon name="align-left" type='feather' size={24} color={COLORS.gray} style={{ marginRight: 8 }} />
+                <ListItem.Content>
+                  <ListItem.Title>Chương trình OCOP</ListItem.Title>
+                </ListItem.Content>
+              </>
+            }
+            onPress={() => {Linking.openURL('https://hungtan-hungnguyen.nghean.gov.vn/chuong-trinh-ocop/')}}
+          />
           <ListItem.Accordion
             style={{ marginBottom: 10 }}
             icon={false}

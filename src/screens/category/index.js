@@ -7,7 +7,7 @@ import { COLORS } from '../../contains'
 import { usePage } from '../../hook/usePage'
 
 function Category({ navigation}) {
-  const { setIsOpen,setIsVideo,setIsAlbum, setDataBlog, setCateNews } = usePage()
+  const { setIsOpen,setIsVideo,setIsAlbum,setIsEvent, setDataBlog, setCateNews } = usePage()
   const [category, setCategory] = useState([])
   const [loading, setLoading] = useState(false)
 
@@ -71,7 +71,7 @@ function Category({ navigation}) {
                 </ListItem.Content>
               </>
             }
-            onPress={() => {Linking.openURL('https://hungtan-hungnguyen.nghean.gov.vn/chuong-trinh-ocop/')}}
+            onPress={() => setIsEvent(true)}
           />
           <ListItem.Accordion
             style={{ marginBottom: 10 }}

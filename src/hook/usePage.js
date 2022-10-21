@@ -7,7 +7,7 @@ export const PageProvider = ({ children }) => {
     const [isOpen, setIsOpen] = useState(false)
     const [isVideo, setIsVideo] = useState(false)
     const [isAlbum, setIsAlbum] = useState(false)
-
+    const [isEvent,setIsEvent] = useState(false)
     const [isOpenCateChild, setIsOpenCateChild] = useState(false)
     const [dataAlbum, setDataAlbum] = useState()
     const [dataVideo, setDataVideo] = useState()
@@ -91,6 +91,8 @@ export const PageProvider = ({ children }) => {
         setIsVideo,
         isAlbum,
         setIsAlbum,
+        isEvent,
+        setIsEvent,
         dataAlbum,
         setDataAlbum,
         dataVideo,

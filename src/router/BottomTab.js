@@ -13,6 +13,7 @@ import CategoryList from '../screens/category/categoryList';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import ListVideo from '../screens/category/listVideo';
 import ListAlbum from '../screens/category/listAlbum';
+import Event from '../screens/category/event';
 
 const Tab = createBottomTabNavigator()
 
@@ -33,7 +34,7 @@ function BottomTab({ navigation }) {
     }
 
     console.log(daysToSrting())
-    const { isOpen, setIsOpen,isVideo,setIsVideo,isAlbum,setIsAlbum, user, setUser } = usePage()
+    const { isOpen, setIsOpen,isVideo,setIsVideo,isAlbum,setIsAlbum,isEvent,setIsEvent, user, setUser } = usePage()
     const nameUser = user?.data?.first_name
     // console.log(nameUser.split(" ")[nameUser.split(" ").length-1].slice(0,1))
     return (
@@ -94,7 +95,7 @@ function BottomTab({ navigation }) {
                 />
                 <Tab.Screen
                     name='Danh mục'
-                    component={isOpen ? CategoryList : isVideo ? ListVideo : isAlbum ? ListAlbum : Category}
+                    component={isOpen ? CategoryList : isVideo ? ListVideo : isAlbum ? ListAlbum : isEvent ? Event : Category}
                     options={{
                         tabBarIcon: ({ focused }) =>
                             <AntDesign name="appstore-o" size={24} color={focused ? COLORS.primary : COLORS.secondary} />
@@ -105,6 +106,7 @@ function BottomTab({ navigation }) {
                             setIsOpen(false)
                             setIsVideo(false)
                             setIsAlbum(false) 
+                            setIsEvent(false)
                         },
                     }}
                 />

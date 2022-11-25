@@ -22,6 +22,7 @@
       "bundleIdentifier": "com.coldboya123.ReactApp"
     },
     "android": {
+      "permissions": [],
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"
